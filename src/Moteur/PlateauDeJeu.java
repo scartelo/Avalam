@@ -184,7 +184,12 @@ public class PlateauDeJeu {
         Tour tour = new Tour(contenu, l, c);
         grille[tour.ligne][tour.colonne] = tour;
     }
-
+    public int lignes(){
+        return lignes;
+    }
+    public int colonnes(){
+        return colonnes;
+    }
     public Tour tour(int l, int c){
         return grille[l][c];
     }
