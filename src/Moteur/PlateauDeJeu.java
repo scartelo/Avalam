@@ -4,7 +4,7 @@ import Global.Configuration;
 import Structures.Couple;
 import Structures.Sequence;
 
-public class PlateauDeJeu {
+public class PlateauDeJeu extends Historique<Coup>{
     private Tour[][] grille;
     private int tourJoueur;
     private int lignes, colonnes;
@@ -192,5 +192,40 @@ public class PlateauDeJeu {
     }
     public Tour tour(int l, int c){
         return grille[l][c];
+    }
+
+    public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
+        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
+    }
+    public void Jouer(Tour src, Tour dst){
+        Tour tmp_src,tmp_dst;
+        tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
+        tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
+        if(dst.ajouteTour(src)){
+            Coup c = new Coup(tmp_src,tmp_dst);
+            nouveau(c);
+        }
+    }
+    public void Refaire_coup(){
+        Coup c = refaire();
+        if(c!=null){
+            grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
+        }else{
+            System.out.println("Ne peut pas refaire le coup");
+        }
+    }
+    public void Annuler_coup(){
+        Coup c=annuler();
+        if(c!=null) {
+            placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
+            placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
+        }
+        else{
+            System.out.println("Ne peut pas annuler le coup");
+        }
+    }
+    public void sauvegarder(){
+        Saves S = new Saves();
+        S.write_save(passe,futur);
     }
 }
