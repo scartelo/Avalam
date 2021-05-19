@@ -39,17 +39,28 @@ public class PlateauGraphique extends JComponent{
                 Tour T = plateau.tour(i,j);
                 int s=T.sommetTour();
                 int n=T.nbPion();
+
+
                 tracerCarre(new Color(0x090700), x, y, largeurCase, hauteurCase);
                 if(n!=0) {
                     if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
                         tracerCercle(new Color(0xEFBC05), x, y, largeurCase, hauteurCase);
+                        tracerNbPion(new Color(0xFCFCFC), x, y, largeurCase, hauteurCase,n);
+
                     } else if (s == 1) {
                         tracerCercle(new Color(0xEF0521), x, y, largeurCase, hauteurCase);
+                        tracerNbPion(new Color(0xFCFCFC), x, y, largeurCase, hauteurCase,n);
                     }
                 }
             }
         }
+    }
+    void tracerNbPion(Color c, int x, int y, int lc, int hc,int nbPion){
+        Font font = new Font("Comic Sans MS",Font.BOLD,hc/2);
+        drawable.setFont(font);
+        drawable.setColor(c);
+        drawable.drawString(String.valueOf(nbPion),x+(lc/3),y+(hc/2));
     }
     void tracerCarre(Color c, int x, int y, int lc, int hc){
         drawable.setStroke(new BasicStroke(10));
