@@ -21,8 +21,8 @@ public class PlateauGraphique extends JComponent{
         drawable = (Graphics2D) graphics;
         largeur = getSize().width;
         hauteur = getSize().height;
-        largeurCase = largeur / plateau.colonnes;
-        hauteurCase = hauteur / plateau.lignes;
+        largeurCase = largeur / plateau.colonnes();
+        hauteurCase = hauteur / plateau.lignes();
 
         largeurCase = hauteurCase = Math.min(largeurCase, hauteurCase);
 
@@ -32,8 +32,8 @@ public class PlateauGraphique extends JComponent{
     }
 
     void tracerGrille(){
-        for (int i = 0; i< plateau.lignes; i++){
-            for (int j = 0; j < plateau.colonnes; j++){
+        for (int i = 0; i< plateau.lignes(); i++){
+            for (int j = 0; j < plateau.colonnes(); j++){
                 int x = j * largeurCase;
                 int y = i * hauteurCase;
                 Tour T = plateau.tour(i,j);
