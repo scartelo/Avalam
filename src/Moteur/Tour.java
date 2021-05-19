@@ -35,16 +35,15 @@ public class Tour {
         return (byte) (contenu >> 3+nbPion()-1);
     }
 
-    public void ajouteTour(Tour t){
+    public boolean ajouteTour(Tour t){
         if(estDeplacable(t)){
-            System.out.println(t.contenu);
-            System.out.println(contenu);
             sequencePion |= t.sequencePion << nbPion;
             nbPion += t.nbPion;
             contenu = (sequencePion << 3) | nbPion;
-            System.out.println(contenu);
             t.viderTour();
+            return true;
         }
+        else{return false;}
     }
     public boolean estDeplacable(Tour T){
         return estVoisin(T) && (nbPion+T.nbPion()<=5);
