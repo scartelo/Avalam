@@ -6,12 +6,12 @@ public class Tour {
     // 0 0 0 1 1  | 1 0 0                   100
     byte sequencePion;
     byte nbPion;
-    byte contenu;
+    int contenu;
     int ligne, colonne;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
 
-    public Tour(byte cont, int l, int c){
+    public Tour(int cont, int l, int c){
         contenu = cont;
         ligne = l;
         colonne = c;
@@ -19,7 +19,7 @@ public class Tour {
         nbPion = nbPion();
     }
 
-    public byte contenu(){
+    public int contenu(){
         return contenu;
     }
 
@@ -38,9 +38,10 @@ public class Tour {
     public void ajouteTour(Tour t){
         if(estDeplacable(t)){
             System.out.println(t.contenu);
+            System.out.println(contenu);
             sequencePion |= t.sequencePion << nbPion;
             nbPion += t.nbPion;
-            contenu = (byte) ((sequencePion << 3) | nbPion);
+            contenu = (sequencePion << 3) | nbPion;
             System.out.println(contenu);
             t.viderTour();
         }
