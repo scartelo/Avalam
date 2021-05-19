@@ -1,4 +1,6 @@
 package Moteur;
+import Global.Configuration;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 import java.io.*;
@@ -10,6 +12,7 @@ public class Saves{
     int nb_saves;
     String[] l_saves;
     String path;
+    int taille_futur;
 
     public Saves() {
         final String dir = System.getProperty("user.dir");
@@ -18,10 +21,12 @@ public class Saves{
         File directory = new File(path);
         l_saves = directory.list();
         nb_saves = l_saves.length;
+        taille_futur=0;
     }
 
-    public void write_save(Sequence<Coup> passe, Sequence<Coup> futur) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yy__HH_mm");
+    public void write_save(Sequence<Coup> passe, Sequence<Coup> futur,int taille) {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yy__HH_mm_ss");
         LocalDateTime now = LocalDateTime.now();
 
         String save_path = path + File.separator + dtf.format(now)+".txt";
@@ -34,33 +39,70 @@ public class Saves{
         }
         try {
             FileWriter myWriter = new FileWriter(save_path);
-            myWriter.write("P\n");
-            while (!passe.estVide()){
-                Coup c = passe.extraitTete();
+            Iterateur<Coup> it_p = passe.iterateur();
+            Iterateur<Coup> it_f = futur.iterateur();
+
+            while (it_p.aProchain()){
+                Coup c = it_p.prochain();
                 myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
             }
-            myWriter.write("F\n");
-            while (!futur.estVide()){
-                Coup c = futur.extraitTete();
+            myWriter.write("-1\n");
+            while (it_f.aProchain()){
+                Coup c = it_f.prochain();
                 myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
             }
             myWriter.close();
         }catch (IOException e) {
             e.printStackTrace();
         }
-    }/*
-    public void read_save(int save) {
-        String save_path = path + File.separator +l_saves[save-1]+".txt";
-        File save=new File(save_path);
+    }
+    public Sequence<Coup> read_save(int n_save) {
+        String save_path = path + File.separator + l_saves[n_save - 1];
+        File save = new File(save_path);
         try (Scanner myReader = new Scanner(save)) {
-            while (myReader.hasNextLine()) {
-                if(myReader.nextLine()=="P"){
-                    System.out.println("P FOUND");
+            int i_1,j_1,i_2,j_2;
+            Sequence<Coup> seq = Configuration.instance().nouvelleSequence();
+            // Passe
+            int next =0;
+            while (myReader.hasNextInt() && next !=-1) {
+                next = myReader.nextInt();
+                if (next != -1) {
+                    i_1 = next;
+                    j_1 = myReader.nextInt();
+                    i_2 = myReader.nextInt();
+                    j_2 = myReader.nextInt();
+                    Tour src = new Tour(0,i_1,j_1);
+                    Tour dst = new Tour(0,i_2,j_2);
+                    Coup c = new Coup(src,dst);
+                    seq.insereTete(c);
                 }
             }
-        } catch(FileNotFoundException e){
+
+            //Futur
+            while (myReader.hasNextInt()) {
+                next = myReader.nextInt();
+                if (next != -1) {
+                    taille_futur++;
+                    i_1 = next;
+                    j_1 = myReader.nextInt();
+                    i_2 = myReader.nextInt();
+                    j_2 = myReader.nextInt();
+                    Tour src = new Tour(0,i_1,j_1);
+                    Tour dst = new Tour(0,i_2,j_2);
+                    Coup c = new Coup(src,dst);
+                    seq.insereQueue(c);
+                }
+            }
+            myReader.close();
+            return seq;
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+        return null;
+    }
+
+    public boolean saveExists(int n_save){
+        return (n_save > 0 && n_save <= nb_saves);
+    }
 }
 

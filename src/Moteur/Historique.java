@@ -42,5 +42,13 @@ public class Historique<Coup> {
             return null;
         }
     }
+    public void Vider_historique(){
+        while(!passe.estVide()){
+            passe.extraitTete();
+        }
+        while(!futur.estVide()){
+            futur.extraitTete();
+        }
+    }
 }
 

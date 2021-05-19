@@ -2,6 +2,7 @@ package Moteur;
 
 import Global.Configuration;
 import Structures.Couple;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 public class PlateauDeJeu extends Historique<Coup>{
@@ -11,7 +12,6 @@ public class PlateauDeJeu extends Historique<Coup>{
     private final int INNOCCUPABLE = -1;
     private final int TOURJ1 = 1, TOURJ2 = 9;
     private final int TROU = 0;
-
 
     public PlateauDeJeu(){
         lignes = 9;
@@ -226,6 +226,29 @@ public class PlateauDeJeu extends Historique<Coup>{
     }
     public void sauvegarder(){
         Saves S = new Saves();
-        S.write_save(passe,futur);
+        S.write_save(passe,futur,10);
+    }
+    public void load_sauvegarde(int n_save){
+        Saves S = new Saves();
+        if(S.saveExists(n_save)){
+            initialiserGrille();
+            Vider_historique();
+            Sequence<Coup> seq = S.read_save(n_save);
+            Iterateur<Coup> it = seq.iterateur();
+            if (seq != null) {
+                while (it.aProchain()) {
+                    Coup c = it.prochain();
+                    Jouer_pos(c.src.ligne,c.src.colonne,c.dst.ligne,c.dst.colonne);
+                }
+                for(int i=0;i<S.taille_futur;i++){
+                    Annuler_coup();
+                }
+            } else {
+                System.err.println("Erreur lors de la lecture d'une sauvegarde");
+            }
+        }
+    }
+    public void load_sauvegarde(){
+
     }
 }
