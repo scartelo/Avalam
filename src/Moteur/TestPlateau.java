@@ -2,6 +2,7 @@ package Moteur;
 
 public class TestPlateau {
     public static void main(String[] args) {
+
         PlateauDeJeu p  = new PlateauDeJeu();
         p.afficher_grille();
 
@@ -26,7 +27,7 @@ public class TestPlateau {
         p.afficher_grille();
         p.Annuler_coup();
         p.afficher_grille();
-
+        p.sauvegarder();
         System.out.println("Test refaire un coup 1");
         p.Refaire_coup();
         p.afficher_grille();
@@ -43,5 +44,7 @@ public class TestPlateau {
         p.afficher_grille();
 
         System.out.println(p.tour(3,5).estDeplacable(p.tour(2,5)));
+
+
     }
 }

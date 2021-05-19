@@ -188,6 +188,10 @@ public class PlateauDeJeu extends Historique<Coup>{
     public Tour tour(int l, int c){
         return grille[l][c];
     }
+
+    public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
+        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
+    }
     public void Jouer(Tour src, Tour dst){
         Tour tmp_src,tmp_dst;
         tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
@@ -214,5 +218,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         else{
             System.out.println("Ne peut pas annuler le coup");
         }
+    }
+    public void sauvegarder(){
+        Saves S = new Saves();
+        S.write_save(passe,futur);
     }
 }

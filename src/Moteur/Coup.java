@@ -8,10 +8,4 @@ public class Coup {
         src=source;
         dst=dest;
     }
-    public Tour get_Dest(){
-        return dst;
-    }
-    public Tour get_Src(){
-        return src;
-    }
 }
