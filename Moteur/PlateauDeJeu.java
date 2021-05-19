@@ -8,9 +8,9 @@ public class PlateauDeJeu {
     private Tour[][] grille;
     private int tourJoueur;
     private int lignes, colonnes;
-    private final byte INNOCCUPABLE = -1;
-    private final byte TOURJ1 = 1, TOURJ2 = 9;
-    private final byte TROU = 0;
+    private final int INNOCCUPABLE = -1;
+    private final int TOURJ1 = 1, TOURJ2 = 9;
+    private final int TROU = 0;
 
 
     public PlateauDeJeu(){
@@ -143,7 +143,6 @@ public class PlateauDeJeu {
             alterner(l,c);
     }
     public void afficher_grille(){
-        String s = "";
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(tour(i,j).contenu() != INNOCCUPABLE && tour(i,j).contenu()!= TROU){
@@ -181,7 +180,7 @@ public class PlateauDeJeu {
         return voisins;
     }
 
-    public void placerTour(byte contenu, int l, int c){
+    public void placerTour(int contenu, int l, int c){
         Tour tour = new Tour(contenu, l, c);
         grille[tour.ligne][tour.colonne] = tour;
     }
