@@ -24,10 +24,10 @@ public class Configuration {
 		try {
 			InputStream propIn = charge("defaut.cfg");
 			prop.load(propIn);
-			String home = System.getProperty("user.home");
+			/*String home = System.getProperty("user.home");
 			FileInputStream f = new FileInputStream(home + File.separator + ".sokoban");
 			prop = new Properties(prop);
-			prop.load(f);
+			prop.load(f);*/
 		} catch (Exception e) {
 			System.err.println("Erreur lors de la lecture de la configuration : " + e);
 		}
