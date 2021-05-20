@@ -48,11 +48,11 @@ public class Tour {
     public boolean estDeplacable(Tour T){
         return estVoisin(T) && (nbPion+T.nbPion()<=5);
     }
-    public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne)); }
+    public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }
     public boolean estJouable(){
-        return nbPion<5;
+        return (nbPion<5) && (! estInnocupable() )&& (!estVide());
     }
     public boolean estComplete(){
         return nbPion == 5;

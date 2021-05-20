@@ -11,7 +11,7 @@ public class testGraphique {
         plateau.Jouer(plateau.tour(3,4),plateau.tour(3,5));
         plateau.Jouer(plateau.tour(2,5),plateau.tour(3,5));
         ig.demarrer(jeu,controle);
+       jeu.Partie(1);
     }
-
 
 }
