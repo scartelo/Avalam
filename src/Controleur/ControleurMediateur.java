@@ -24,7 +24,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
     void quitter() { jeu.Quitter(); }
     void save() {
-        jeu.plateau.sauvegarder();
+        jeu.sauvegarder();
     }
 
     void load(String c){
