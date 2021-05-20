@@ -15,7 +15,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     private JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
-    JButton annuler, refaire,restart,sauvegarde,loadbut;
+    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter;
     private boolean maximized;
     JTextField jt;
 
@@ -67,9 +67,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Box annulRef = Box.createHorizontalBox();
         annuler = createButton("<", "annule");
         refaire = createButton(">", "refaire");
+        quitter = createButton ("quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
         m_bar.add(annulRef);
+        m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
 
 
