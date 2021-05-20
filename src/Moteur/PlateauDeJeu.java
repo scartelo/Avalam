@@ -87,7 +87,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         score_2=0;
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
-                if(!(grille[i][j].estVide())&&(grille[i][j].estInnocupable())){
+                if(!(grille[i][j].estVide()||(grille[i][j].estInnocupable()))){
                     if(grille[i][j].nbPion>1 || (grille[i][j].nbPion==1 && estIsole(i,j))){
                         if(grille[i][j].sommetTour()==0){
                             score_1++;
