@@ -64,7 +64,12 @@ public class PlateauDeJeu extends Historique<Coup>{
             }
         }
     }
-
+    public int x1(){
+        return x1;
+    }
+    public int y1(){
+        return y1;
+    }
     private void initialiserLignes(int l, int c){
         switch (l) {
             case 0:
