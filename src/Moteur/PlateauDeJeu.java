@@ -30,6 +30,12 @@ public class PlateauDeJeu extends Historique<Coup>{
         x2=-1;
         y2=-1;
     }
+    public int x1(){
+        return x1;
+    }
+    public int y1(){
+        return y1;
+    }
     public void position(int l,int c){
         if(l<lignes && c<colonnes) {
             if (x1 == -1 && y1 == -1) {
