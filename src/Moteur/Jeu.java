@@ -2,6 +2,8 @@ package Moteur;
 
 import Patterns.Observable;
 
+import javax.swing.*;
+
 public class Jeu extends Observable {
     public PlateauDeJeu plateau;
 
@@ -16,5 +18,9 @@ public class Jeu extends Observable {
     public void Annule(){
         plateau.Annuler_coup();
         miseAJour();
+    }
+    public void Quitter(){
+        JOptionPane.showMessageDialog(null, "Merci d'avoir jouer");
+        System.exit(0);
     }
 }

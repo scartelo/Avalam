@@ -22,6 +22,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule(){
         jeu.Annule();
     }
+    void quitter() { jeu.Quitter(); }
 
     void save() {
         jeu.plateau.sauvegarder();
@@ -44,6 +45,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "save":
                 save();
+                break;
+            case "quitter":
+                quitter();
                 break;
             default:
                 return false;
