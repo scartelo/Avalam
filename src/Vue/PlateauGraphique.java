@@ -4,6 +4,8 @@ import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import javax.swing.*;
 import java.awt.*;
+
+
 import Patterns.Observateur;
 import Moteur.Jeu;
 
@@ -37,8 +39,8 @@ public class PlateauGraphique extends JComponent implements Observateur{
     void tracerGrille(){
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
-                int x = j * largeurCase;
-                int y = i * hauteurCase;
+                int x = j * hauteurCase;
+                int y = i * largeurCase;
                 Tour T = plateau.tour(i,j);
                 int s=T.sommetTour();
                 int n=T.nbPion();
@@ -55,9 +57,19 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         tracerCercle(new Color(0xEF0521), x, y, largeurCase, hauteurCase);
                         tracerNbPion(new Color(0xFCFCFC), x, y, largeurCase, hauteurCase,n);
                     }
+                    if (plateau.x1()!=-1){
+                        tracerSurbri(new Color(0xFCFCFC),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase, hauteurCase);
+
+                    }
                 }
             }
         }
+    }
+
+    void tracerSurbri(Color c, int x, int y, int lc, int hc){
+        drawable.setStroke(new BasicStroke(3));
+        drawable.setColor(c);
+        drawable.drawOval(x,y,lc, hc);
     }
     void tracerNbPion(Color c, int x, int y, int lc, int hc,int nbPion){
         Font font = new Font("Comic Sans MS",Font.BOLD,hc/2);
