@@ -18,7 +18,7 @@ public class Jeu extends Observable {
         while(!plateau.estTermine()){
         }
         int j=plateau.get_winner();
-        System.out.println("Voici les scores !\nJoueur 1: "+plateau.Joueur1.score+" point(s).\nJoueur 2: "+plateau.Joueur2.score+" point(s).");
+        System.out.println("Voici les scores !\nJoueur 1: "+plateau.score1+" point(s).\nJoueur 2: "+plateau.score2+" point(s).");
         if(j==0){
             System.out.println("Egalité entre les joueurs !");
         }else {
