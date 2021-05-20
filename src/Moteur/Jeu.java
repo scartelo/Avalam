@@ -13,7 +13,7 @@ public class Jeu extends Observable {
     }
     public void Partie(int new_game){
         if(new_game==1){
-            NouvellePartie();
+            plateau.initialiserGrille();
         }
         while(!plateau.estTermine()){
         }
@@ -27,17 +27,23 @@ public class Jeu extends Observable {
     }
 
     public void NouvellePartie(){
-        plateau.initialiserGrille();
-        miseAJour();
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            plateau.initialiserGrille();
+            miseAJour();
+        }
     }
     public void Refaire(){
         plateau.Refaire_coup();
         miseAJour();
     }
     public void Quitter(){
-        JOptionPane.showMessageDialog(null, "Merci d'avoir jouer");
-        System.exit(0);
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous vraiment quitter ? ","Quitter le jeu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            System.exit(0);
+        }
     }
+
     public void Annule(){
         plateau.Annuler_coup();
         miseAJour();
@@ -46,8 +52,22 @@ public class Jeu extends Observable {
         plateau.position(l,c);
         miseAJour();
     }
+    public void sauvegarder(){
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            plateau.sauvegarder();
+        }
+    }
     public void load(int n_save){
-        plateau.load_sauvegarde(n_save);
-        miseAJour();
+        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            int res2 = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder avant de charger ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+            if(res2==JOptionPane.YES_OPTION){
+                plateau.sauvegarder();
+            }
+            plateau.load_sauvegarde(n_save);
+            miseAJour();
+        }
+
     }
 }
