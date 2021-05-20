@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Saves{
-    int nb_saves;
-    String[] l_saves;
+    public int nb_saves;
+    public List<String> l_saves;
     String path;
     int taille_futur;
 
@@ -19,12 +19,14 @@ public class Saves{
         String home = System.getProperty("user.dir");
         path = home + File.separator + "res" + File.separator + "Saves";
         File directory = new File(path);
-        l_saves = directory.list();
-        nb_saves = l_saves.length;
+        String[] tmp_l_saves = directory.list();
+        l_saves=new ArrayList<>();
+        l_saves.addAll(Arrays.asList(tmp_l_saves));
+        nb_saves = l_saves.size();
         taille_futur=0;
     }
 
-    public void write_save(Sequence<Coup> passe, Sequence<Coup> futur,int taille) {
+    public void write_save(Sequence<Coup> passe, Sequence<Coup> futur) {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yy__HH_mm_ss");
         LocalDateTime now = LocalDateTime.now();
@@ -57,7 +59,7 @@ public class Saves{
         }
     }
     public Sequence<Coup> read_save(int n_save) {
-        String save_path = path + File.separator + l_saves[n_save - 1];
+        String save_path = path + File.separator + l_saves.get(n_save - 1);
         File save = new File(save_path);
         try (Scanner myReader = new Scanner(save)) {
             int i_1,j_1,i_2,j_2;

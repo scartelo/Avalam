@@ -4,16 +4,19 @@ import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import javax.swing.*;
 import java.awt.*;
+import Patterns.Observateur;
+import Moteur.Jeu;
 
-public class PlateauGraphique extends JComponent{
+public class PlateauGraphique extends JComponent implements Observateur{
     int largeur, hauteur, largeurCase, hauteurCase;
     Graphics2D drawable;
+    Jeu jeu;
     PlateauDeJeu plateau;
 
 
-    public PlateauGraphique(PlateauDeJeu p){
-        plateau = p;
-
+    public PlateauGraphique(Jeu j){
+        jeu=j;
+        plateau = jeu.plateau;
     }
 
     @Override
@@ -80,7 +83,7 @@ public class PlateauGraphique extends JComponent{
         return hauteurCase;
     }
 
-    //@Override
+    @Override
     public void metAJour() {
         repaint();
     }
