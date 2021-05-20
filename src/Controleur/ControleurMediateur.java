@@ -11,6 +11,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         jeu=j;
     }
     void restart(){
+        jeu.NouvellePartie();
     }
     public void clicSouris(int l, int c){
         jeu.clic(l,c);
