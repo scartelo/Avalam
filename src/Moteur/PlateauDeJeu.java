@@ -228,7 +228,20 @@ public class PlateauDeJeu extends Historique<Coup>{
     public Tour tour(int l, int c){
         return grille[l][c];
     }
+   /* public boolean estTermine(){
+        boolean res=true;
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                for(){
+                    if(){
+                        res=false;
 
+                    }
+                }
+            }
+        }
+        return res;
+    }*/
     public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
         Jouer(grille[i_1][j_1],grille[i_2][j_2]);
     }

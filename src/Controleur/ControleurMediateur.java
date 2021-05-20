@@ -14,7 +14,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void restart(){
     }
     public void clicSouris(int l, int c){
-        jeu.plateau.position(l,c);
+        jeu.clic(l,c);
     }
         void refaire(){
         jeu.Refaire();
@@ -28,7 +28,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     void load(String c){
-        jeu.plateau.load_sauvegarde(Integer.parseInt(c));
+        jeu.load(Integer.parseInt(c));
     }
 
     @Override

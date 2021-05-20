@@ -17,4 +17,12 @@ public class Jeu extends Observable {
         plateau.Annuler_coup();
         miseAJour();
     }
+    public void clic(int l, int c){
+        plateau.position(l,c);
+        miseAJour();
+    }
+    public void load(int n_save){
+        plateau.load_sauvegarde(n_save);
+        miseAJour();
+    }
 }
