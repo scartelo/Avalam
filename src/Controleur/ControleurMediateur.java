@@ -2,21 +2,21 @@ package Controleur;
 
 
 import Moteur.Jeu;
-import Moteur.PlateauDeJeu;
 import Vue.CollecteurEvenements;
-import Vue.InterfaceUtilisateur;
-import java.util.*;
 
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
+
     }
     void restart(){
     }
-
-    void refaire(){
+    public void clicSouris(int l, int c){
+        jeu.plateau.position(l,c);
+    }
+        void refaire(){
         jeu.Refaire();
     }
     void annule(){
@@ -26,6 +26,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void save() {
         jeu.plateau.sauvegarder();
     }
+
     void load(String c){
         jeu.plateau.load_sauvegarde(Integer.parseInt(c));
     }
