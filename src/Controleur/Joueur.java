@@ -4,9 +4,9 @@ import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 
-abstract class Joueur {
+public class Joueur {
         Jeu jp;
-        int num; //
+        int num;//
         // Le joueur connait son numéro, cela lui permet d'inspecter le plateau en
         // sachant
         // repérer ses pions et évaluer où il en est

@@ -1,19 +1,23 @@
 package Moteur;
 
+import Controleur.Joueur;
 import Global.Configuration;
 import Structures.Couple;
 import Structures.Iterateur;
 import Structures.Sequence;
-import Vue.InterfaceGraphique;
 public class PlateauDeJeu extends Historique<Coup>{
     private Tour[][] grille;
-    private int tourJoueur;
+    public int tourJoueur;
     private int lignes, colonnes;
     private final int INNOCCUPABLE = -1;
     private final int TOURJ1 = 1, TOURJ2 = 9;
     private final int TROU = 0;
     private int x1,y1,x2,y2;
+    public int score1,score2;
     public PlateauDeJeu(){
+        score1=0;
+        score2=0;
+        tourJoueur=0;
         lignes = 9;
         colonnes = 9;
         grille = new Tour[lignes][colonnes];
@@ -38,10 +42,6 @@ public class PlateauDeJeu extends Historique<Coup>{
                 if (grille[l][c].estJouable()) {
                     x1 = l;
                     y1 = c;
-                    System.out.println("Position pour x1,y1");
-                    System.out.print(x1);
-                    System.out.print(y1);
-                    System.out.println();
                 } else {
                     System.err.println("Tour non déplaçable");
                 }
@@ -56,13 +56,22 @@ public class PlateauDeJeu extends Historique<Coup>{
                     System.out.println("La tour a été déplacée");
                     Init_pos();
                     tourJoueur=(tourJoueur+1)%2;
+                    update_score();
+                    System.out.println(score1);
+                    System.out.println(score2);
+                    System.out.println();
                 } else {
+                    Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");
                 }
             }
         }else{
             System.err.println("Hors de la grille");
         }
+        /*
+        if(estTermine()){
+            get_winner();
+        }*/
     }
     public void initialiserGrille() {
         for (int l=0; l<lignes; l++){
@@ -70,12 +79,27 @@ public class PlateauDeJeu extends Historique<Coup>{
                 initialiserLignes(l,c);
             }
         }
+        Vider_historique();
     }
-    public int x1(){
-        return x1;
-    }
-    public int y1(){
-        return y1;
+    public void update_score(){
+        int score_1,score_2;
+        score_1=0;
+        score_2=0;
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                if(!(grille[i][j].estVide())&&(grille[i][j].estInnocupable())){
+                    if(grille[i][j].nbPion>1 || (grille[i][j].nbPion==1 && estIsole(i,j))){
+                        if(grille[i][j].sommetTour()==0){
+                            score_1++;
+                        }else{
+                            score_2++;
+                        }
+                    }
+                }
+            }
+        }
+        score1=score_1;
+        score2=score_2;
     }
     private void initialiserLignes(int l, int c){
         switch (l) {
@@ -209,6 +233,16 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
     }
 
+    public int get_winner(){
+        if(score1==score2){
+            return 0;
+        }else if(score1>score2){
+            return 1;
+        }
+        else{
+            return 2;
+        }
+    }
     public boolean estAccessible(int l, int c){
         return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
     }
@@ -222,12 +256,25 @@ public class PlateauDeJeu extends Historique<Coup>{
         for (int i=l-1; i<=l+1; i++){
             for (int j=c-1; j<=c+1 ; j++){
                 if ((i!=l && j!=c) && estAccessible(i,j))
-                    voisins.insereTete(new Couple<Integer,Integer>(i,j));
+                    voisins.insereTete(new Couple<>(i,j));
             }
         }
         return voisins;
     }
-
+    public boolean estIsole(int l,int c){
+        Sequence<Couple<Integer,Integer>> v=voisins(l,c);
+        Couple<Integer,Integer> couple;
+        boolean res=true;
+        while(!v.estVide()){
+            couple=v.extraitTete();
+            int i= couple.get_premier();
+            int j=couple.get_second();
+            if(grille[i][j].nbPion()>0){
+                res=false;
+            }
+        }
+        return res;
+    }
     public void placerTour(int contenu, int l, int c){
         Tour tour = new Tour(contenu, l, c);
         grille[tour.ligne][tour.colonne] = tour;
@@ -241,21 +288,27 @@ public class PlateauDeJeu extends Historique<Coup>{
     public Tour tour(int l, int c){
         return grille[l][c];
     }
-    /*public boolean estTermine(){
+    public boolean estTermine(){
         boolean res=true;
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
-                for(int x=-1;x<2;){
-                    for(){
-                        if() {
-                            res = false;
+                if(grille[i][j].estJouable()){
+                    for(int x=-1;x<2;x++){
+                        for(int y=-1;y<2;y++){
+                            if((i+x>=0 && x+i<lignes)&&(j+y>=0 && j+y<colonnes))  {
+                                if(grille[i][j].estDeplacable(grille[i+x][y+j])){
+                                    res = false;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+        update_score();
         return res;
-    }*/
+    }
     public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
         Jouer(grille[i_1][j_1],grille[i_2][j_2]);
     }
@@ -272,6 +325,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         Coup c = refaire();
         if(c!=null){
             grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
+            update_score();
         }else{
             System.out.println("Ne peut pas refaire le coup");
         }
@@ -281,6 +335,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         if(c!=null) {
             placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
+            update_score();
         }
         else{
             System.out.println("Ne peut pas annuler le coup");
@@ -306,6 +361,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                 for(int i=0;i<S.taille_futur;i++){
                     Annuler_coup();
                 }
+                update_score();
             } else {
                 System.err.println("Erreur lors de la lecture de la sauvegarde");
             }
@@ -313,4 +369,5 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.err.println("La sauvegarde n'existe pas");
         }
     }
+
 }
