@@ -21,7 +21,6 @@ public class PlateauDeJeu extends Historique<Coup>{
     }
 
     public void initialiserGrille() {
-        int x = 0;
         for (int l=0; l<lignes; l++){
             for (int c=0; c<colonnes; c++){
                 initialiserLignes(l,c);
@@ -226,11 +225,12 @@ public class PlateauDeJeu extends Historique<Coup>{
     }
     public void sauvegarder(){
         Saves S = new Saves();
-        S.write_save(passe,futur,10);
+        S.write_save(passe,futur);
     }
     public void load_sauvegarde(int n_save){
         Saves S = new Saves();
         if(S.saveExists(n_save)){
+            System.out.println(n_save);
             initialiserGrille();
             Vider_historique();
             Sequence<Coup> seq = S.read_save(n_save);
@@ -244,11 +244,10 @@ public class PlateauDeJeu extends Historique<Coup>{
                     Annuler_coup();
                 }
             } else {
-                System.err.println("Erreur lors de la lecture d'une sauvegarde");
+                System.err.println("Erreur lors de la lecture de la sauvegarde");
             }
+        }else {
+            System.err.println("La sauvegarde n'existe pas");
         }
-    }
-    public void load_sauvegarde(){
-
     }
 }
