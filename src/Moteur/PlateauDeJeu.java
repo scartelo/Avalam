@@ -27,34 +27,35 @@ public class PlateauDeJeu extends Historique<Coup>{
         y2=-1;
     }
     public void position(int l,int c){
-        if(x1==-1 && y1== -1){
-            if(grille[l][c].estJouable()){
-                x1=l;
-                y1=c;
-                System.out.println("Position pour x1,y1");
-                System.out.print(x1);
-                System.out.print(y1);
-                System.out.println();
-            }else{
-                System.err.println("Tour non déplaçable");
-            }
-        }
-        else if(x1==l && y1==c){
-            System.err.println("Même positions");
-            Init_pos();
-        }
-        else{
-            if(grille[x1][y1].estDeplacable(grille[l][c])){
-                x2=l;
-                y2=c;
-                Jouer_pos(x1,y1,x2,y2);
-                System.out.println("La tour a été déplacée");
+        if(l<lignes && c<colonnes) {
+            if (x1 == -1 && y1 == -1) {
+                if (grille[l][c].estJouable()) {
+                    x1 = l;
+                    y1 = c;
+                    System.out.println("Position pour x1,y1");
+                    System.out.print(x1);
+                    System.out.print(y1);
+                    System.out.println();
+                } else {
+                    System.err.println("Tour non déplaçable");
+                }
+            } else if (x1 == l && y1 == c) {
+                System.err.println("Même positions");
                 Init_pos();
-            }else{
-                System.err.println("La tour ne peut pas être déplacé ici");
+            } else {
+                if (grille[x1][y1].estDeplacable(grille[l][c])) {
+                    x2 = l;
+                    y2 = c;
+                    Jouer_pos(x1, y1, x2, y2);
+                    System.out.println("La tour a été déplacée");
+                    Init_pos();
+                } else {
+                    System.err.println("La tour ne peut pas être déplacé ici");
+                }
             }
+        }else{
+            System.err.println("Hors de la grille");
         }
-
     }
     public void initialiserGrille() {
         for (int l=0; l<lignes; l++){
@@ -228,14 +229,15 @@ public class PlateauDeJeu extends Historique<Coup>{
     public Tour tour(int l, int c){
         return grille[l][c];
     }
-   /* public boolean estTermine(){
+    /*public boolean estTermine(){
         boolean res=true;
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
-                for(){
-                    if(){
-                        res=false;
-
+                for(int x=-1;x<2;){
+                    for(){
+                        if() {
+                            res = false;
+                        }
                     }
                 }
             }
