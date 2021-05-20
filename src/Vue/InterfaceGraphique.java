@@ -3,6 +3,7 @@ package Vue;
 import Moteur.PlateauDeJeu;
 import Moteur.Jeu;
 import Moteur.Saves;
+import Patterns.Observateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,17 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class InterfaceGraphique implements Runnable {
+public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Observateur {
     private JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
     JButton annuler, refaire,restart,sauvegarde,loadbut;
+    private boolean maximized;
     JTextField jt;
 
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
         plateauGraphique = new PlateauGraphique(j);
         controle = c;
         //Boite dialogue load
+        j.ajouteObservateur(this);
     }
 
     @Override
@@ -90,6 +93,22 @@ public class InterfaceGraphique implements Runnable {
         but.setFocusable(false);
         return but;
     }
+    @Override
+    public void metAJour() {
+        plateauGraphique.repaint();
+    }
 
+    @Override
+    public void basculePleinEcran() {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice device = env.getDefaultScreenDevice();
+        if (maximized) {
+            device.setFullScreenWindow(null);
+            maximized = false;
+        } else {
+            device.setFullScreenWindow(frame);
+            maximized = true;
+        }
 
+    }
 }
