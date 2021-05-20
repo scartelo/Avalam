@@ -44,7 +44,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
                 int n=T.nbPion();
 
 
-                tracerCarre(new Color(0x090700), x, y, largeurCase, hauteurCase);
+                tracerCarre(new Color(0x090900), x, y, largeurCase, hauteurCase);
                 if(n!=0) {
                     if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
