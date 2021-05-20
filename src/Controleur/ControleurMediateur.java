@@ -55,6 +55,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void commandeInput(String commande,String input) {
         switch(commande){
             case "load":
+                System.out.println(input);
                 load(input);
                 break;
             default:

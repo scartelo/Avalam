@@ -37,52 +37,39 @@ public class InterfaceGraphique implements Runnable {
         boxJeu.setPreferredSize(new Dimension(500, 400));
         principal.add(boxJeu);
 
-
-        Box barreLaterale= Box.createVerticalBox();
-        barreLaterale.add(createLabel("Avalam"));
-        barreLaterale.add(Box.createGlue());
-        // Annuler / Refaire
-        Box annulRef = Box.createHorizontalBox();
-        annuler = createButton("<", "annule");
-        refaire = createButton(">", "refaire");
-        annulRef.add(annuler);
-        annulRef.add(refaire);
-        barreLaterale.add(annulRef);
-
-        sauvegarde = createButton("Save","save");
-        barreLaterale.add(sauvegarde);
-        barreLaterale.add(Box.createGlue());
-
-        barreLaterale.add(createLabel("Load (Save n°1,2..)"));
-        jt=new JTextField("");
-        jt.setSize(new Dimension(20,3));
-        jt.setMinimumSize(new Dimension(20,3));
-        jt.setMaximumSize(new Dimension(20,3));
-        jt.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                String input = jt.getText();
-                controle.commandeInput("load",input);
-            }
-        });
-        barreLaterale.add(jt);
-        barreLaterale.add(Box.createGlue());
-
-        principal.add(barreLaterale);
         frame.add(principal);
 
         //liste des sauvegardes sous forme de menu
         JMenuBar m_bar= new JMenuBar();
         JMenu m = new JMenu("Sauvegardes");
         Saves save=new Saves();
+
+
+
         for(int i=0;i<save.nb_saves;i++){
             JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
+            String s =String.valueOf(i+1);
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    controle.commandeInput("load",s);
+                }
+            });
             m.add(item);
         }
         m_bar.add(m);
+        sauvegarde = createButton("Save","save");
+        m_bar.add(sauvegarde);
+        // Annuler / Refaire
+        Box annulRef = Box.createHorizontalBox();
+        annuler = createButton("<", "annule");
+        refaire = createButton(">", "refaire");
+        annulRef.add(annuler);
+        annulRef.add(refaire);
+        m_bar.add(annulRef);
         frame.setJMenuBar(m_bar);
 
 
-        frame.setSize(500, 300);
+        frame.setSize(500, 500);
         frame.setVisible(true);
     }
 
@@ -103,5 +90,6 @@ public class InterfaceGraphique implements Runnable {
         but.setFocusable(false);
         return but;
     }
+
 
 }
