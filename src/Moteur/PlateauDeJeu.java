@@ -60,6 +60,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                     Jouer_pos(x1, y1, x2, y2);
                     System.out.println("La tour a été déplacée");
                     Init_pos();
+                    tourJoueur=(tourJoueur+1)%2;
                 } else {
                     Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");
