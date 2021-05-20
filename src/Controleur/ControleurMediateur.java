@@ -19,7 +19,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         jeu.Refaire();
     }
     void annule(){
-        jeu.Partie(0);
         jeu.Annule();
     }
 
