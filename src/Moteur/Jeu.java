@@ -28,6 +28,7 @@ public class Jeu extends Observable {
 
     public void NouvellePartie(){
         plateau.initialiserGrille();
+        miseAJour();
     }
     public void Refaire(){
         plateau.Refaire_coup();

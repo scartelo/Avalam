@@ -67,10 +67,12 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Box annulRef = Box.createHorizontalBox();
         annuler = createButton("<", "annule");
         refaire = createButton(">", "refaire");
+        restart = createButton ("Nouvelle partie", "restart");
         quitter = createButton ("quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
         m_bar.add(annulRef);
+        m_bar.add(restart);
         m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
 
