@@ -35,25 +35,24 @@ public class Tour {
         return (byte) (contenu >> 3+nbPion()-1);
     }
 
-    public void ajouteTour(Tour t){
+    public boolean ajouteTour(Tour t){
         if(estDeplacable(t)){
-            System.out.println(t.contenu);
-            System.out.println(contenu);
             sequencePion |= t.sequencePion << nbPion;
             nbPion += t.nbPion;
             contenu = (sequencePion << 3) | nbPion;
-            System.out.println(contenu);
             t.viderTour();
+            return true;
         }
+        else{return false;}
     }
     public boolean estDeplacable(Tour T){
         return estVoisin(T) && (nbPion+T.nbPion()<=5);
     }
-    public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU && (T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne)); }
+    public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }
     public boolean estJouable(){
-        return nbPion<5;
+        return (nbPion<5) && (! estInnocupable() )&& (!estVide());
     }
     public boolean estComplete(){
         return nbPion == 5;
