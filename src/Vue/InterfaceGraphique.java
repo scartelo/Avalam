@@ -27,7 +27,8 @@ public class InterfaceGraphique implements Runnable {
     public void run() {
         frame = new JFrame("Avalam");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //plateauGraphique.addMouseListener(new EcouteurDeSouris(jeuGraphique, controle));
+
+        plateauGraphique.addMouseListener(new EcouteurDeSouris(plateauGraphique, controle));
 
         Box principal=Box.createHorizontalBox();
 

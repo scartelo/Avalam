@@ -4,7 +4,7 @@ import Global.Configuration;
 import Structures.Couple;
 import Structures.Iterateur;
 import Structures.Sequence;
-
+import Vue.InterfaceGraphique;
 public class PlateauDeJeu extends Historique<Coup>{
     private Tour[][] grille;
     private int tourJoueur;
@@ -12,14 +12,50 @@ public class PlateauDeJeu extends Historique<Coup>{
     private final int INNOCCUPABLE = -1;
     private final int TOURJ1 = 1, TOURJ2 = 9;
     private final int TROU = 0;
-
+    private int x1,y1,x2,y2;
     public PlateauDeJeu(){
         lignes = 9;
         colonnes = 9;
         grille = new Tour[lignes][colonnes];
         initialiserGrille();
+        Init_pos();
     }
+    public void Init_pos(){
+        x1=-1;
+        y1=-1;
+        x2=-1;
+        y2=-1;
+    }
+    public void position(int l,int c){
+        if(x1==-1 && y1== -1){
+            if(grille[l][c].estJouable()){
+                x1=l;
+                y1=c;
+                System.out.println("Position pour x1,y1");
+                System.out.print(x1);
+                System.out.print(y1);
+                System.out.println();
+            }else{
+                System.err.println("Tour non déplaçable");
+            }
+        }
+        else if(x1==l && y1==c){
+            System.err.println("Même positions");
+            Init_pos();
+        }
+        else{
+            if(grille[x1][y1].estDeplacable(grille[l][c])){
+                x2=l;
+                y2=c;
+                Jouer_pos(x1,y1,x2,y2);
+                System.out.println("La tour a été déplacée");
+                Init_pos();
+            }else{
+                System.err.println("La tour ne peut pas être déplacé ici");
+            }
+        }
 
+    }
     public void initialiserGrille() {
         for (int l=0; l<lignes; l++){
             for (int c=0; c<colonnes; c++){
