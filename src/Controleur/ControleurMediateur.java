@@ -21,7 +21,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule(){
         jeu.Annule();
     }
-
+    void quitter() { jeu.Quitter(); }
     void save() {
         jeu.plateau.sauvegarder();
     }
@@ -33,6 +33,9 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public boolean commande(String c){
         switch(c){
+            case "quitter":
+                quitter();
+                break;
             case "restart":
                 restart();
                 break;
