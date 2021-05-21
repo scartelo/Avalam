@@ -1,5 +1,6 @@
 package Vue;
 
+import Global.Configuration;
 import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import javax.swing.*;
@@ -15,10 +16,10 @@ public class PlateauGraphique extends JComponent implements Observateur{
     Jeu jeu;
     PlateauDeJeu plateau;
 
-
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
+
     }
 
     @Override
@@ -46,19 +47,19 @@ public class PlateauGraphique extends JComponent implements Observateur{
                 int n=T.nbPion();
 
 
-                tracerCarre(new Color(0x090900), x, y, largeurCase, hauteurCase);
+                tracerCarre(new Couleur("CouleurFond"), x, y, largeurCase, hauteurCase);
                 if(n!=0) {
                     if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Color(0xEFBC05), x, y, largeurCase, hauteurCase);
-                        tracerNbPion(new Color(0xFCFCFC), x, y, largeurCase, hauteurCase,n);
+                        tracerCercle(new Couleur("CouleurJ1"), x, y, largeurCase, hauteurCase);
+                        tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
 
                     } else if (s == 1) {
-                        tracerCercle(new Color(0xEF0521), x, y, largeurCase, hauteurCase);
-                        tracerNbPion(new Color(0xFCFCFC), x, y, largeurCase, hauteurCase,n);
+                        tracerCercle(new Couleur("CouleurJ2"), x, y, largeurCase, hauteurCase);
+                        tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
                     }
                     if (plateau.x1()!=-1){
-                        tracerSurbri(new Color(0xFCFCFC),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase, hauteurCase);
+                        tracerSurbri(new Couleur("CouleurSubrillance"),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase, hauteurCase);
 
                     }
                 }
@@ -66,25 +67,25 @@ public class PlateauGraphique extends JComponent implements Observateur{
         }
     }
 
-    void tracerSurbri(Color c, int x, int y, int lc, int hc){
+    void tracerSurbri(Couleur c, int x, int y, int lc, int hc){
         drawable.setStroke(new BasicStroke(3));
-        drawable.setColor(c);
+        drawable.setColor(c.couleur());
         drawable.drawOval(x,y,lc, hc);
     }
-    void tracerNbPion(Color c, int x, int y, int lc, int hc,int nbPion){
+    void tracerNbPion(Couleur c, int x, int y, int lc, int hc,int nbPion){
         Font font = new Font("Comic Sans MS",Font.BOLD,hc/2);
         drawable.setFont(font);
-        drawable.setColor(c);
+        drawable.setColor(c.couleur());
         drawable.drawString(String.valueOf(nbPion),x+(lc/3),y+(hc/2));
     }
-    void tracerCarre(Color c, int x, int y, int lc, int hc){
+    void tracerCarre(Couleur c, int x, int y, int lc, int hc){
         drawable.setStroke(new BasicStroke(10));
-        drawable.setColor(c);
+        drawable.setColor(c.couleur());
         drawable.fillRect(x,y,lc, hc);
     }
-    void tracerCercle(Color c, int x, int y, int lc, int hc){
+    void tracerCercle(Couleur c, int x, int y, int lc, int hc){
         drawable.setStroke(new BasicStroke(10));
-        drawable.setColor(c);
+        drawable.setColor(c.couleur());
         drawable.fillOval(x,y,lc, hc);
     }
     public int largeurCase(){
