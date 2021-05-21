@@ -1,5 +1,9 @@
 package Moteur;
 
+import Global.Configuration;
+import Structures.Couple;
+import Structures.Sequence;
+
 public class Tour {
     // 1 octet
     //sequence de pion| nb de pion
@@ -63,5 +67,12 @@ public class Tour {
         sequencePion = 0;
     }
 
+    public int ligne(){
+        return ligne;
+    }
+    public int colonne(){
+        return colonne;
+    }
 
 }
+
