@@ -1,8 +1,12 @@
 package Controleur;
 
 import Moteur.Jeu;
+import Moteur.Tour;
+import Structures.Couple;
+import Structures.Sequence;
 
 import java.util.Random;
+
 
 public class JoueurIA extends Joueur{
     Random r;
@@ -29,4 +33,49 @@ public class JoueurIA extends Joueur{
             }
         return false;
     }
+
+
+    double miniMax(Tour t , int horizon, boolean joueurMax){
+        int vl,vc;
+        Sequence<Couple<Integer,Integer>> voisins;
+        if (horizon == 0 && jp.plateau.estTermine()){
+            //calculer score
+            if (num == 0){
+                return jp.scoreJ1();
+            }
+            else
+                return jp.scoreJ2();
+
+
+        }
+       if(joueurMax) {
+           double maxEval = Double.NEGATIVE_INFINITY;
+           voisins  = jp.plateau.voisins(t.ligne(),t.colonne());
+           while(!voisins.estVide()){
+              vl = voisins.extraitTete().get_premier();
+              vc =voisins.extraitTete().get_second();
+              double s = miniMax(jp.plateau.tour(vl,vc),horizon-1,false);
+              maxEval = Math.max(maxEval,s);
+           }
+           return maxEval;
+
+        }
+       else{
+           double minEval = Double.POSITIVE_INFINITY;
+           voisins  = jp.plateau.voisins(t.ligne(),t.colonne());
+           while(!voisins.estVide()){
+               vl = voisins.extraitTete().get_premier();
+               vc =voisins.extraitTete().get_second();
+               double s = miniMax(jp.plateau.tour(vl,vc),horizon-1,false);
+               minEval = Math.min(minEval,s);
+           }
+           return minEval;
+       }
+    }
+
+
+    /*public void bestmove(){
+        double max = Double.NEGATIVE_INFINITY;
+
+    }*/
 }
