@@ -81,7 +81,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame.setVisible(true);
     }
 
-    public void demarrer(Jeu j, CollecteurEvenements c) {
+    public static void demarrer(Jeu j, CollecteurEvenements c) {
         SwingUtilities.invokeLater(new InterfaceGraphique(j, c));
     }
 
