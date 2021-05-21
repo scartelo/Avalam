@@ -63,5 +63,11 @@ public class Tour {
         sequencePion = 0;
     }
 
+    public int ligne(){
+        return ligne;
+    }
+    public int colonne(){
+        return colonne;
+    }
 
 }
