@@ -75,6 +75,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
         frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
     public void partie_finie(){

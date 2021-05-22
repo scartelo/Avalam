@@ -38,11 +38,13 @@ public class PlateauGraphique extends JComponent implements Observateur{
     }
 
     void tracerGrille(){
+        int margin_x=((largeurCase*plateau.colonnes())-largeur)/2;
+        int margin_y=((hauteurCase*plateau.lignes())-hauteur)/2;
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
-                int x = j * hauteurCase;
-                int y = i * largeurCase;
+                int x = (j * hauteurCase)-margin_x;
+                int y = (i * largeurCase)-margin_y;
                 Tour T = plateau.tour(i,j);
                 int s=T.sommetTour();
                 int n=T.nbPion();

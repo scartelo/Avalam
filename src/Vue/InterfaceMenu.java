@@ -55,6 +55,8 @@ public class InterfaceMenu {
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setSize(300, 400);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
