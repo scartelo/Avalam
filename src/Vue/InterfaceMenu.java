@@ -39,9 +39,12 @@ public class InterfaceMenu {
             }
         });
     }
+    public void showMenu(boolean b){
+        frame.setVisible(b);
+    }
     public void Nouvelle_Partie(){
         ControleurMediateur controleur = new ControleurMediateur(jeu);
-        InterfaceGraphique.demarrer(jeu, controleur);
+        InterfaceGraphique.demarrer(jeu);
         frame.setVisible(false);
     }
 

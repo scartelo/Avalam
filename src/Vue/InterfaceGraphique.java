@@ -1,5 +1,6 @@
 package Vue;
 
+import Controleur.ControleurMediateur;
 import Moteur.PlateauDeJeu;
 import Moteur.Jeu;
 import Moteur.Saves;
@@ -12,18 +13,18 @@ import java.awt.event.ActionListener;
 
 
 public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Observateur {
-    private JFrame frame;
+    private static JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
-    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter;
+    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
     private boolean maximized;
     JTextField jt;
     Jeu jeu;
 
-    public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
+    public InterfaceGraphique(Jeu j) {
         jeu=j;
         plateauGraphique = new PlateauGraphique(j);
-        controle = c;
+        controle = new ControleurMediateur(jeu);
         //Boite dialogue load
         j.ajouteObservateur(this);
     }
@@ -67,16 +68,21 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         annuler = createButton("<", "annule");
         refaire = createButton(">", "refaire");
         restart = createButton ("Nouvelle partie", "restart");
-        quitter = createButton ("quitter", "quitter");
+        menu = createButton ("Menu", "retour_menu");
+        quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
         m_bar.add(annulRef);
         m_bar.add(restart);
+        m_bar.add(menu);
         m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    public static void showFrame(boolean b){
+        frame.setVisible(b);
     }
     public void partie_finie(){
         if(jeu.partie_terminee()) {
@@ -91,8 +97,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             d.setVisible(true);
         }
     }
-    public static void demarrer(Jeu j, CollecteurEvenements c) {
-        SwingUtilities.invokeLater(new InterfaceGraphique(j, c));
+    public static void demarrer(Jeu j) {
+        SwingUtilities.invokeLater(new InterfaceGraphique(j));
     }
 
     private JLabel createLabel(String s) {

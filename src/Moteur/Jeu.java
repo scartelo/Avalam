@@ -27,21 +27,15 @@ public class Jeu extends Observable {
         }
     }
     public void NouvellePartie(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            plateau.initialiserGrille();
-            miseAJour();
-        }
+        plateau.initialiserGrille();
+        miseAJour();
     }
     public void Refaire(){
         plateau.Refaire_coup();
         miseAJour();
     }
     public void Quitter(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous vraiment quitter ? ","Quitter le jeu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            System.exit(0);
-        }
+        System.exit(0);
     }
 
     public void Annule(){
@@ -59,11 +53,8 @@ public class Jeu extends Observable {
         miseAJour();
     }
     public void sauvegarder(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            Saves S = new Saves();
-            S.write_save(plateau.passe,plateau.futur);
-        }
+        Saves S = new Saves();
+        S.write_save(plateau.passe,plateau.futur);
     }
     public void load(int n_save,int menu){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
