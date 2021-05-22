@@ -29,7 +29,7 @@ public class InterfaceMenu {
         quitterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jeu.Quitter();
+                jeu.quitter();
             }
         });
         startGame.addActionListener(new ActionListener() {
@@ -44,7 +44,7 @@ public class InterfaceMenu {
     }
     public void Nouvelle_Partie(){
         ControleurMediateur controleur = new ControleurMediateur(jeu);
-        InterfaceGraphique.demarrer(jeu);
+        InterfaceGraphique.demarrer(jeu, controleur);
         frame.setVisible(false);
     }
 

@@ -2,51 +2,27 @@ package Controleur;
 
 
 import Moteur.Jeu;
-import Vue.*;
-
-import javax.swing.*;
+import Vue.CollecteurEvenements;
+import Vue.InterfaceUtilisateur;
 
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
+    InterfaceUtilisateur iu;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
     }
-    void restart(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            jeu.NouvellePartie();
-        }
-    }
+
     public void clicSouris(int l, int c){
         jeu.clic(l,c);
     }
-        void refaire(){
-        jeu.Refaire();
-    }
-    void annule(){
-        jeu.Annule();
-    }
-    void quitter() {
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous vraiment quitter ? ","Quitter le jeu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            jeu.Quitter();
-        }
+
+    public void annuler(){
+        jeu.annuler();
     }
 
-    void retour_menu(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous revenir au menu ? ","Menu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            InterfaceMenu m = new InterfaceMenu();
-            m.showMenu(true);
-            InterfaceGraphique.showFrame(false);
-        }
-    }
-    void save() {
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            jeu.sauvegarder();
-        }
+    public void refaire(){
+        jeu.refaire();
     }
 
     void load(String c){
@@ -54,25 +30,33 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     @Override
+    public void fixerInterfaceUtilisateur(InterfaceUtilisateur i) {
+        iu = i;
+    }
+
+    @Override
     public boolean commande(String c){
         switch(c){
             case "retour_menu":
-                retour_menu();
+                iu.retour_menu();
                 break;
             case "quitter":
-                quitter();
+                iu.quitter();
                 break;
-            case "restart":
-                restart();
+            case "nouvellePartie":
+                iu.nouvellePartie();
                 break;
-            case "annule":
-                annule();
+            case "annuler":
+                annuler();;
                 break;
             case "refaire":
                 refaire();
                 break;
-            case "save":
-                save();
+            case "sauvegarder":
+                iu.sauvegarder();
+                break;
+            case "pleinecran":
+                iu.basculePleinEcran();
                 break;
             default:
                 return false;

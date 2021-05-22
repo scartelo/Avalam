@@ -7,10 +7,10 @@ public class testGraphique {
         PlateauDeJeu plateau =new PlateauDeJeu();
         Jeu jeu= new Jeu(plateau);
         Controleur.ControleurMediateur controle = new Controleur.ControleurMediateur(jeu);
-        InterfaceGraphique ig = new InterfaceGraphique(jeu);
+        InterfaceGraphique ig = new InterfaceGraphique(jeu, controle);
         plateau.Jouer(plateau.tour(3,4),plateau.tour(3,5));
         plateau.Jouer(plateau.tour(2,5),plateau.tour(3,5));
-        ig.demarrer(jeu);
+        ig.demarrer(jeu, controle);
     }
 
 }

@@ -1,7 +1,6 @@
 package Vue;
 
 import Controleur.ControleurMediateur;
-import Moteur.PlateauDeJeu;
 import Moteur.Jeu;
 import Moteur.Saves;
 import Patterns.Observateur;
@@ -21,8 +20,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JTextField jt;
     Jeu jeu;
 
-    public InterfaceGraphique(Jeu j) {
+    public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
         jeu=j;
+        controle = c;
         plateauGraphique = new PlateauGraphique(j);
         controle = new ControleurMediateur(jeu);
         //Boite dialogue load
@@ -34,7 +34,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame = new JFrame("Avalam");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        plateauGraphique.addMouseListener(new EcouteurDeSouris(plateauGraphique, controle));
+        plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
+        frame.addKeyListener(new AdaptateurClavier(controle));
 
         Box principal=Box.createHorizontalBox();
 
@@ -61,13 +62,13 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             m.add(item);
         }
         m_bar.add(m);
-        sauvegarde = createButton("Save","save");
+        sauvegarde = createButton("Save","sauvagarder");
         m_bar.add(sauvegarde);
         // Annuler / Refaire
         Box annulRef = Box.createHorizontalBox();
-        annuler = createButton("<", "annule");
+        annuler = createButton("<", "annuler");
         refaire = createButton(">", "refaire");
-        restart = createButton ("Nouvelle partie", "restart");
+        restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
@@ -77,6 +78,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m_bar.add(menu);
         m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
+
+        controle.fixerInterfaceUtilisateur(this);
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -85,7 +88,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame.setVisible(b);
     }
     public void partie_finie(){
-        if(jeu.partie_terminee()) {
+        if(jeu.partieTerminee()) {
             JDialog d = new JDialog(frame, "Partie finie !");
             // create a label
             String finie = jeu.get_winner();
@@ -97,8 +100,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             d.setVisible(true);
         }
     }
-    public static void demarrer(Jeu j) {
-        SwingUtilities.invokeLater(new InterfaceGraphique(j));
+    public static void demarrer(Jeu j, CollecteurEvenements controle) {
+        SwingUtilities.invokeLater(new InterfaceGraphique(j , controle));
     }
 
     private JLabel createLabel(String s) {
@@ -131,5 +134,44 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             maximized = true;
         }
 
+    }
+    @Override
+    public void sauvegarder() {
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.sauvegarder();
+            metAJour();
+        }
+    }
+
+    @Override
+    public void quitter() {
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous vraiment quitter ? ","Quitter le jeu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.quitter();
+            metAJour();
+        }
+    }
+
+
+
+    @Override
+    public void nouvellePartie(){
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.nouvellePartie();
+            metAJour();
+        }
+    }
+
+
+    public void retour_menu(){
+        int res = JOptionPane.showConfirmDialog(null,"Voulez vous revenir au menu ? ","Menu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res== JOptionPane.YES_OPTION){
+            InterfaceMenu m = new InterfaceMenu();
+            m.showMenu(true);
+            InterfaceGraphique.showFrame(false);
+            metAJour();
+        }
     }
 }

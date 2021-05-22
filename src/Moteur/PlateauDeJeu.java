@@ -222,7 +222,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             nouveau(c);
         }
     }
-    public void Refaire_coup(){
+    public void refaireCoup(){
         Coup c = refaire();
         if(c!=null){
             grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
@@ -231,7 +231,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.out.println("Ne peut pas refaire le coup");
         }
     }
-    public void Annuler_coup(){
+    public void annulerCoup(){
         Coup c=annuler();
         if(c!=null) {
             placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);

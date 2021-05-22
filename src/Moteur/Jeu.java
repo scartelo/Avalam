@@ -8,12 +8,12 @@ import javax.swing.*;
 
 public class Jeu extends Observable {
     public PlateauDeJeu plateau;
-    private int Tour_fini;
-    private boolean partie_terminee;
+    private int tourFini;
+    private boolean partieTerminee;
     public Jeu(PlateauDeJeu p){
-        plateau=p;
-        Tour_fini=0;
-        partie_terminee=false;
+        plateau = p;
+        tourFini = 0;
+        partieTerminee = false;
     }
 
     public String get_winner(){
@@ -26,29 +26,29 @@ public class Jeu extends Observable {
             return "Joueur 2 gagne la partie";
         }
     }
-    public void NouvellePartie(){
+    public void nouvellePartie(){
         plateau.initialiserGrille();
         miseAJour();
     }
-    public void Refaire(){
-        plateau.Refaire_coup();
+    public void refaire(){
+        plateau.refaireCoup();
         miseAJour();
     }
-    public void Quitter(){
+    public void quitter(){
         System.exit(0);
     }
 
-    public void Annule(){
-        plateau.Annuler_coup();
-        if(partie_terminee){
-            partie_terminee=false;
+    public void annuler(){
+        plateau.annulerCoup();
+        if(partieTerminee){
+            partieTerminee =false;
         }
         miseAJour();
     }
     public void clic(int l, int c){
         plateau.position(l,c);
         if(estTermine()){
-            partie_terminee=true;
+            partieTerminee =true;
         }
         miseAJour();
     }
@@ -75,7 +75,7 @@ public class Jeu extends Observable {
                         plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dst.ligne,c.dst.colonne);
                     }
                     for(int i=0;i<S.taille_futur;i++){
-                        plateau.Annuler_coup();
+                        plateau.annulerCoup();
                     }
                     plateau.update_score();
                 } else {
@@ -87,8 +87,8 @@ public class Jeu extends Observable {
         }
         miseAJour();
     }
-    public boolean partie_terminee(){
-        return partie_terminee;
+    public boolean partieTerminee(){
+        return partieTerminee;
     }
     public boolean estTermine(){
         boolean res=true;
