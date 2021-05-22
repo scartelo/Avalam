@@ -28,7 +28,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     void load(String c){
-        jeu.load(Integer.parseInt(c));
+        jeu.load(Integer.parseInt(c),0);
     }
 
     @Override

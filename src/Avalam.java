@@ -12,11 +12,9 @@ public class Avalam {
         switch (Configuration.instance().lis("Interface")){
             case "Graphique":
                 InterfaceGraphique.demarrer(jeu, controleur);
-                jeu.Partie(1);
                 break;
             case "Textuelle":
                 InterfaceTextuelle.demarrer(jeu, controleur);
-                jeu.Partie(1);
             default:
                 Configuration.instance().logger().severe("Interface invalide");
                 System.exit(1);

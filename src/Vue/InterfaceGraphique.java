@@ -18,8 +18,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JButton annuler, refaire,restart,sauvegarde,loadbut,quitter;
     private boolean maximized;
     JTextField jt;
+    Jeu jeu;
 
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
+        jeu=j;
         plateauGraphique = new PlateauGraphique(j);
         controle = c;
         //Boite dialogue load
@@ -47,9 +49,6 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         JMenuBar m_bar= new JMenuBar();
         JMenu m = new JMenu("Sauvegardes");
         Saves save=new Saves();
-
-
-
         for(int i=0;i<save.nb_saves;i++){
             JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
             String s =String.valueOf(i+1);
@@ -75,12 +74,22 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m_bar.add(restart);
         m_bar.add(quitter);
         frame.setJMenuBar(m_bar);
-
-
         frame.setSize(500, 500);
         frame.setVisible(true);
     }
-
+    public void partie_finie(){
+        if(jeu.partie_terminee()) {
+            JDialog d = new JDialog(frame, "Partie finie !");
+            // create a label
+            String finie = jeu.get_winner();
+            JLabel l = new JLabel(finie);
+            d.add(l);
+            // setsize of dialog
+            d.setSize(200, 100);
+            // set visibility of dialog
+            d.setVisible(true);
+        }
+    }
     public static void demarrer(Jeu j, CollecteurEvenements c) {
         SwingUtilities.invokeLater(new InterfaceGraphique(j, c));
     }

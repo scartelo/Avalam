@@ -9,26 +9,49 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class InterfaceMenu {
-    private JButton StartGame;
+    private JButton LoadGame;
     private JPanel MainPanel;
+    private JButton chargerUnePartieButton;
+    private JButton quitterButton;
+    private JButton startGame;
+    private static JFrame frame;
+    Jeu jeu;
 
     public InterfaceMenu() {
-        StartGame.addActionListener(new ActionListener() {
+        jeu = new Jeu(new PlateauDeJeu());
+
+        chargerUnePartieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Jeu jeu = new Jeu(new PlateauDeJeu());
-                ControleurMediateur controleur = new ControleurMediateur(jeu);
-                InterfaceGraphique.demarrer(jeu, controleur);
-
-
-
+                Charger_Partie(2);
+            }
+        });
+        quitterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jeu.Quitter();
+            }
+        });
+        startGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Nouvelle_Partie();
             }
         });
     }
+    public void Nouvelle_Partie(){
+        ControleurMediateur controleur = new ControleurMediateur(jeu);
+        InterfaceGraphique.demarrer(jeu, controleur);
+        frame.setVisible(false);
+    }
 
+    public void Charger_Partie(int n_save){
+        jeu.load(n_save,1);
+        Nouvelle_Partie();
 
+    }
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Menu");
+        frame = new JFrame("Menu");
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

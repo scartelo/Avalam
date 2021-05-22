@@ -38,6 +38,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
     }
 
     void tracerGrille(){
+        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
                 int x = j * hauteurCase;
@@ -47,19 +48,23 @@ public class PlateauGraphique extends JComponent implements Observateur{
                 int n=T.nbPion();
 
 
-                tracerCarre(new Couleur("CouleurFond"), x, y, largeurCase, hauteurCase);
-                if(n!=0) {
-                    if (s == 0) {
+                if(!T.estInnocupable()) {
+                    tracerCarre(new Couleur("CouleurOutline"), x, y, largeurCase, hauteurCase);
+                    tracerCarre(new Couleur("CouleurPlateau"), x+2, y+2, largeurCase-2, hauteurCase-2);
+                    if(T.estVide()){
+                        tracerCercle(new Couleur("CouleurVide"), x+2, y+2, largeurCase-2, hauteurCase-2);
+                    }
+                    else if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Couleur("CouleurJ1"), x, y, largeurCase, hauteurCase);
+                        tracerCercle(new Couleur("CouleurJ1"), x+2, y+2, largeurCase-2, hauteurCase-2);
                         tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
 
                     } else if (s == 1) {
-                        tracerCercle(new Couleur("CouleurJ2"), x, y, largeurCase, hauteurCase);
+                        tracerCercle(new Couleur("CouleurJ2"), x+2, y+2, largeurCase-2, hauteurCase-2);
                         tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
                     }
                     if (plateau.x1()!=-1){
-                        tracerSurbri(new Couleur("CouleurSubrillance"),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase, hauteurCase);
+                        tracerSurbri(new Couleur("CouleurSubrillance"),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase-1, hauteurCase-1);
 
                     }
                 }

@@ -9,32 +9,21 @@ import javax.swing.*;
 public class Jeu extends Observable {
     public PlateauDeJeu plateau;
     private int Tour_fini;
+    private boolean partie_terminee;
     public Jeu(PlateauDeJeu p){
         plateau=p;
         Tour_fini=0;
+        partie_terminee=false;
     }
-    public void Partie(int new_game){
-        if(new_game==1){
-            plateau.initialiserGrille();
-        }
-        while(!estTermine()){
-        }
-        int j=get_winner();
-        System.out.println("Voici les scores !\nJoueur 1(jaune): "+plateau.score1+" point(s).\nJoueur 2(rouge): "+plateau.score2+" point(s).");
-        if(j==0){
-            System.out.println("Egalité entre les joueurs !");
-        }else {
-            System.out.println("Joueur " +j + " gagne la partie !");
-        }
-    }
-    public int get_winner(){
+
+    public String get_winner(){
         if(plateau.score1==plateau.score2){
-            return 0;
+            return "Egalité entre les joueurs";
         }else if(plateau.score1>plateau.score2){
-            return 1;
+            return "Joueur 1 gagne la partie";
         }
         else{
-            return 2;
+            return "Joueur 2 gagne la partie";
         }
     }
     public void NouvellePartie(){
@@ -57,10 +46,16 @@ public class Jeu extends Observable {
 
     public void Annule(){
         plateau.Annuler_coup();
+        if(partie_terminee){
+            partie_terminee=false;
+        }
         miseAJour();
     }
     public void clic(int l, int c){
         plateau.position(l,c);
+        if(estTermine()){
+            partie_terminee=true;
+        }
         miseAJour();
     }
     public void sauvegarder(){
@@ -70,10 +65,12 @@ public class Jeu extends Observable {
             S.write_save(plateau.passe,plateau.futur);
         }
     }
-    public void load(int n_save){
+    public void load(int n_save,int menu){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
-            sauvegarder();
+            if(menu==0) {
+                sauvegarder();
+            }
             Saves S = new Saves();
             if(S.saveExists(n_save)){
                 System.out.println(n_save);
@@ -98,6 +95,9 @@ public class Jeu extends Observable {
             }
         }
         miseAJour();
+    }
+    public boolean partie_terminee(){
+        return partie_terminee;
     }
     public boolean estTermine(){
         boolean res=true;
