@@ -38,13 +38,13 @@ public class JoueurIA extends Joueur{
     double miniMax(Tour t , int horizon, boolean joueurMax){
         int vl,vc;
         Sequence<Couple<Integer,Integer>> voisins;
-        if (horizon == 0 && jp.plateau.estTermine()){
+        if (horizon == 0 && jp.estTermine()){
             //calculer score
             if (num == 0){
-                return jp.scoreJ1();
+                return jp.plateau.scoreJ1();
             }
             else
-                return jp.scoreJ2();
+                return jp.plateau.scoreJ2();
 
 
         }
