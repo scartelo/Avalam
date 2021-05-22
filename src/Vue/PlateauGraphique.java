@@ -28,26 +28,31 @@ public class PlateauGraphique extends JComponent implements Observateur{
         hauteur = getSize().height;
         largeurScore=largeur/2;
         hauteurScore=hauteur/5;
+        hauteur=hauteur-hauteurScore;
         largeurCase = largeur / plateau.colonnes();
         hauteurCase = hauteur / plateau.lignes();
         largeurCase = hauteurCase = Math.min(largeurCase, hauteurCase);
         margin_x=(largeur-(largeurCase*plateau.colonnes()))/2;
         margin_y=(hauteur-(hauteurCase*plateau.lignes()))/2;
-        margin_x_score=margin_x;
-        margin_y_score=margin_y;
+        margin_x_score=200;
+        margin_y_score=0;
         hauteurNom=0;
         largeurNom=0;
         drawable.clearRect(0,0, largeur, hauteur);
         tracerGrille();
+        tracerScore();
     }
     void tracerScore(){
         tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur, hauteur+hauteurScore);
-        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore/4)+10,"Joueur 1");
-        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore*(4/3)-10),"Joueur 2");
-        /*
+        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore/6)+10,"Joueur 1");
+        tracerString(new Couleur("CouleurNbPion"),0, hauteur+((hauteurScore/6)*4),"Joueur 2");
+
         for(int i=0;i<jeu.plateau.scoreJ1();i++){
-            tracerCercle(new Couleur("CouleurJ1"), margin_x_score+largeurScore, margin_y_score+hauteurNom+20, largeurCase, hauteurCase);
-        }*/
+            tracerCercle(new Couleur("CouleurJ1"), i*((hauteurScore/6)+2),(hauteur+((hauteurScore/6)*2)) , hauteurScore/6, hauteurScore/6);
+        }
+        for(int i=0;i<jeu.plateau.scoreJ2();i++){
+            tracerCercle(new Couleur("CouleurJ2"), i*((hauteurScore/6)+2),(hauteur+((hauteurScore/6)*5)) , hauteurScore/6, hauteurScore/6);
+        }
     }
     void tracerGrille(){
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
@@ -84,7 +89,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         }
     }
     void tracerString(Couleur c, int x, int y,String s){
-        Font font = new Font("Comic Sans MS",Font.BOLD,hauteurScore/3);
+        Font font = new Font("Comic Sans MS",Font.BOLD,hauteurScore/6);
         drawable.setFont(font);
         drawable.setColor(c.couleur());
         drawable.drawString(s,x,y);

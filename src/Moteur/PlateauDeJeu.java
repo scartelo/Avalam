@@ -65,16 +65,15 @@ public class PlateauDeJeu extends Historique<Coup>{
     public boolean estIsole(int l,int c){
         Sequence<Couple<Integer,Integer>> v=voisins(l,c);
         Couple<Integer,Integer> couple;
-        boolean res=true;
         while(!v.estVide()){
             couple=v.extraitTete();
             int i= couple.get_premier();
             int j=couple.get_second();
             if(grille[i][j].nbPion()>0){
-                res=false;
+                return false;
             }
         }
-        return res;
+        return true;
     }
     private boolean estInnoccupable(int l, int c) {
         return tour(l,c).contenu() == INNOCCUPABLE;
@@ -199,7 +198,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         Sequence voisins = Configuration.instance().nouvelleSequence();
         for (int i=l-1; i<=l+1; i++){
             for (int j=c-1; j<=c+1 ; j++){
-                if ((i!=l && j!=c) && estAccessible(i,j))
+                if(i!=l && j!=c && i<lignes && j<colonnes && i>=0 && j>=0)
                     voisins.insereTete(new Couple<>(i,j));
             }
         }
@@ -281,10 +280,12 @@ public class PlateauDeJeu extends Historique<Coup>{
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(!(grille[i][j].estVide()||(grille[i][j].estInnocupable()))){
-                    if(grille[i][j].sommetTour()==0){
-                        score_1++;
-                    }else{
-                        score_2++;
+                    if(grille[i][j].nbPion()>1 || estIsole(i,j)){
+                        if(grille[i][j].sommetTour()==0){
+                            score_1++;
+                        }else{
+                            score_2++;
+                        }
                     }
                 }
             }
