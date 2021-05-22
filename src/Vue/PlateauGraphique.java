@@ -43,12 +43,13 @@ public class PlateauGraphique extends JComponent implements Observateur{
         tracerScore();
     }
     void tracerScore(){
-        tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur, hauteur+hauteurScore);
+        tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur,hauteurScore);
+        tracerCarre(new Couleur("CouleurVide"), 0, hauteur, largeur,3 );
         tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore/6)+10,"Joueur 1");
         tracerString(new Couleur("CouleurNbPion"),0, hauteur+((hauteurScore/6)*4),"Joueur 2");
 
         for(int i=0;i<jeu.plateau.scoreJ1();i++){
-            tracerCercle(new Couleur("CouleurJ1"), i*((hauteurScore/6)+2),(hauteur+((hauteurScore/6)*2)) , hauteurScore/6, hauteurScore/6);
+            tracerCercle(new Couleur("CouleurJ1"), i*(hauteurScore/6)+2,hauteur+((hauteurScore/6)*2) , (hauteurScore/6), (hauteurScore/6));
         }
         for(int i=0;i<jeu.plateau.scoreJ2();i++){
             tracerCercle(new Couleur("CouleurJ2"), i*((hauteurScore/6)+2),(hauteur+((hauteurScore/6)*5)) , hauteurScore/6, hauteurScore/6);
@@ -114,6 +115,9 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.setStroke(new BasicStroke(10));
         drawable.setColor(c.couleur());
         drawable.fillOval(x,y,lc, hc);
+        drawable.setStroke(new BasicStroke(1));
+        drawable.setColor(Color.BLACK);
+        drawable.drawOval(x,y,lc,hc);
     }
     public int largeurCase(){
         return largeurCase;
