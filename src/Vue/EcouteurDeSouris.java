@@ -14,8 +14,8 @@ public class EcouteurDeSouris extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e){
-        int c = e.getX() / plateau_graphique.largeurCase();
-        int l = e.getY() / plateau_graphique.hauteurCase();
+        int c = (e.getX()- plateau_graphique.margin_x) / plateau_graphique.largeurCase();
+        int l = (e.getY()- plateau_graphique.margin_y) / plateau_graphique.hauteurCase();
         controle.clicSouris(l,c);
     }
 

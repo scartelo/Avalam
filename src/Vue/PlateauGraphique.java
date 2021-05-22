@@ -11,7 +11,7 @@ import Patterns.Observateur;
 import Moteur.Jeu;
 
 public class PlateauGraphique extends JComponent implements Observateur{
-    int largeur, hauteur, largeurCase, hauteurCase;
+    int largeur, hauteur, largeurCase, hauteurCase,margin_x,margin_y,margin_x_score,margin_y_score,largeurScore,hauteurScore,largeurNom,hauteurNom;
     Graphics2D drawable;
     Jeu jeu;
     PlateauDeJeu plateau;
@@ -19,7 +19,6 @@ public class PlateauGraphique extends JComponent implements Observateur{
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
-
     }
 
     @Override
@@ -27,24 +26,35 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable = (Graphics2D) graphics;
         largeur = getSize().width;
         hauteur = getSize().height;
+        largeurScore=largeur/2;
+        hauteurScore=hauteur/5;
         largeurCase = largeur / plateau.colonnes();
         hauteurCase = hauteur / plateau.lignes();
-
         largeurCase = hauteurCase = Math.min(largeurCase, hauteurCase);
-
+        margin_x=(largeur-(largeurCase*plateau.colonnes()))/2;
+        margin_y=(hauteur-(hauteurCase*plateau.lignes()))/2;
+        margin_x_score=margin_x;
+        margin_y_score=margin_y;
+        hauteurNom=0;
+        largeurNom=0;
         drawable.clearRect(0,0, largeur, hauteur);
-
         tracerGrille();
     }
-
+    void tracerScore(){
+        tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur, hauteur+hauteurScore);
+        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore/4)+10,"Joueur 1");
+        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore*(4/3)-10),"Joueur 2");
+        /*
+        for(int i=0;i<jeu.plateau.scoreJ1();i++){
+            tracerCercle(new Couleur("CouleurJ1"), margin_x_score+largeurScore, margin_y_score+hauteurNom+20, largeurCase, hauteurCase);
+        }*/
+    }
     void tracerGrille(){
-        int margin_x=((largeurCase*plateau.colonnes())-largeur)/2;
-        int margin_y=((hauteurCase*plateau.lignes())-hauteur)/2;
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
-                int x = (j * hauteurCase)-margin_x;
-                int y = (i * largeurCase)-margin_y;
+                int x = (j * hauteurCase)+margin_x;
+                int y = (i * largeurCase)+margin_y;
                 Tour T = plateau.tour(i,j);
                 int s=T.sommetTour();
                 int n=T.nbPion();
@@ -66,14 +76,19 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
                     }
                     if (plateau.x1()!=-1){
-                        tracerSurbri(new Couleur("CouleurSubrillance"),plateau.y1()*largeurCase , plateau.x1()*hauteurCase, largeurCase-1, hauteurCase-1);
+                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x , (plateau.x1()*hauteurCase)+margin_y, largeurCase-1, hauteurCase-1);
 
                     }
                 }
             }
         }
     }
-
+    void tracerString(Couleur c, int x, int y,String s){
+        Font font = new Font("Comic Sans MS",Font.BOLD,hauteurScore/3);
+        drawable.setFont(font);
+        drawable.setColor(c.couleur());
+        drawable.drawString(s,x,y);
+    }
     void tracerSurbri(Couleur c, int x, int y, int lc, int hc){
         drawable.setStroke(new BasicStroke(3));
         drawable.setColor(c.couleur());
