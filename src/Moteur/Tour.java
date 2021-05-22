@@ -7,7 +7,7 @@ import Structures.Sequence;
 public class Tour {
     // 1 octet
     //sequence de pion| nb de pion
-    // 0 0 0 1 1  | 1 0 0                   100
+    //    0 0 0 1 1   | 1 0 0
     byte sequencePion;
     byte nbPion;
     int contenu;
@@ -26,19 +26,28 @@ public class Tour {
     public int contenu(){
         return contenu;
     }
-
+    /*
+    Nombre de pion d'une tour
+    */
     public byte nbPion(){
         return (byte) (contenu & 7);
     }
-
+    /*
+    Renvoie la partie de l'octet contenant la sequence de pion formant la tour
+    */
     public byte sequencePion(){
         return (byte) (contenu >> 3);
     }
-
+    /*
+    Renvoie la valeur du pion au dessus de la tour
+    */
     public byte sommetTour(){
         return (byte) (contenu >> 3+nbPion()-1);
     }
 
+    /*
+    Ajoute la tour t au dessus de la tour(self)
+    */
     public boolean ajouteTour(Tour t){
         if(estDeplacable(t)){
             sequencePion |= t.sequencePion << nbPion;
@@ -49,9 +58,15 @@ public class Tour {
         }
         else{return false;}
     }
+    /*
+    Renvoie si la tour T est déplacable sur la tour (self)
+    */
     public boolean estDeplacable(Tour T){
         return estVoisin(T) && (nbPion+T.nbPion()<=5);
     }
+    /*
+    Renvoie si la tour T est voisine de la tour self
+    */
     public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }

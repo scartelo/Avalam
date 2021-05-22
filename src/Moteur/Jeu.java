@@ -15,7 +15,9 @@ public class Jeu extends Observable {
         tourFini = 0;
         partieTerminee = false;
     }
-
+    /*
+    Renvoie une string du joueur ayant le plus grand score ou égalité
+    */
     public String get_winner(){
         if(plateau.score1==plateau.score2){
             return "Egalité entre les joueurs";
@@ -30,6 +32,9 @@ public class Jeu extends Observable {
         plateau.initialiserGrille();
         miseAJour();
     }
+    /*
+    Rejoue un coup qui a été annulé ( si possible )
+    */
     public void refaire(){
         plateau.refaireCoup();
         miseAJour();
@@ -37,7 +42,9 @@ public class Jeu extends Observable {
     public void quitter(){
         System.exit(0);
     }
-
+    /*
+    Annule le dernier coup ( si possible )
+    */
     public void annuler(){
         plateau.annulerCoup();
         if(partieTerminee){
@@ -52,13 +59,20 @@ public class Jeu extends Observable {
         }
         miseAJour();
     }
+
+    /*
+    Sauvegarde la partie ( historique )
+    */
     public void sauvegarder(){
         Saves S = new Saves();
         S.write_save(plateau.passe,plateau.futur);
     }
+
+    /*
+    Charge une partie si elle existe en jouant tout les coups contenu dans l'historique,
+    puis en annulant les coups faisant partie du futur.
+    */
     public void load(int n_save,int menu){
-        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
             if(menu==0) {
                 sauvegarder();
             }
@@ -84,12 +98,16 @@ public class Jeu extends Observable {
             }else {
                 System.err.println("La sauvegarde n'existe pas");
             }
-        }
         miseAJour();
     }
     public boolean partieTerminee(){
         return partieTerminee;
     }
+
+    /*
+    Regarde si aucune tour ne peut être déplacée sur le plateau
+    Si c'est le cas, la partie est considérée comme terminée
+    */
     public boolean estTermine(){
         boolean res=true;
         for(int i=0;i<plateau.lignes();i++){

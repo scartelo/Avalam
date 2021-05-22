@@ -5,6 +5,8 @@ import Moteur.Jeu;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
+import javax.swing.*;
+
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
     InterfaceUtilisateur iu;
@@ -26,7 +28,10 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     void load(String c){
-        jeu.load(Integer.parseInt(c),0);
+        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.load(Integer.parseInt(c),0);
+        }
     }
 
     @Override

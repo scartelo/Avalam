@@ -9,7 +9,9 @@ import java.awt.*;
 
 import Patterns.Observateur;
 import Moteur.Jeu;
-
+/*
+Classe permettant de dessiner la grille et le score
+*/
 public class PlateauGraphique extends JComponent implements Observateur{
     int largeur, hauteur, largeurCase, hauteurCase,margin_x,margin_y,margin_x_score,margin_y_score,largeurScore,hauteurScore,largeurNom,hauteurNom;
     Graphics2D drawable;
@@ -75,14 +77,14 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     else if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
                         tracerCercle(new Couleur("CouleurJ1"), x+2, y+2, largeurCase-2, hauteurCase-2);
-                        tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
+                        tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
 
                     } else if (s == 1) {
                         tracerCercle(new Couleur("CouleurJ2"), x+2, y+2, largeurCase-2, hauteurCase-2);
-                        tracerNbPion(new Couleur("CouleurNbPion"), x, y, largeurCase, hauteurCase,n);
+                        tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
                     }
                     if (plateau.x1()!=-1){
-                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x , (plateau.x1()*hauteurCase)+margin_y, largeurCase-1, hauteurCase-1);
+                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+2 , (plateau.x1()*hauteurCase)+margin_y+2, largeurCase-2, hauteurCase-2);
 
                     }
                 }
@@ -96,7 +98,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.drawString(s,x,y);
     }
     void tracerSurbri(Couleur c, int x, int y, int lc, int hc){
-        drawable.setStroke(new BasicStroke(3));
+        drawable.setStroke(new BasicStroke(2));
         drawable.setColor(c.couleur());
         drawable.drawOval(x,y,lc, hc);
     }
@@ -112,7 +114,6 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.fillRect(x,y,lc, hc);
     }
     void tracerCercle(Couleur c, int x, int y, int lc, int hc){
-        drawable.setStroke(new BasicStroke(10));
         drawable.setColor(c.couleur());
         drawable.fillOval(x,y,lc, hc);
         drawable.setStroke(new BasicStroke(1));

@@ -7,7 +7,7 @@ import Vue.InterfaceTextuelle;
 
 public class Avalam {
     public static void main(String[] args) {
-        Jeu jeu = new Jeu(new PlateauDeJeu());
+        /*Jeu jeu = new Jeu(new PlateauDeJeu());
         ControleurMediateur controleur = new ControleurMediateur(jeu);
         switch (Configuration.instance().lis("Interface")){
             case "Graphique":
@@ -19,6 +19,6 @@ public class Avalam {
                 Configuration.instance().logger().severe("Interface invalide");
                 System.exit(1);
         }
-
+*/
     }
 }

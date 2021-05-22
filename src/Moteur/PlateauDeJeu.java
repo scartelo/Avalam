@@ -30,7 +30,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         initialiserGrille();
         Init_pos();
     }
-
+    /*
+    Initialise les positions pour les deux clics jouant un coup
+    */
     public void Init_pos(){
         x1=-1;
         y1=-1;
@@ -59,9 +61,15 @@ public class PlateauDeJeu extends Historique<Coup>{
     public int scoreJ2(){
         return score2;
     }
+    private boolean estInnoccupable(int l, int c) {
+        return tour(l,c).contenu() == INNOCCUPABLE;
+    }
     public boolean estAccessible(int l, int c){
         return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
     }
+    /*
+    Renvoie un booléen désignant si un pion est isolé sur la grille
+    */
     public boolean estIsole(int l,int c){
         Sequence<Couple<Integer,Integer>> v=voisins(l,c);
         Couple<Integer,Integer> couple;
@@ -75,10 +83,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
         return true;
     }
-    private boolean estInnoccupable(int l, int c) {
-        return tour(l,c).contenu() == INNOCCUPABLE;
-    }
-
+    /*
+    Initialise la grille
+    */
     public void initialiserGrille() {
         for (int l=0; l<lignes; l++){
             for (int c=0; c<colonnes; c++){
@@ -87,7 +94,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
         Vider_historique();
     }
-
+    /*
+    Initialise une case de la grille selon sa position sur la grille
+    */
     private void initialiserLignes(int l, int c){
         switch (l) {
             case 0:
@@ -121,7 +130,9 @@ public class PlateauDeJeu extends Historique<Coup>{
                 System.err.println("Erreur Hors grille");
         }
     }
-
+    /*
+    Fonction servant à initialiser la grille alternant rouge et jaune
+    */
     private void alterner(int l, int c){
         if((l+c)%2==0)
             placerTour(TOURJ1,l,c);
@@ -193,7 +204,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         else
             alterner(l,c);
     }
-
+    /*
+    Renvoie une séquence contenant les positions (i,j) des tours voisines qui ne sont pas hors grille
+    */
     public Sequence voisins(int l, int c){
         Sequence voisins = Configuration.instance().nouvelleSequence();
         for (int i=l-1; i<=l+1; i++){
@@ -204,15 +217,23 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
         return voisins;
     }
-
+    /*
+    Créer une tour selon son contenu et la place sur la grille à la position i,j
+    */
     public void placerTour(int contenu, int l, int c){
         Tour tour = new Tour(contenu, l, c);
         grille[tour.ligne][tour.colonne] = tour;
     }
-
+    /*
+    Déplace une tour selon ses coordonnées sur la grille (i,j)
+    */
     public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
         Jouer(grille[i_1][j_1],grille[i_2][j_2]);
     }
+
+    /*
+    Déplace la tour src sur la tour dst
+    */
     public void Jouer(Tour src, Tour dst){
         Tour tmp_src,tmp_dst;
         tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
@@ -222,6 +243,9 @@ public class PlateauDeJeu extends Historique<Coup>{
             nouveau(c);
         }
     }
+    /*
+    Rejoue le dernier coup annulé ( s'il existe )
+    */
     public void refaireCoup(){
         Coup c = refaire();
         if(c!=null){
@@ -231,6 +255,9 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.out.println("Ne peut pas refaire le coup");
         }
     }
+    /*
+    Annule le dernier coup joué ( si possible )
+    */
     public void annulerCoup(){
         Coup c=annuler();
         if(c!=null) {
@@ -242,8 +269,15 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.out.println("Ne peut pas annuler le coup");
         }
     }
+    /*
+    Permet de jouer un coup
+    Si il s'agit du premier clic : selection de la tour ( si elle n'est pas vide ou hors grille )
+    Si il s'agit du deuxième clic : Si le coup définit par les deux clics est jouable alors le coup est joué
+                                    Sinon le premier clic est deselectionné
+    */
     public void position(int l,int c){
         if(l<lignes && c<colonnes) {
+            //Premier clic
             if (x1 == -1 && y1 == -1) {
                 if (grille[l][c].estJouable()) {
                     x1 = l;
@@ -252,11 +286,14 @@ public class PlateauDeJeu extends Historique<Coup>{
                 } else {
                     System.err.println("Tour non déplaçable");
                 }
+            //Deuxième clic équivalent au premier = on annule le premier clic
             } else if (x1 == l && y1 == c) {
                 System.err.println("Même positions");
                 Init_pos();
             } else {
+                //deuxième clic différent du premier
                 if (grille[x1][y1].estDeplacable(grille[l][c])) {
+                    //Si jouable, alors on déplace la tour désignée par le premier clic sur celle désignée par le deuxième
                     x2 = l;
                     y2 = c;
                     Jouer_pos(x1, y1, x2, y2);
@@ -273,6 +310,9 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.err.println("Hors de la grille");
         }
     }
+    /*
+    Met à jour le score des deux joueurs selon l'état du plateau
+    */
     public void update_score(){
         int score_1,score_2;
         score_1=0;
@@ -293,7 +333,9 @@ public class PlateauDeJeu extends Historique<Coup>{
         score1=score_1;
         score2=score_2;
     }
-
+    /*
+    Joue un son dans res/Audio selon sound_name ( nom du fichier )
+    */
     public void play_sound(String sound_name){
         Audio sound= null;
         try {
@@ -307,6 +349,10 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
         sound.play();
     }
+    /*
+    Affiche la grille sur le terminal
+    */
+
     public void afficher_grille(){
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){

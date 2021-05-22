@@ -25,7 +25,10 @@ public class Saves{
         nb_saves = l_saves.size();
         taille_futur=0;
     }
-
+    /*
+    Ecrit dans 'res/Saves' la sauvegarde, celle-ci correspond à l'historique de la partie en cours.
+    La sauvegarde contiendra les positions sur la grille (i,j) des coups de l'historique ( passé et futur )
+    */
     public void write_save(Sequence<Coup> passe, Sequence<Coup> futur) {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yy__HH_mm_ss");
@@ -58,6 +61,10 @@ public class Saves{
             e.printStackTrace();
         }
     }
+    /*
+    Lis l'historique contenu dans la sauvegarde numero 'n_save' et renvoie une séquence correspondant à l'historique complet ( futur + passe )
+    La fonction incrémente aussi la taille du futur, permettant de charger la sauvegarde en jouant tout les coups, puis en faisant annuler_coup*taille_futur
+    */
     public Sequence<Coup> read_save(int n_save) {
         String save_path = path + File.separator + l_saves.get(n_save - 1);
         File save = new File(save_path);

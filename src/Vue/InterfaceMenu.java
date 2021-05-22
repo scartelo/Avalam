@@ -7,7 +7,9 @@ import Moteur.PlateauDeJeu;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/*
+Classe permettant d'afficher le contenu du menu principal
+*/
 public class InterfaceMenu {
     private JButton LoadGame;
     private JPanel MainPanel;
@@ -29,7 +31,7 @@ public class InterfaceMenu {
         quitterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jeu.quitter();
+                Quitter();
             }
         });
         startGame.addActionListener(new ActionListener() {
@@ -49,9 +51,17 @@ public class InterfaceMenu {
     }
 
     public void Charger_Partie(int n_save){
-        jeu.load(n_save,1);
-        Nouvelle_Partie();
-
+        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.load(n_save,1);
+            Nouvelle_Partie();
+        }
+    }
+    public void Quitter(){
+        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir quitter ? ","Quitter",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            jeu.quitter();
+        }
     }
     public static void main(String[] args) {
         frame = new JFrame("Menu");

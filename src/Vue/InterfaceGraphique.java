@@ -9,14 +9,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-
+/*
+Classe permettant d'afficher la grille, le score, et un JMenuBar contenant les fonctionnalités du jeu ( refaire,annuler,sauvegarder...)
+*/
 public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Observateur {
     private static JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
     JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
     private boolean maximized;
+    JMenu l_sauvegardes;
     JTextField jt;
     Jeu jeu;
 
@@ -46,9 +51,33 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         principal.add(boxJeu);
 
         frame.add(principal);
-
-        //liste des sauvegardes sous forme de menu
         JMenuBar m_bar= new JMenuBar();
+        sauvegarde = createButton("Save","sauvegarder");
+        // Annuler / Refaire
+        Box annulRef = Box.createHorizontalBox();
+        annuler = createButton("<", "annuler");
+        refaire = createButton(">", "refaire");
+        restart = createButton ("Nouvelle partie", "nouvellePartie");
+        menu = createButton ("Menu", "retour_menu");
+        quitter = createButton ("Quitter", "quitter");
+        annulRef.add(annuler);
+        annulRef.add(refaire);
+        l_sauvegardes=menu_sauvegarde();
+        m_bar.add(quitter);
+        m_bar.add(menu);
+        m_bar.add(restart);
+        m_bar.add(annulRef);
+        m_bar.add(sauvegarde);
+        m_bar.add(l_sauvegardes);
+        frame.setJMenuBar(m_bar);
+
+        controle.fixerInterfaceUtilisateur(this);
+        frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    public JMenu menu_sauvegarde(){
+        //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu("Sauvegardes");
         Saves save=new Saves();
         for(int i=0;i<save.nb_saves;i++){
@@ -61,28 +90,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             });
             m.add(item);
         }
-        m_bar.add(m);
-        sauvegarde = createButton("Save","sauvagarder");
-        m_bar.add(sauvegarde);
-        // Annuler / Refaire
-        Box annulRef = Box.createHorizontalBox();
-        annuler = createButton("<", "annuler");
-        refaire = createButton(">", "refaire");
-        restart = createButton ("Nouvelle partie", "nouvellePartie");
-        menu = createButton ("Menu", "retour_menu");
-        quitter = createButton ("Quitter", "quitter");
-        annulRef.add(annuler);
-        annulRef.add(refaire);
-        m_bar.add(annulRef);
-        m_bar.add(restart);
-        m_bar.add(menu);
-        m_bar.add(quitter);
-        frame.setJMenuBar(m_bar);
-
-        controle.fixerInterfaceUtilisateur(this);
-        frame.setSize(500, 500);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        return m;
     }
     public static void showFrame(boolean b){
         frame.setVisible(b);
@@ -159,6 +167,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     public void nouvellePartie(){
         int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
+            sauvegarder();
             jeu.nouvellePartie();
             metAJour();
         }

@@ -33,7 +33,9 @@ public class Audio {
         // open audioInputStream to the clip
         clip.open(audioInputStream);
     }
-    // Method to play the audio
+    /*
+    Permet de jouer l'audio en cours
+    */
     public void play()
     {
         //start the clip
@@ -42,7 +44,9 @@ public class Audio {
         status = "play";
     }
 
-    // Method to pause the audio
+    /*
+    Permet d'arrêter l'audio en cours
+    */
     public void pause()
     {
         if (status.equals("paused"))
@@ -56,7 +60,9 @@ public class Audio {
         status = "paused";
     }
 
-    // Method to resume the audio
+    /*
+    Reprend l'audio
+    */
     public void resumeAudio() throws UnsupportedAudioFileException,
             IOException, LineUnavailableException
     {
@@ -72,7 +78,9 @@ public class Audio {
         this.play();
     }
 
-    // Method to restart the audio
+    /*
+    Recommence l'audio depuis le début
+    */
     public void restart() throws IOException, LineUnavailableException,
             UnsupportedAudioFileException
     {
@@ -84,7 +92,9 @@ public class Audio {
         this.play();
     }
 
-    // Method to stop the audio
+    /*
+    Arrête l'audio actuel
+    */
     public void stop() throws UnsupportedAudioFileException,
             IOException, LineUnavailableException
     {
@@ -93,7 +103,9 @@ public class Audio {
         clip.close();
     }
 
-    // Method to jump over a specific part
+    /*
+    Permet de lancer l'audio à un moment donné
+    */
     public void jump(long c) throws UnsupportedAudioFileException, IOException,
             LineUnavailableException
     {
@@ -108,7 +120,9 @@ public class Audio {
         }
     }
 
-    // Method to reset audio stream
+    /*
+    Permet de reset le stream de l'audio
+    */
     public void resetAudioStream() throws UnsupportedAudioFileException, IOException,
             LineUnavailableException
     {
