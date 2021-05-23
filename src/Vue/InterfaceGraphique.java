@@ -79,7 +79,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     public JMenu menu_sauvegarde(){
         //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu("Sauvegardes");
-        Saves save=new Saves();
+        Saves save=new Saves(jeu);
         for(int i=0;i<save.nb_saves;i++){
             JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
             String s =String.valueOf(i+1);

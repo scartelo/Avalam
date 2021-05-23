@@ -25,7 +25,7 @@ public class InterfaceMenu {
         chargerUnePartieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Charger_Partie(2);
+                Charger_Partie(1);
             }
         });
         quitterButton.addActionListener(new ActionListener() {
@@ -45,7 +45,9 @@ public class InterfaceMenu {
     public void showMenu(boolean b){
         frame.setVisible(b);
     }
-    public void Nouvelle_Partie(){
+    public void Nouvelle_Partie(String nom_j1,String nom_j2){
+        jeu.nom_j1=nom_j1;
+        jeu.nom_j2=nom_j2;
         ControleurMediateur controleur = new ControleurMediateur(jeu);
         InterfaceGraphique.demarrer(jeu, controleur);
         frame.setVisible(false);
@@ -54,8 +56,12 @@ public class InterfaceMenu {
     public void Charger_Partie(int n_save){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
-            jeu.load(n_save,1);
-            Nouvelle_Partie();
+            if(jeu.load(n_save,1)){
+                Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "La sauvegarde n'existe pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     public void Quitter(){

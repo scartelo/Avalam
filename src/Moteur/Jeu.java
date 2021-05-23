@@ -10,6 +10,7 @@ public class Jeu extends Observable {
     public PlateauDeJeu plateau;
     private int tourFini;
     private boolean partieTerminee;
+    public String nom_j1,nom_j2;
     public Jeu(PlateauDeJeu p){
         plateau = p;
         tourFini = 0;
@@ -20,13 +21,16 @@ public class Jeu extends Observable {
     */
     public String get_winner(){
         if(plateau.score1==plateau.score2){
-            return "Egalité entre les joueurs";
+            return "Egalité entre les joueurs.";
         }else if(plateau.score1>plateau.score2){
-            return "Joueur 1 gagne la partie";
+            return  nom_j1+" gagne la partie.";
         }
         else{
-            return "Joueur 2 gagne la partie";
+            return nom_j2+" gagne la partie.";
         }
+    }
+    public void Win_message(){
+        JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner(),"Partie terminée",JOptionPane.PLAIN_MESSAGE);
     }
     public void nouvellePartie(){
         plateau.initialiserGrille();
@@ -38,6 +42,10 @@ public class Jeu extends Observable {
     public void refaire(){
         plateau.refaireCoup();
         miseAJour();
+        if(estTermine()) {
+            partieTerminee = true;
+            Win_message();
+        }
     }
     public void quitter(){
         System.exit(0);
@@ -54,17 +62,18 @@ public class Jeu extends Observable {
     }
     public void clic(int l, int c){
         plateau.position(l,c);
+        miseAJour();
         if(estTermine()){
             partieTerminee =true;
+            Win_message();
         }
-        miseAJour();
     }
 
     /*
     Sauvegarde la partie ( historique )
     */
     public void sauvegarder(){
-        Saves S = new Saves();
+        Saves S = new Saves(this);
         S.write_save(plateau.passe,plateau.futur);
         miseAJour();
     }
@@ -73,8 +82,8 @@ public class Jeu extends Observable {
     Charge une partie si elle existe en jouant tout les coups contenu dans l'historique,
     puis en annulant les coups faisant partie du futur.
     */
-    public void load(int n_save,int menu){
-            Saves S = new Saves();
+    public boolean load(int n_save,int menu){
+            Saves S = new Saves(this);
             if(S.saveExists(n_save)){
                 plateau.initialiserGrille();
                 plateau.tourJoueur=0;
@@ -90,13 +99,15 @@ public class Jeu extends Observable {
                         plateau.annulerCoup();
                     }
                     plateau.update_score();
+                    miseAJour();
+                    return true;
                 } else {
                     System.err.println("Erreur lors de la lecture de la sauvegarde");
                 }
             }else {
                 System.err.println("La sauvegarde n'existe pas");
             }
-        miseAJour();
+        return false;
     }
     public boolean partieTerminee(){
         return partieTerminee;

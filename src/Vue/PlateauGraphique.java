@@ -47,8 +47,8 @@ public class PlateauGraphique extends JComponent implements Observateur{
     void tracerScore(){
         tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur,hauteurScore);
         tracerCarre(new Couleur("CouleurVide"), 0, hauteur, largeur,3 );
-        String j1 = "Joueur 1";
-        String j2 = "Joueur 2";
+        String j1 = jeu.nom_j1;
+        String j2 = jeu.nom_j2;
         if(jeu.plateau.tourJoueur==0){
             j1+=" X";
         }

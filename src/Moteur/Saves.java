@@ -13,8 +13,9 @@ public class Saves{
     public List<String> l_saves;
     String path;
     int taille_futur;
-
-    public Saves() {
+    Jeu jeu;
+    public Saves(Jeu j) {
+        jeu=j;
         final String dir = System.getProperty("user.dir");
         String home = System.getProperty("user.dir");
         path = home + File.separator + "res" + File.separator + "Saves";
@@ -44,6 +45,8 @@ public class Saves{
         }
         try {
             FileWriter myWriter = new FileWriter(save_path);
+            myWriter.write(jeu.nom_j1+"\n");
+            myWriter.write(jeu.nom_j2+"\n");
             Iterateur<Coup> it_p = passe.iterateur();
             Iterateur<Coup> it_f = futur.iterateur();
 
@@ -73,6 +76,10 @@ public class Saves{
             Sequence<Coup> seq = Configuration.instance().nouvelleSequence();
             // Passe
             int next =0;
+            String s=myReader.nextLine();
+            jeu.nom_j1=s;
+            s=myReader.nextLine();
+            jeu.nom_j2=s;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();
                 if (next != -1) {

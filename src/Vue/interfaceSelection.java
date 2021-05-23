@@ -23,7 +23,7 @@ public class interfaceSelection {
     private static JFrame frame;
 
     private int IA1,IA2,niveau1,niveau2; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
-    private String J1,J2;   // Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
+    private String J1,J2;   //Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
     private boolean enabled1,enabled2;
     public interfaceSelection() {
         J1="Joueur 1";
@@ -62,7 +62,7 @@ public class interfaceSelection {
                     J2=nomJ2.getText();
                 }
                 InterfaceMenu m = new InterfaceMenu();
-                m.Nouvelle_Partie();
+                m.Nouvelle_Partie(J1,J2);
                 frame.dispose();
             }
         });
@@ -97,11 +97,12 @@ public class interfaceSelection {
         }
     }
     public void selection() {
-        frame = new JFrame("Menu");
+        frame = new JFrame("Séléction des joueurs");
         frame.setContentPane(new interfaceSelection().MainPanel);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
-        frame.setSize(300, 250);
+        frame.setSize(300, 300);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
