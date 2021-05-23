@@ -30,7 +30,7 @@ public class Jeu extends Observable {
         }
     }
     public void Win_message(){
-        JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner(),"Partie terminée",JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner()+"\nMerci d'avoir joué à Avalam.","Partie terminée",JOptionPane.PLAIN_MESSAGE);
     }
     public void nouvellePartie(){
         plateau.initialiserGrille();
@@ -63,7 +63,7 @@ public class Jeu extends Observable {
     public void clic(int l, int c){
         plateau.position(l,c);
         miseAJour();
-        if(estTermine()){
+        if(!partieTerminee && estTermine()){
             partieTerminee =true;
             Win_message();
         }

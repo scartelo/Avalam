@@ -241,6 +241,9 @@ public class PlateauDeJeu extends Historique<Coup>{
             Coup c = new Coup(tmp_src,tmp_dst);
             nouveau(c);
             tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
+            update_score();
+            play_sound("Drop");
         }
     }
     /*
@@ -299,9 +302,6 @@ public class PlateauDeJeu extends Historique<Coup>{
                     x2 = l;
                     y2 = c;
                     Jouer_pos(x1, y1, x2, y2);
-                    Init_pos();
-                    update_score();
-                    play_sound("Drop");
                 } else {
                     Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");

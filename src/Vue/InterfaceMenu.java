@@ -7,6 +7,8 @@ import Moteur.PlateauDeJeu;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 /*
 Classe permettant d'afficher le contenu du menu principal
 */
@@ -16,6 +18,7 @@ public class InterfaceMenu {
     private JButton chargerUnePartieButton;
     private JButton quitterButton;
     private JButton startGame;
+    private JButton tutorielButton;
     private static JFrame frame;
     Jeu jeu;
 
@@ -41,6 +44,29 @@ public class InterfaceMenu {
                 m.selection();
             }
         });
+        tutorielButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                show_tutoriel();
+            }
+        });
+    }
+    public void show_tutoriel(){
+        JFrame tutoriel = new JFrame();
+        tutoriel = new JFrame("Tutoriel");
+        tutoriel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        tutoriel.setSize(775, 500);
+        tutoriel.setResizable(false);
+        tutoriel.setLocationRelativeTo(null);
+
+        final String dir = System.getProperty("user.dir");
+        String home = System.getProperty("user.dir");
+        home = home + File.separator + "res" + File.separator + "Images"+File.separator+"tutoriel.png";
+        ImageIcon icon = new ImageIcon(home);
+        JLabel label_tuto = new JLabel(icon);
+        tutoriel.add(label_tuto);
+
+        tutoriel.setVisible(true);
     }
     public void showMenu(boolean b){
         frame.setVisible(b);
