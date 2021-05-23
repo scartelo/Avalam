@@ -30,11 +30,13 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void clicSouris(int l, int c) {
         // Lors d'un clic, on le transmet au joueur courant.
         // Si un coup a effectivement été joué (humain, coup valide), on change de joueur.
+        /*
         Configuration.instance().logger().info("Joueur courant :" + joueurCourant);
         if (joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
             jeu.miseAJour();
             changeJoueur();
-        }
+        }*/
+        jeu.clic(l,c);
     }
 
     void changeJoueur() {

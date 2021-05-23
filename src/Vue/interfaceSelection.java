@@ -21,9 +21,10 @@ public class interfaceSelection {
     private JLabel NiveauIA2;
     private JLabel NiveauIA1;
     private static JFrame frame;
-    private int IA1,IA2,niveau1,niveau2;
+
+    private int IA1,IA2,niveau1,niveau2; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
+    private String J1,J2;   // Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
     private boolean enabled1,enabled2;
-    private String J1,J2;
     public interfaceSelection() {
         J1="Joueur 1";
         J2="Joueur 2";
@@ -48,7 +49,6 @@ public class interfaceSelection {
             @Override
             public void actionPerformed(ActionEvent e) {
                 IA2=(IA2+1)%2;
-                System.out.println(IA2);
                 enabled2=!enabled2;
                 niveauIA2.setEnabled(enabled2);
             }
