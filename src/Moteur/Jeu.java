@@ -64,7 +64,6 @@ public class Jeu extends Observable {
     }
     public void clic(int l, int c){
         plateau.position(l,c);
-        afficher_var();
         miseAJour();
         if(!partieTerminee && estTermine()){
             partieTerminee =true;
