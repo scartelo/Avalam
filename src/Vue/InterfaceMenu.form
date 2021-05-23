@@ -36,8 +36,7 @@
         </constraints>
         <properties>
           <background color="-400201"/>
-          <icon value="Images/bloggif_60a92cbb63450.jpeg"/>
-          <text value=""/>
+          <text value="Nouvelle partie"/>
         </properties>
       </component>
     </children>

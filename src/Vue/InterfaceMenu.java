@@ -37,7 +37,8 @@ public class InterfaceMenu {
         startGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Nouvelle_Partie();
+                interfaceSelection m = new interfaceSelection();
+                m.selection();
             }
         });
     }
