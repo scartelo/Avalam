@@ -1,6 +1,7 @@
 package Controleur;
 
 
+import Global.Configuration;
 import Moteur.Jeu;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
@@ -10,13 +11,35 @@ import javax.swing.*;
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
     InterfaceUtilisateur iu;
+    Joueur[][] joueurs;
+    int[] typeJoueur;
+    int joueurCourant;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
+        joueurs = new Joueur[2][2];
+        typeJoueur = new int[2];
+        for (int i = 0; i < joueurs.length; i++) {
+            joueurs[i][0] = new JoueurHumain(i, jeu);
+            joueurs[i][1] = new JoueurIA(i, jeu);
+            typeJoueur[i] = 0;
+        }
     }
 
-    public void clicSouris(int l, int c){
-        jeu.clic(l,c);
+    @Override
+    public void clicSouris(int l, int c) {
+        // Lors d'un clic, on le transmet au joueur courant.
+        // Si un coup a effectivement été joué (humain, coup valide), on change de joueur.
+        Configuration.instance().logger().info("Joueur courant :" + joueurCourant);
+        if (joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
+            jeu.miseAJour();
+            changeJoueur();
+        }
+    }
+
+    void changeJoueur() {
+        joueurCourant = (joueurCourant + 1) % joueurs.length;
+        //decompte = lenteurAttente;
     }
 
     public void annuler(){

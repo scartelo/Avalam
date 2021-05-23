@@ -66,6 +66,7 @@ public class Jeu extends Observable {
     public void sauvegarder(){
         Saves S = new Saves();
         S.write_save(plateau.passe,plateau.futur);
+        miseAJour();
     }
 
     /*
@@ -125,5 +126,9 @@ public class Jeu extends Observable {
         }
         plateau.update_score();
         return res;
+    }
+
+    public PlateauDeJeu plateau(){
+        return plateau;
     }
 }

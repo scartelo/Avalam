@@ -2,7 +2,6 @@ package Moteur;
 
 import Global.Configuration;
 import Structures.Couple;
-import Structures.Iterateur;
 import Structures.Sequence;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -75,8 +74,8 @@ public class PlateauDeJeu extends Historique<Coup>{
         Couple<Integer,Integer> couple;
         while(!v.estVide()){
             couple=v.extraitTete();
-            int i= couple.get_premier();
-            int j=couple.get_second();
+            int i= couple.premier();
+            int j=couple.second();
             if(grille[i][j].nbPion()>0){
                 return false;
             }
