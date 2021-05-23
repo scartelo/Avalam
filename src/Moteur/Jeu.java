@@ -11,10 +11,12 @@ public class Jeu extends Observable {
     private int tourFini;
     private boolean partieTerminee;
     public String nom_j1,nom_j2;
+    public int IA1,IA2,niveauIA1,niveauIA2; // IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
     public Jeu(PlateauDeJeu p){
         plateau = p;
         tourFini = 0;
         partieTerminee = false;
+        IA1=0;IA2=0;niveauIA1=0;niveauIA2=0;
     }
     /*
     Renvoie une string du joueur ayant le plus grand score ou égalité
@@ -62,6 +64,7 @@ public class Jeu extends Observable {
     }
     public void clic(int l, int c){
         plateau.position(l,c);
+        afficher_var();
         miseAJour();
         if(!partieTerminee && estTermine()){
             partieTerminee =true;

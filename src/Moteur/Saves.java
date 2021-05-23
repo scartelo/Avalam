@@ -47,6 +47,10 @@ public class Saves{
             FileWriter myWriter = new FileWriter(save_path);
             myWriter.write(jeu.nom_j1+"\n");
             myWriter.write(jeu.nom_j2+"\n");
+            myWriter.write(jeu.IA1+"\n");
+            myWriter.write(jeu.IA2+"\n");
+            myWriter.write(jeu.niveauIA1+"\n");
+            myWriter.write(jeu.niveauIA2+"\n");
             Iterateur<Coup> it_p = passe.iterateur();
             Iterateur<Coup> it_f = futur.iterateur();
 
@@ -80,6 +84,15 @@ public class Saves{
             jeu.nom_j1=s;
             s=myReader.nextLine();
             jeu.nom_j2=s;
+            next = myReader.nextInt();
+            jeu.IA1=next;
+            next = myReader.nextInt();
+            jeu.IA2=next;
+            next = myReader.nextInt();
+            jeu.niveauIA1=next;
+            next = myReader.nextInt();
+            jeu.niveauIA2=next;
+            next =-1;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();
                 if (next != -1) {

@@ -62,7 +62,7 @@ public class interfaceSelection {
                     J2=nomJ2.getText();
                 }
                 InterfaceMenu m = new InterfaceMenu();
-                m.Nouvelle_Partie(J1,J2);
+                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2);
                 frame.dispose();
             }
         });

@@ -71,9 +71,13 @@ public class InterfaceMenu {
     public void showMenu(boolean b){
         frame.setVisible(b);
     }
-    public void Nouvelle_Partie(String nom_j1,String nom_j2){
+    public void Nouvelle_Partie(String nom_j1,String nom_j2,int ia1, int ia2, int n_ia1,int n_ia2){
         jeu.nom_j1=nom_j1;
         jeu.nom_j2=nom_j2;
+        jeu.IA1=ia1;
+        jeu.IA2=ia2;
+        jeu.niveauIA1=n_ia1;
+        jeu.niveauIA2=n_ia2;
         ControleurMediateur controleur = new ControleurMediateur(jeu);
         InterfaceGraphique.demarrer(jeu, controleur);
         frame.setVisible(false);
@@ -83,7 +87,7 @@ public class InterfaceMenu {
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
             if(jeu.load(n_save,1)){
-                Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2);
+                Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2,jeu.IA1,jeu.IA2,jeu.niveauIA1,jeu.niveauIA2);
             }
             else{
                 JOptionPane.showMessageDialog(null, "La sauvegarde n'existe pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
