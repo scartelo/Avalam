@@ -211,7 +211,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         Sequence voisins = Configuration.instance().nouvelleSequence();
         for (int i=l-1; i<=l+1; i++){
             for (int j=c-1; j<=c+1 ; j++){
-                if(i!=l && j!=c && i<lignes && j<colonnes && i>=0 && j>=0)
+                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0)
                     voisins.insereTete(new Couple<>(i,j));
             }
         }
