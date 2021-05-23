@@ -25,7 +25,10 @@ public class ControleurMediateur implements CollecteurEvenements {
             typeJoueur[i] = 0;
         }
     }
-
+    public void update_buttons(){
+        iu.griser_annuler(jeu.plateau.peutAnnuler());
+        iu.griser_refaire(jeu.plateau.peutRefaire());
+    }
     @Override
     public void clicSouris(int l, int c) {
         // Lors d'un clic, on le transmet au joueur courant.
@@ -37,6 +40,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             changeJoueur();
         }*/
         jeu.clic(l,c);
+        update_buttons();
     }
 
     void changeJoueur() {
@@ -45,12 +49,10 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     public void annuler(){
-        jeu.annuler();
+        jeu.annuler();update_buttons();
     }
 
-    public void refaire(){
-        jeu.refaire();
-    }
+    public void refaire(){ jeu.refaire();update_buttons(); }
 
     void load(String c){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);

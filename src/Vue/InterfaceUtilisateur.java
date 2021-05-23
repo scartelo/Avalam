@@ -10,4 +10,8 @@ public interface InterfaceUtilisateur {
     void nouvellePartie();
 
     void retour_menu();
+
+    void griser_annuler(boolean b);
+
+    void griser_refaire(boolean b);
 }

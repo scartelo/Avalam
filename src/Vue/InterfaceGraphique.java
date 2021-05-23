@@ -56,7 +56,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         // Annuler / Refaire
         Box annulRef = Box.createHorizontalBox();
         annuler = createButton("<", "annuler");
+        griser_annuler(false);
         refaire = createButton(">", "refaire");
+        griser_refaire(false);
         restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
         quitter = createButton ("Quitter", "quitter");
@@ -80,15 +82,20 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu("Sauvegardes");
         Saves save=new Saves(jeu);
-        for(int i=0;i<save.nb_saves;i++){
-            JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
-            String s =String.valueOf(i+1);
-            item.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e){
-                    controle.commandeInput("load",s);
-                }
-            });
-            m.add(item);
+        if(save.nb_saves==0){
+            m.setEnabled(false);
+        }
+        else{
+            for(int i=0;i<save.nb_saves;i++){
+                JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
+                String s =String.valueOf(i+1);
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e){
+                        controle.commandeInput("load",s);
+                    }
+                });
+                m.add(item);
+            }
         }
         return m;
     }
@@ -182,5 +189,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             frame.dispose();
             metAJour();
         }
+    }
+    public void griser_annuler(boolean b){
+        annuler.setEnabled(b);
+    }
+    public void griser_refaire(boolean b){
+        refaire.setEnabled(b);
     }
 }
