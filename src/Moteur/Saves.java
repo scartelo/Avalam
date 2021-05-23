@@ -92,7 +92,7 @@ public class Saves{
             jeu.niveauIA1=next;
             next = myReader.nextInt();
             jeu.niveauIA2=next;
-            next =-1;
+            next =0;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();
                 if (next != -1) {

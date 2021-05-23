@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Vue.InterfaceMenu">
-  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="299" y="189" width="437" height="233"/>
@@ -23,7 +23,7 @@
       </component>
       <component id="d8bd8" class="javax.swing.JButton" binding="quitterButton" default-binding="true">
         <constraints>
-          <grid row="3" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-400201"/>
@@ -41,11 +41,21 @@
       </component>
       <component id="e932c" class="javax.swing.JButton" binding="tutorielButton" default-binding="true">
         <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-400201"/>
           <text value="Tutoriel"/>
+        </properties>
+      </component>
+      <component id="79128" class="javax.swing.JComboBox" binding="BoxChargerSauvegarde">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="1" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="100" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <model/>
         </properties>
       </component>
     </children>

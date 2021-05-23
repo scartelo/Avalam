@@ -72,7 +72,6 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m_bar.add(sauvegarde);
         m_bar.add(l_sauvegardes);
         frame.setJMenuBar(m_bar);
-
         controle.fixerInterfaceUtilisateur(this);
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
@@ -92,6 +91,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
                 item.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e){
                         controle.commandeInput("load",s);
+                        controle.update_buttons();
                     }
                 });
                 m.add(item);

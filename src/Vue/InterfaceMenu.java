@@ -3,7 +3,9 @@ package Vue;
 import Controleur.ControleurMediateur;
 import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
+import Moteur.Saves;
 
+import javax.naming.ldap.Control;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,12 +21,16 @@ public class InterfaceMenu {
     private JButton quitterButton;
     private JButton startGame;
     private JButton tutorielButton;
+    private JComboBox BoxChargerSauvegarde;
     private static JFrame frame;
     Jeu jeu;
 
     public InterfaceMenu() {
         jeu = new Jeu(new PlateauDeJeu());
-
+        Saves save = new Saves(jeu);
+        for(int i=0;i<save.l_saves.size();i++){
+            BoxChargerSauvegarde.addItem(save.l_saves.get(i));
+        }
         chargerUnePartieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,7 +92,7 @@ public class InterfaceMenu {
     public void Charger_Partie(int n_save){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
-            if(jeu.load(n_save,1)){
+            if(jeu.load(BoxChargerSauvegarde.getSelectedIndex()+1,1)){
                 Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2,jeu.IA1,jeu.IA2,jeu.niveauIA1,jeu.niveauIA2);
             }
             else{

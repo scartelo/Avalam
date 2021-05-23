@@ -6,4 +6,6 @@ public interface CollecteurEvenements {
     void commandeInput(String commande,String input);
 
     void clicSouris(int l, int c);
+
+    void update_buttons();
 }
