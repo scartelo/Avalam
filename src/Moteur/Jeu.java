@@ -73,13 +73,10 @@ public class Jeu extends Observable {
     puis en annulant les coups faisant partie du futur.
     */
     public void load(int n_save,int menu){
-            if(menu==0) {
-                sauvegarder();
-            }
             Saves S = new Saves();
             if(S.saveExists(n_save)){
-                System.out.println(n_save);
                 plateau.initialiserGrille();
+                plateau.tourJoueur=0;
                 plateau.Vider_historique();
                 Sequence<Coup> seq = S.read_save(n_save);
                 Iterateur<Coup> it = seq.iterateur();

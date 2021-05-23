@@ -241,6 +241,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         if(dst.ajouteTour(src)){
             Coup c = new Coup(tmp_src,tmp_dst);
             nouveau(c);
+            tourJoueur=(tourJoueur+1)%2;
         }
     }
     /*
@@ -251,6 +252,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         if(c!=null){
             grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
             update_score();
+            tourJoueur=(tourJoueur+1)%2;
         }else{
             System.out.println("Ne peut pas refaire le coup");
         }
@@ -264,6 +266,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
             update_score();
+            tourJoueur=(tourJoueur+1)%2;
         }
         else{
             System.out.println("Ne peut pas annuler le coup");
@@ -298,7 +301,6 @@ public class PlateauDeJeu extends Historique<Coup>{
                     y2 = c;
                     Jouer_pos(x1, y1, x2, y2);
                     Init_pos();
-                    tourJoueur=(tourJoueur+1)%2;
                     update_score();
                     play_sound("Drop");
                 } else {
