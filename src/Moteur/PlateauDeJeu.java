@@ -281,7 +281,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                                     Sinon le premier clic est deselectionné
     */
     public void position(int l,int c){
-        if(l<lignes && c<colonnes) {
+        if(l<lignes && c<colonnes&&l>=0 && c>=0) {
             //Premier clic
             if (x1 == -1 && y1 == -1) {
                 if (grille[l][c].estJouable()) {
@@ -289,6 +289,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                     y1 = c;
                     play_sound("Pick");
                 } else {
+                    play_sound("Error");
                     System.err.println("Tour non déplaçable");
                 }
             //Deuxième clic équivalent au premier = on annule le premier clic
@@ -303,11 +304,13 @@ public class PlateauDeJeu extends Historique<Coup>{
                     y2 = c;
                     Jouer_pos(x1, y1, x2, y2);
                 } else {
+                    play_sound("Error");
                     Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");
                 }
             }
         }else{
+            play_sound("Error");
             System.err.println("Hors de la grille");
         }
     }
