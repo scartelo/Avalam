@@ -2,11 +2,7 @@ package Moteur;
 
 import java.io.File;
 import java.io.IOException;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 
 public class Audio {
 
@@ -36,6 +32,9 @@ public class Audio {
     /*
     Permet de jouer l'audio en cours
     */
+    public void boucle(){
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
     public void play()
     {
         //start the clip
@@ -123,6 +122,11 @@ public class Audio {
     /*
     Permet de reset le stream de l'audio
     */
+    public void change_volume(float db){
+        FloatControl gainControl =
+                (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(db);
+    }
     public void resetAudioStream() throws UnsupportedAudioFileException, IOException,
             LineUnavailableException
     {

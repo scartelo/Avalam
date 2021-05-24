@@ -1,20 +1,25 @@
 package Vue;
 
 import Controleur.ControleurMediateur;
+import Moteur.Audio;
 import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
 import Moteur.Saves;
 
 import javax.naming.ldap.Control;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 /*
 Classe permettant d'afficher le contenu du menu principal
 */
 public class InterfaceMenu {
+    private static Audio sound;
     private JButton LoadGame;
     private JPanel MainPanel;
     private JButton chargerUnePartieButton;
@@ -71,11 +76,13 @@ public class InterfaceMenu {
         ImageIcon icon = new ImageIcon(home);
         JLabel label_tuto = new JLabel(icon);
         tutoriel.add(label_tuto);
-
         tutoriel.setVisible(true);
     }
     public void showMenu(boolean b){
         frame.setVisible(b);
+        if(b){
+            sound.play();
+        }
     }
     public void Nouvelle_Partie(String nom_j1,String nom_j2,int ia1, int ia2, int n_ia1,int n_ia2){
         jeu.nom_j1=nom_j1;
@@ -86,6 +93,7 @@ public class InterfaceMenu {
         jeu.niveauIA2=n_ia2;
         ControleurMediateur controleur = new ControleurMediateur(jeu);
         InterfaceGraphique.demarrer(jeu, controleur);
+        stop_sound();
         frame.setVisible(false);
     }
 
@@ -106,13 +114,41 @@ public class InterfaceMenu {
             jeu.quitter();
         }
     }
+
     public static void main(String[] args) {
         frame = new JFrame("Menu");
+        menu_music();
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    public void stop_sound(){
+        try {
+            sound.stop();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void menu_music(){
+        sound= null;
+        try {
+            sound = new Audio("8bitMenu");
+            sound.change_volume(-30);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        sound.boucle();
+        sound.play();
     }
 }
