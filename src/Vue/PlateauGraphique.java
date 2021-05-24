@@ -17,10 +17,12 @@ public class PlateauGraphique extends JComponent implements Observateur{
     Graphics2D drawable;
     Jeu jeu;
     PlateauDeJeu plateau;
+    ImageCharge couronne;
 
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
+        couronne=new ImageCharge(ImageCharge.charge("Images/couronne.png"));
     }
 
     @Override
@@ -44,6 +46,10 @@ public class PlateauGraphique extends JComponent implements Observateur{
         tracerGrille();
         tracerScore();
     }
+    void tracerImage(ImageCharge img, int x, int y, int lC, int hC){
+        drawable.drawImage(img.image(), x, y, lC, hC, null);
+    }
+
     void tracerScore(){
         tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur,hauteurScore);
         tracerCarre(new Couleur("CouleurVide"), 0, hauteur, largeur,3 );
@@ -91,6 +97,12 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     }
                     if(!T.estVide() && (!T.estComplete() && T.nbPion()>0) && !plateau.estIsole(i,j)){
                         tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
+                    }else if(!T.estInnocupable() && ! T.estVide()){
+                        int decal=5;
+                        if(hauteur<350) {
+                            decal = 7;
+                        }
+                        tracerImage(couronne, x+decal, y+5, largeurCase-10, hauteurCase-10);
                     }
                     if (plateau.x1()!=-1){
                         tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+2 , (plateau.x1()*hauteurCase)+margin_y+2, largeurCase-2, hauteurCase-2);
