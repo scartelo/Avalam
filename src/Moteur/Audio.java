@@ -2,6 +2,7 @@ package Moteur;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import javax.sound.sampled.*;
 
 public class Audio {
@@ -19,9 +20,9 @@ public class Audio {
 
     public Audio(String sound_name) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         String home = System.getProperty("user.dir");
-        filePath = home + File.separator+ "Audio" +File.separator+sound_name+".wav";
+        URL url = getClass().getResource("/Audio/"+sound_name+".wav");
         // create AudioInputStream object
-        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
+        audioInputStream = AudioSystem.getAudioInputStream(url);
 
         // create clip reference
         clip = AudioSystem.getClip();

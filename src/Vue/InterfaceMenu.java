@@ -6,14 +6,18 @@ import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
 import Moteur.Saves;
 
+import javax.imageio.ImageIO;
 import javax.naming.ldap.Control;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /*
 Classe permettant d'afficher le contenu du menu principal
@@ -69,12 +73,9 @@ public class InterfaceMenu {
         tutoriel.setSize(775, 500);
         tutoriel.setResizable(false);
         tutoriel.setLocationRelativeTo(null);
-
-        final String dir = System.getProperty("user.dir");
-        String home = System.getProperty("user.dir");
-        home = home + File.separator + "res" + File.separator + "Images"+File.separator+"tutoriel.png";
-        ImageIcon icon = new ImageIcon(home);
-        JLabel label_tuto = new JLabel(icon);
+        URL url = getClass().getResource("/Images/tutoriel.png");
+        ImageIcon image = new ImageIcon(url);
+        JLabel label_tuto = new JLabel( image);
         tutoriel.add(label_tuto);
         tutoriel.setVisible(true);
     }
@@ -151,4 +152,5 @@ public class InterfaceMenu {
         sound.boucle();
         sound.play();
     }
+
 }
