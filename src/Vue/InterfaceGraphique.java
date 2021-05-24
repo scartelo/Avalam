@@ -222,6 +222,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         if(res== JOptionPane.YES_OPTION){
             InterfaceMenu m = new InterfaceMenu();
             m.showMenu(true);
+            m.menu_music();
             frame.dispose();
             metAJour();
         }
