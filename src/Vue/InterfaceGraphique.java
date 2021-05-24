@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,7 +23,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     CollecteurEvenements controle;
     JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
     private boolean maximized;
-    JMenu l_sauvegardes;
+    JMenu l_partie, l_sauvegardes;
     JTextField jt;
     Jeu jeu;
 
@@ -37,7 +39,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     @Override
     public void run() {
         frame = new JFrame("Avalam");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                quitter();
+            }
+        });
 
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
@@ -52,7 +61,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
 
         frame.add(principal);
         JMenuBar m_bar= new JMenuBar();
-        sauvegarde = createButton("Save","sauvegarder");
+        sauvegarde = createButton("Enregistrer","sauvegarder");
         // Annuler / Refaire
         Box annulRef = Box.createHorizontalBox();
         annuler = createButton("<", "annuler");
@@ -64,22 +73,23 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
-        l_sauvegardes=menu_sauvegarde();
-        m_bar.add(quitter);
-        m_bar.add(menu);
-        m_bar.add(restart);
+        l_partie=menu_partie();
+
+        m_bar.add(l_partie);
         m_bar.add(annulRef);
-        m_bar.add(sauvegarde);
-        m_bar.add(l_sauvegardes);
+        m_bar.add(Box.createHorizontalGlue());
+        m_bar.add(menu);
+
         frame.setJMenuBar(m_bar);
         controle.fixerInterfaceUtilisateur(this);
-        frame.setSize(500, 500);
+        frame.setSize(570, 500);
+        frame.setMinimumSize(new Dimension(570,400));
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
     public JMenu menu_sauvegarde(){
         //liste des sauvegardes sous forme de menu
-        JMenu m = new JMenu("Sauvegardes");
+        JMenu m = new JMenu("Charger");
         Saves save=new Saves(jeu);
         if(save.nb_saves==0){
             m.setEnabled(false);
@@ -97,6 +107,32 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
                 m.add(item);
             }
         }
+        return m;
+    }
+    public JMenu menu_partie(){
+        //liste des sauvegardes sous forme de menu
+        JMenu m = new JMenu("Partie");
+
+        JMenuItem newgame = new JMenuItem("Nouvelle Partie");
+        newgame.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                controle.commande("nouvellePartie");
+                controle.update_buttons();
+            }
+        });
+        m.add(newgame);
+        JMenuItem save = new JMenuItem("Enregistrer");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                controle.commande("sauvegarder");
+                controle.update_buttons();
+            }
+        });
+        m.add(save);
+
+        l_sauvegardes=menu_sauvegarde();
+        m.add(l_sauvegardes);
+
         return m;
     }
     public static void showFrame(boolean b){
