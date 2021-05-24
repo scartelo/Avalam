@@ -18,7 +18,7 @@ public class Saves{
         jeu=j;
         final String dir = System.getProperty("user.dir");
         String home = System.getProperty("user.dir");
-        path = home + File.separator + "res" + File.separator + "Saves";
+        path = home + File.separator+ "Saves";
         File directory = new File(path);
         String[] tmp_l_saves = directory.list();
         l_saves=new ArrayList<>();
@@ -30,6 +30,13 @@ public class Saves{
     Ecrit dans 'res/Saves' la sauvegarde, celle-ci correspond à l'historique de la partie en cours.
     La sauvegarde contiendra les positions sur la grille (i,j) des coups de l'historique ( passé et futur )
     */
+    public void update_dir(){
+        File directory = new File(path);
+        String[] tmp_l_saves = directory.list();
+        l_saves=new ArrayList<>();
+        l_saves.addAll(Arrays.asList(tmp_l_saves));
+        nb_saves = l_saves.size();
+    }
     public void write_save(Sequence<Coup> passe, Sequence<Coup> futur) {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd_MM_yy__HH_mm_ss");
@@ -64,6 +71,8 @@ public class Saves{
                 myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
             }
             myWriter.close();
+            update_dir();
+
         }catch (IOException e) {
             e.printStackTrace();
         }

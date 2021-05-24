@@ -23,9 +23,9 @@ public class Audio {
 
     public Audio(String sound_name) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         String home = System.getProperty("user.dir");
-        filePath = home + File.separator + "res" + File.separator + "Audio" + File.separator + sound_name +".wav";
+        filePath = home + File.separator+ "Audio" +File.separator+sound_name+".wav";
         // create AudioInputStream object
-        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
 
         // create clip reference
         clip = AudioSystem.getClip();
