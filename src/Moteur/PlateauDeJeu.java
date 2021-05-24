@@ -94,6 +94,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             }
         }
         Vider_historique();
+        Init_pos();
     }
     /*
     Initialise une case de la grille selon sa position sur la grille
@@ -257,6 +258,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
             update_score();
             tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
         }else{
             System.out.println("Ne peut pas refaire le coup");
         }
@@ -271,6 +273,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
             update_score();
             tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
         }
         else{
             System.out.println("Ne peut pas annuler le coup");
