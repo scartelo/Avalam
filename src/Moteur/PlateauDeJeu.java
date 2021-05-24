@@ -385,10 +385,6 @@ public class PlateauDeJeu extends Historique<Coup>{
             int i= couple.premier();
             int j=couple.second();
             if(t.estDeplacable(grille[i][j])){
-                if(t.ligne==2 && t.colonne==3){
-                    System.out.println(i);
-                    System.out.println(j);
-                }
                 return false;
             }
         }
