@@ -76,8 +76,10 @@ public class PlateauDeJeu extends Historique<Coup>{
             couple=v.extraitTete();
             int i= couple.premier();
             int j=couple.second();
-            if(grille[i][j].nbPion()>0){
-                return false;
+            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable()){
+                if(grille[i][j].nbPion()>0){
+                    return false;
+                }
             }
         }
         return true;
