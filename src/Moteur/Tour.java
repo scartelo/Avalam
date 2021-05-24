@@ -67,7 +67,7 @@ public class Tour {
     /*
     Renvoie si la tour T est voisine de la tour self
     */
-    public boolean estVoisin(Tour T){ return (T.contenu()!=INNOCCUPABLE && T.contenu() != TROU) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
+    public boolean estVoisin(Tour T){ return (! T.estInnocupable() && !T.estVide()) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }
     public boolean estJouable(){

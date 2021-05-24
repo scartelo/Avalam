@@ -95,15 +95,15 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     } else if (s == 1) {
                         tracerCercle(new Couleur("CouleurJ2"), x+2, y+2, largeurCase-2, hauteurCase-2);
                     }
-                    if(!T.estVide() && (!T.estComplete() && T.nbPion()>0) && !plateau.estIsole(i,j)){
-                        tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
-                    }else if(!T.estInnocupable() && ! T.estVide()){
+                        if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
+                            tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
+                        }else if(!T.estInnocupable() && ! T.estVide()){
                         int decal=5;
                         if(hauteur<350) {
                             decal = 7;
                         }
                         tracerImage(couronne, x+decal, y+5, largeurCase-10, hauteurCase-10);
-                    }
+                        }
                     if (plateau.x1()!=-1){
                         tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+2 , (plateau.x1()*hauteurCase)+margin_y+2, largeurCase-2, hauteurCase-2);
 

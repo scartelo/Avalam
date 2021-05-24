@@ -377,5 +377,21 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.out.println();
         }
     }
-
+    public boolean pasDeplacable(Tour t){
+        Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
+        Couple<Integer,Integer> couple;
+        while(!v.estVide()){
+            couple=v.extraitTete();
+            int i= couple.premier();
+            int j=couple.second();
+            if(t.estDeplacable(grille[i][j])){
+                if(t.ligne==2 && t.colonne==3){
+                    System.out.println(i);
+                    System.out.println(j);
+                }
+                return false;
+            }
+        }
+        return true;
+    }
 }
