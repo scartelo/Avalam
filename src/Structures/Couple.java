@@ -8,10 +8,10 @@ public class Couple<Premier, Second> {
 		premier = p;
 		second = s;
 	}
-	public Premier get_premier(){
+	public Premier premier(){
 		return premier;
 	}
-	public Second get_second(){
+	public Second second(){
 		return second;
 	}
 	@Override

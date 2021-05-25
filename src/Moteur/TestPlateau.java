@@ -7,12 +7,19 @@ public class TestPlateau {
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 0 ( echec ) ");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test coup 1");
         p.Jouer(p.tour(3,4),p.tour(3,5));
         p.afficher_grille();
+
+        System.out.println("Test marquage");
+        System.out.println(" Contenu " + p.tour(3,3).contenu());
+        //p.tour(3,3).marquer(0x1A);
+        System.out.println(" Contenu apres marquage " + p.tour(3,3).contenu());
+
+
 
         System.out.println("Test coup 2");
         p.Jouer(p.tour(2,5),p.tour(3,5));
@@ -29,47 +36,48 @@ public class TestPlateau {
 
 
         System.out.println("Test refaire un coup 0 ( echec ) ");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 1");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 2");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 3");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 4");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test annuler un coup 5");
-        p.Annuler_coup();
+        p.annulerCoup();
         p.afficher_grille();
 
         System.out.println("Test refaire un coup 1");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
 
         System.out.println("Test refaire un coup 2");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
         System.out.println("Test refaire un coup 3");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
 
         System.out.println("Test refaire un coup 4");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
 
         System.out.println("Test refaire un coup 5 ( echec ) ");
-        p.Refaire_coup();
+        p.refaireCoup();
         p.afficher_grille();
+
 
 
         System.out.println(p.tour(3,5).estDeplacable(p.tour(4,6)));

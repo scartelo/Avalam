@@ -68,4 +68,8 @@ public class SequenceTableau<Loulou> implements Sequence<Loulou> {
 		resultat += "]";
 		return resultat;
 	}
+
+	public int taille(){
+		return taille;
+	}
 }

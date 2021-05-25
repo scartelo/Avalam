@@ -1,7 +1,9 @@
 package Moteur;
 import Global.Configuration;
 import Structures.*;
-
+/*
+L'historique contient les coups qui ont été joué sur le plateau ( passé et futur si ils ont été annulés )
+ */
 public class Historique<Coup> {
     Sequence<Coup> passe, futur;
 

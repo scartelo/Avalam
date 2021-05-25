@@ -1,10 +1,13 @@
 package Moteur;
 
-import Controleur.Joueur;
 import Global.Configuration;
 import Structures.Couple;
-import Structures.Iterateur;
 import Structures.Sequence;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
+
 public class PlateauDeJeu extends Historique<Coup>{
     private Tour[][] grille;
     public int tourJoueur;
@@ -14,7 +17,9 @@ public class PlateauDeJeu extends Historique<Coup>{
     private final int TROU = 0;
     private int x1,y1,x2,y2;
     public int score1,score2;
-    public PlateauDeJeu(){
+
+
+    public PlateauDeJeu() {
         score1=0;
         score2=0;
         tourJoueur=0;
@@ -22,8 +27,11 @@ public class PlateauDeJeu extends Historique<Coup>{
         colonnes = 9;
         grille = new Tour[lignes][colonnes];
         initialiserGrille();
-        Init_pos();
+        //Init_pos();
     }
+    /*
+    Initialise les positions pour les deux clics jouant un coup
+    */
     public void Init_pos(){
         x1=-1;
         y1=-1;
@@ -36,43 +44,49 @@ public class PlateauDeJeu extends Historique<Coup>{
     public int y1(){
         return y1;
     }
-    public void position(int l,int c){
-        if(l<lignes && c<colonnes) {
-            if (x1 == -1 && y1 == -1) {
-                if (grille[l][c].estJouable()) {
-                    x1 = l;
-                    y1 = c;
-                } else {
-                    System.err.println("Tour non déplaçable");
-                }
-            } else if (x1 == l && y1 == c) {
-                System.err.println("Même positions");
-                Init_pos();
-            } else {
-                if (grille[x1][y1].estDeplacable(grille[l][c])) {
-                    x2 = l;
-                    y2 = c;
-                    Jouer_pos(x1, y1, x2, y2);
-                    System.out.println("La tour a été déplacée");
-                    Init_pos();
-                    tourJoueur=(tourJoueur+1)%2;
-                    update_score();
-                    System.out.println(score1);
-                    System.out.println(score2);
-                    System.out.println();
-                } else {
-                    Init_pos();
-                    System.err.println("La tour ne peut pas être déplacé ici");
+    public int lignes(){
+        return lignes;
+    }
+    public int colonnes(){
+        return colonnes;
+    }
+    public Tour[][] grille(){return grille;}
+    public Tour tour(int l, int c){
+        return grille[l][c];
+    }
+    public int scoreJ1(){
+        return score1;
+    }
+    public int scoreJ2(){
+        return score2;
+    }
+    private boolean estInnoccupable(int l, int c) {
+        return tour(l,c).contenu() == INNOCCUPABLE;
+    }
+    public boolean estAccessible(int l, int c){
+        return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
+    }
+    /*
+    Renvoie un booléen désignant si un pion est isolé sur la grille
+    */
+    public boolean estIsole(int l,int c){
+        Sequence<Couple<Integer,Integer>> v=voisins(l,c);
+        Couple<Integer,Integer> couple;
+        while(!v.estVide()){
+            couple=v.extraitTete();
+            int i= couple.premier();
+            int j=couple.second();
+            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable()){
+                if(grille[i][j].nbPion()>0){
+                    return false;
                 }
             }
-        }else{
-            System.err.println("Hors de la grille");
         }
-        /*
-        if(estTermine()){
-            get_winner();
-        }*/
+        return true;
     }
+    /*
+    Initialise la grille
+    */
     public void initialiserGrille() {
         for (int l=0; l<lignes; l++){
             for (int c=0; c<colonnes; c++){
@@ -80,27 +94,11 @@ public class PlateauDeJeu extends Historique<Coup>{
             }
         }
         Vider_historique();
+        Init_pos();
     }
-    public void update_score(){
-        int score_1,score_2;
-        score_1=0;
-        score_2=0;
-        for(int i=0;i<lignes;i++){
-            for(int j=0;j<colonnes;j++){
-                if(!(grille[i][j].estVide()||(grille[i][j].estInnocupable()))){
-                    if(grille[i][j].nbPion>1 || (grille[i][j].nbPion==1 && estIsole(i,j))){
-                        if(grille[i][j].sommetTour()==0){
-                            score_1++;
-                        }else{
-                            score_2++;
-                        }
-                    }
-                }
-            }
-        }
-        score1=score_1;
-        score2=score_2;
-    }
+    /*
+    Initialise une case de la grille selon sa position sur la grille
+    */
     private void initialiserLignes(int l, int c){
         switch (l) {
             case 0:
@@ -134,7 +132,9 @@ public class PlateauDeJeu extends Historique<Coup>{
                 System.err.println("Erreur Hors grille");
         }
     }
-
+    /*
+    Fonction servant à initialiser la grille alternant rouge et jaune
+    */
     private void alterner(int l, int c){
         if((l+c)%2==0)
             placerTour(TOURJ1,l,c);
@@ -154,7 +154,6 @@ public class PlateauDeJeu extends Historique<Coup>{
             placerTour(INNOCCUPABLE,l,c);
         else
             alterner(l,c);
-
     }
 
     private void initialiserLigne6(int l, int c) {
@@ -175,10 +174,8 @@ public class PlateauDeJeu extends Historique<Coup>{
     private void initialiserLigne4(int l, int c) {
         if (c == 4)
             placerTour(TROU, l, c);
-
         else
             alterner(l,c);
-
     }
 
     private void initialiserLigne3(int l, int c) {
@@ -186,25 +183,20 @@ public class PlateauDeJeu extends Historique<Coup>{
             placerTour(INNOCCUPABLE, l, c);
         else
             alterner(l,c);
-
     }
 
     private void initialiserLigne2(int l, int c) {
-        if (c < 1 || c > 7)
+        if (c < 2 || c > 7)
             placerTour(INNOCCUPABLE, l, c);
-
         else
             alterner(l,c);
-
     }
 
     private void initialiserLigne1(int l, int c) {
         if (c < 4 || c > 7)
             placerTour(INNOCCUPABLE, l, c);
-
         else
             alterner(l,c);
-
     }
 
     private void initialiserLigne0(int l, int c) {
@@ -214,6 +206,163 @@ public class PlateauDeJeu extends Historique<Coup>{
         else
             alterner(l,c);
     }
+    /*
+    Renvoie une séquence contenant les positions (i,j) des tours voisines qui ne sont pas hors grille
+    */
+    public Sequence voisins(int l, int c){
+        Sequence voisins = Configuration.instance().nouvelleSequence();
+        for (int i=l-1; i<=l+1; i++){
+            for (int j=c-1; j<=c+1 ; j++){
+                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0)
+                    voisins.insereTete(new Couple<>(i,j));
+            }
+        }
+        return voisins;
+    }
+    /*
+    Créer une tour selon son contenu et la place sur la grille à la position i,j
+    */
+    public void placerTour(int contenu, int l, int c){
+        Tour tour = new Tour(contenu, l, c);
+        grille[tour.ligne][tour.colonne] = tour;
+    }
+    /*
+    Déplace une tour selon ses coordonnées sur la grille (i,j)
+    */
+    public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
+        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
+    }
+
+    /*
+    Déplace la tour src sur la tour dst
+    */
+    public void Jouer(Tour src, Tour dst){
+        Tour tmp_src,tmp_dst;
+        tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
+        tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
+        if(dst.ajouteTour(src)){
+            Coup c = new Coup(tmp_src,tmp_dst);
+            nouveau(c);
+            tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
+            update_score();
+            play_sound("Drop");
+        }
+    }
+    /*
+    Rejoue le dernier coup annulé ( s'il existe )
+    */
+    public void refaireCoup(){
+        Coup c = refaire();
+        if(c!=null){
+            grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
+            update_score();
+            tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
+        }else{
+            System.out.println("Ne peut pas refaire le coup");
+        }
+    }
+    /*
+    Annule le dernier coup joué ( si possible )
+    */
+    public void annulerCoup(){
+        Coup c=annuler();
+        if(c!=null) {
+            placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
+            placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
+            update_score();
+            tourJoueur=(tourJoueur+1)%2;
+            Init_pos();
+        }
+        else{
+            System.out.println("Ne peut pas annuler le coup");
+        }
+    }
+    /*
+    Permet de jouer un coup
+    Si il s'agit du premier clic : selection de la tour ( si elle n'est pas vide ou hors grille )
+    Si il s'agit du deuxième clic : Si le coup définit par les deux clics est jouable alors le coup est joué
+                                    Sinon le premier clic est deselectionné
+    */
+    public void position(int l,int c){
+        if(l<lignes && c<colonnes&&l>=0 && c>=0) {
+            //Premier clic
+            if (x1 == -1 && y1 == -1) {
+                if (grille[l][c].estJouable() && !pasDeplacable(grille[l][c])) {
+                    x1 = l;
+                    y1 = c;
+                    play_sound("Pick");
+                } else {
+                    play_sound("Error");
+                    System.err.println("Tour non déplaçable");
+                }
+            //Deuxième clic équivalent au premier = on annule le premier clic
+            } else if (x1 == l && y1 == c) {
+                System.err.println("Même positions");
+                Init_pos();
+            } else {
+                //deuxième clic différent du premier
+                if (grille[x1][y1].estDeplacable(grille[l][c])) {
+                    //Si jouable, alors on déplace la tour désignée par le premier clic sur celle désignée par le deuxième
+                    x2 = l;
+                    y2 = c;
+                    Jouer_pos(x1, y1, x2, y2);
+                } else {
+                    play_sound("Error");
+                    Init_pos();
+                    System.err.println("La tour ne peut pas être déplacé ici");
+                }
+            }
+        }else{
+            play_sound("Error");
+            System.err.println("Hors de la grille");
+        }
+    }
+    /*
+    Met à jour le score des deux joueurs selon l'état du plateau
+    */
+    public void update_score(){
+        int score_1,score_2;
+        score_1=0;
+        score_2=0;
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                if(!(grille[i][j].estVide()||(grille[i][j].estInnocupable()))){
+                    //if(grille[i][j].nbPion()>1 || estIsole(i,j)){// VERSION_1
+                    if(pasDeplacable(grille[i][j])){ // VERSION_2
+                        if(grille[i][j].sommetTour()==0){
+                            score_1++;
+                        }else{
+                            score_2++;
+                        }
+                    }
+                }
+            }
+        }
+        score1=score_1;
+        score2=score_2;
+    }
+    /*
+    Joue un son dans res/Audio selon sound_name ( nom du fichier )
+    */
+    public void play_sound(String sound_name){
+        Audio sound= null;
+        try {
+            sound = new Audio(sound_name);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        sound.play();
+    }
+    /*
+    Affiche la grille sur le terminal
+    */
+
     public void afficher_grille(){
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
@@ -232,142 +381,17 @@ public class PlateauDeJeu extends Historique<Coup>{
             System.out.println();
         }
     }
-
-    public int get_winner(){
-        if(score1==score2){
-            return 0;
-        }else if(score1>score2){
-            return 1;
-        }
-        else{
-            return 2;
-        }
-    }
-    public boolean estAccessible(int l, int c){
-        return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
-    }
-
-    private boolean estInnoccupable(int l, int c) {
-        return tour(l,c).contenu() == INNOCCUPABLE;
-    }
-
-    public Sequence voisins(int l, int c){
-        Sequence voisins = Configuration.instance().nouvelleSequence();
-        for (int i=l-1; i<=l+1; i++){
-            for (int j=c-1; j<=c+1 ; j++){
-                if ((i!=l && j!=c) && estAccessible(i,j))
-                    voisins.insereTete(new Couple<>(i,j));
-            }
-        }
-        return voisins;
-    }
-    public boolean estIsole(int l,int c){
-        Sequence<Couple<Integer,Integer>> v=voisins(l,c);
+    public boolean pasDeplacable(Tour t){
+        Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
         Couple<Integer,Integer> couple;
-        boolean res=true;
         while(!v.estVide()){
             couple=v.extraitTete();
-            int i= couple.get_premier();
-            int j=couple.get_second();
-            if(grille[i][j].nbPion()>0){
-                res=false;
+            int i= couple.premier();
+            int j=couple.second();
+            if(t.estDeplacable(grille[i][j])){
+                return false;
             }
         }
-        return res;
+        return true;
     }
-    public void placerTour(int contenu, int l, int c){
-        Tour tour = new Tour(contenu, l, c);
-        grille[tour.ligne][tour.colonne] = tour;
-    }
-    public int lignes(){
-        return lignes;
-    }
-    public int colonnes(){
-        return colonnes;
-    }
-    public Tour tour(int l, int c){
-        return grille[l][c];
-    }
-    public boolean estTermine(){
-        boolean res=true;
-        for(int i=0;i<lignes;i++){
-            for(int j=0;j<colonnes;j++){
-                if(grille[i][j].estJouable()){
-                    for(int x=-1;x<2;x++){
-                        for(int y=-1;y<2;y++){
-                            if((i+x>=0 && x+i<lignes)&&(j+y>=0 && j+y<colonnes))  {
-                                if(grille[i][j].estDeplacable(grille[i+x][y+j])){
-                                    res = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        update_score();
-        return res;
-    }
-    public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
-        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
-    }
-    public void Jouer(Tour src, Tour dst){
-        Tour tmp_src,tmp_dst;
-        tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
-        tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
-        if(dst.ajouteTour(src)){
-            Coup c = new Coup(tmp_src,tmp_dst);
-            nouveau(c);
-        }
-    }
-    public void Refaire_coup(){
-        Coup c = refaire();
-        if(c!=null){
-            grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
-            update_score();
-        }else{
-            System.out.println("Ne peut pas refaire le coup");
-        }
-    }
-    public void Annuler_coup(){
-        Coup c=annuler();
-        if(c!=null) {
-            placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
-            placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
-            update_score();
-        }
-        else{
-            System.out.println("Ne peut pas annuler le coup");
-        }
-    }
-    public void sauvegarder(){
-        Saves S = new Saves();
-        S.write_save(passe,futur);
-    }
-    public void load_sauvegarde(int n_save){
-        Saves S = new Saves();
-        if(S.saveExists(n_save)){
-            System.out.println(n_save);
-            initialiserGrille();
-            Vider_historique();
-            Sequence<Coup> seq = S.read_save(n_save);
-            Iterateur<Coup> it = seq.iterateur();
-            if (seq != null) {
-                while (it.aProchain()) {
-                    Coup c = it.prochain();
-                    Jouer_pos(c.src.ligne,c.src.colonne,c.dst.ligne,c.dst.colonne);
-                }
-                for(int i=0;i<S.taille_futur;i++){
-                    Annuler_coup();
-                }
-                update_score();
-            } else {
-                System.err.println("Erreur lors de la lecture de la sauvegarde");
-            }
-        }else {
-            System.err.println("La sauvegarde n'existe pas");
-        }
-    }
-
 }
