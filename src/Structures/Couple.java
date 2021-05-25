@@ -19,5 +19,13 @@ public class Couple<Premier, Second> {
 		return "(" + premier + ", " + second + ")";
 	}
 
+	public void setPremier(Premier p){
+		premier = p;
+	}
+
+	public void setSecond(Second s){
+		second = s;
+	}
 
 }
+
