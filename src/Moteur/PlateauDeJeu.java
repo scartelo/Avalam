@@ -27,7 +27,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         colonnes = 9;
         grille = new Tour[lignes][colonnes];
         initialiserGrille();
-        Init_pos();
+        //Init_pos();
     }
     /*
     Initialise les positions pour les deux clics jouant un coup

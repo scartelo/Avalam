@@ -14,6 +14,8 @@ public class ControleurMediateur implements CollecteurEvenements {
     Joueur[][] joueurs;
     int[] typeJoueur;
     int joueurCourant;
+    private int decompte;
+    private int lenteurAttente = 100;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
@@ -21,7 +23,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            joueurs[i][1] = new JoueurIA(i, jeu);
+            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
             typeJoueur[i] = 0;
         }
     }
@@ -33,13 +35,12 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void clicSouris(int l, int c) {
         // Lors d'un clic, on le transmet au joueur courant.
         // Si un coup a effectivement été joué (humain, coup valide), on change de joueur.
-        /*
-        Configuration.instance().logger().info("Joueur courant :" + joueurCourant);
+
         if (joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
             jeu.miseAJour();
             changeJoueur();
-        }*/
-        jeu.clic(l,c);
+        }
+        //jeu.clic(l,c);
         update_buttons();
     }
 
@@ -54,18 +55,35 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     public void refaire(){ jeu.refaire();update_buttons(); }
 
-    void load(String c){
-        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
-            iu.sauvegarder();
-            jeu.load(Integer.parseInt(c),0);
-        }
-    }
-
     @Override
     public void fixerInterfaceUtilisateur(InterfaceUtilisateur i) {
         iu = i;
-        update_buttons();
+        //update_buttons();
+    }
+    @Override
+    public void basculeJoueurIA(int j, int t) {
+        Configuration.instance().logger().info("Nouveau type " + t + " pour le joueur " + j);
+        typeJoueur[j] = t;
+    }
+
+    public void tictac() {
+        if (!jeu.estTermine()) {
+            if (decompte == 0) {
+                int type = typeJoueur[joueurCourant];
+                // Lorsque le temps est écoulé on le transmet au joueur courant.
+                // Si un coup a été joué (IA) on change de joueur.
+                if (joueurs[joueurCourant][type].tempsEcoule()) {
+                    changeJoueur();
+                } else {
+                    // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.
+                    int courant = joueurs[joueurCourant][type].num() + 1;
+                    System.out.println("On vous attend, joueur " + courant);
+                    decompte = lenteurAttente;
+                }
+            } else {
+                decompte--;
+            }
+        }
     }
 
     @Override
@@ -102,7 +120,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void commandeInput(String commande,String input) {
         switch(commande){
             case "load":
-                load(input);
+                iu.load(input);
                 break;
             default:
 

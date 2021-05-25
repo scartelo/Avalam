@@ -5,9 +5,7 @@ import Moteur.Tour;
 
 public abstract class Joueur {
         Jeu jeu;
-        int num;//
-        boolean aSelectionneTour;
-        boolean aDeplaceTour;
+        int num;
         Tour tourSelectionnee = null;
         // Le joueur connait son numéro, cela lui permet d'inspecter le plateau en
         // sachant
@@ -15,8 +13,6 @@ public abstract class Joueur {
         Joueur(int n, Jeu j) {
             num = n;
             jeu = j;
-            aSelectionneTour = false;
-            aDeplaceTour = false;
         }
 
         int num() {

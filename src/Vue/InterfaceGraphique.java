@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /*
 Classe permettant d'afficher la grille, le score, et un JMenuBar contenant les fonctionnalités du jeu ( refaire,annuler,sauvegarder...)
@@ -22,6 +20,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
     JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
+    JToggleButton iaJ1, iaJ2;
     private boolean maximized;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
@@ -73,6 +72,12 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
+        iaJ1 = createToggleButton("IAJ1");
+        iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
+        annulRef.add(iaJ1);
+        iaJ2 = createToggleButton("IAJ2");
+        iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
+        annulRef.add(iaJ2);
         l_partie=menu_partie();
 
         m_bar.add(l_partie);
@@ -81,6 +86,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m_bar.add(menu);
 
         frame.setJMenuBar(m_bar);
+        Timer time = new Timer(16, new AdaptateurTemps(controle));
+        time.start();
         controle.fixerInterfaceUtilisateur(this);
         frame.setSize(570, 500);
         frame.setMinimumSize(new Dimension(570,400));
@@ -168,6 +175,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         but.setFocusable(false);
         return but;
     }
+
+    private JToggleButton createToggleButton(String s) {
+        JToggleButton but = new JToggleButton(s);
+        but.setAlignmentX(Component.CENTER_ALIGNMENT);
+        but.setFocusable(false);
+        return but;
+    }
+
     @Override
     public void metAJour() {
         plateauGraphique.repaint();
@@ -192,6 +207,15 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         if(res==JOptionPane.YES_OPTION){
             jeu.sauvegarder();
             metAJour();
+        }
+    }
+
+    @Override
+    public void load(String c){
+        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            sauvegarder();
+            jeu.load(Integer.parseInt(c),0);
         }
     }
 

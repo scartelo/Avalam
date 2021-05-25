@@ -14,6 +14,13 @@ public class TestPlateau {
         p.Jouer(p.tour(3,4),p.tour(3,5));
         p.afficher_grille();
 
+        System.out.println("Test marquage");
+        System.out.println(" Contenu " + p.tour(3,3).contenu());
+        p.tour(3,3).marquer(0x1A);
+        System.out.println(" Contenu apres marquage " + p.tour(3,3).contenu());
+
+
+
         System.out.println("Test coup 2");
         p.Jouer(p.tour(2,5),p.tour(3,5));
         p.afficher_grille();
@@ -70,6 +77,7 @@ public class TestPlateau {
         System.out.println("Test refaire un coup 5 ( echec ) ");
         p.refaireCoup();
         p.afficher_grille();
+
 
 
         System.out.println(p.tour(3,5).estDeplacable(p.tour(4,6)));

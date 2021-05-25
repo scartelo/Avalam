@@ -14,4 +14,6 @@ public interface InterfaceUtilisateur {
     void griser_annuler(boolean b);
 
     void griser_refaire(boolean b);
+
+    void load(String input);
 }

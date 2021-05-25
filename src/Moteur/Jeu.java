@@ -1,5 +1,6 @@
 package Moteur;
 
+import Global.Configuration;
 import Patterns.Observable;
 import Structures.Iterateur;
 import Structures.Sequence;
@@ -12,11 +13,15 @@ public class Jeu extends Observable {
     private boolean partieTerminee;
     public String nom_j1,nom_j2;
     public int IA1,IA2,niveauIA1,niveauIA2; // IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
+    private Tour tourSelectionnee;
+
     public Jeu(PlateauDeJeu p){
         plateau = p;
         tourFini = 0;
         partieTerminee = false;
         IA1=0;IA2=0;niveauIA1=0;niveauIA2=0;
+        nom_j1 = "Joueur 1";
+        nom_j2 = "Joueur 2";
     }
     /*
     Renvoie une string du joueur ayant le plus grand score ou égalité
@@ -144,4 +149,8 @@ public class Jeu extends Observable {
     public PlateauDeJeu plateau(){
         return plateau;
     }
+
+
+
+
 }
