@@ -28,9 +28,10 @@ public class JoueurHumain extends Joueur {
                     return false;
                 } else {
                     tourSelectionnee = jeu.plateau().tour(l, c);
-                    tourSelectionnee.marquer(
+                    /*tourSelectionnee.marquer(
                             Integer.parseInt(Configuration.instance().lis("CouleurSubrillance"),16)
-                    );
+                    );*/
+                    tourSelectionnee.marquer(true);
                     jeu.miseAJour();
                     Configuration.instance().logger().info(
                             "La tour (" + tourSelectionnee.ligne() + ", " + tourSelectionnee.colonne() + ") a été selectionnée");
@@ -43,14 +44,14 @@ public class JoueurHumain extends Joueur {
                     jeu.plateau().Jouer(tourSelectionnee, dest);
                     Configuration.instance().logger().info(
                             "Déplacement de la tour (" + tourSelectionnee.ligne() + "," + tourSelectionnee.colonne() + ") vers la tour (" + dest.ligne() + "," + dest.colonne() + ") effectué");
-                    tourSelectionnee.marquer(0);
+                    tourSelectionnee.marquer(false);
                     tourSelectionnee = null;
                     jeu.miseAJour();
                     return true;
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");
                     jeu.plateau().play_sound("Error");
-                    tourSelectionnee.marquer(0);
+                    tourSelectionnee.marquer(false);
                     tourSelectionnee = null;
                     jeu.miseAJour();
                     return false;

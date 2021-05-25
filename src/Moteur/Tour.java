@@ -1,9 +1,5 @@
 package Moteur;
 
-import Global.Configuration;
-import Structures.Couple;
-import Structures.Sequence;
-
 public class Tour {
     // 1 octet
     //sequence de pion| nb de pion
@@ -12,6 +8,7 @@ public class Tour {
     byte nbPion;
     int contenu;
     int ligne, colonne;
+    boolean selection;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
 
@@ -21,6 +18,7 @@ public class Tour {
         colonne = c;
         sequencePion =sequencePion();
         nbPion = nbPion();
+        selection=false;
     }
 
     public int contenu(){
@@ -92,13 +90,18 @@ public class Tour {
     // marquer une tour c-à-d mettre une couleur sur les 3 octects de poids forts de contenu
     // surlignage
 
-    public void marquer(int valeur){
+    /*public void marquer(int valeur){
         contenu = (contenu & 0xFF) | (valeur << 8);
+    }*/
+    public void marquer(boolean b){
+        selection=b;
     }
 
     public int marque(){
         return contenu >> 8;
     }
-
+    public boolean setEstSelectionee(){
+        return selection;
+    }
 }
 

@@ -16,7 +16,7 @@ public class TestPlateau {
 
         System.out.println("Test marquage");
         System.out.println(" Contenu " + p.tour(3,3).contenu());
-        p.tour(3,3).marquer(0x1A);
+        //p.tour(3,3).marquer(0x1A);
         System.out.println(" Contenu apres marquage " + p.tour(3,3).contenu());
 
 
