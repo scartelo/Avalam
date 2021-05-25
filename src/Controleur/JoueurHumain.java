@@ -50,6 +50,10 @@ public class JoueurHumain extends Joueur {
                     if(jeu.estTermine()){
                         jeu.Win_message();
                     }
+                    int prochain_joueur=(num()+1)%2;
+                    if(jeu.isIA(prochain_joueur)){
+                        jeu.change_ia_state(prochain_joueur,1);
+                    }
                     return true;
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");
@@ -65,6 +69,5 @@ public class JoueurHumain extends Joueur {
             Configuration.instance().logger().info("Partie terminée");
         return false;
     }
-
 
 }

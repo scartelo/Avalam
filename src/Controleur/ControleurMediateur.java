@@ -38,7 +38,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         // Lors d'un clic, on le transmet au joueur courant.
         // Si un coup a effectivement été joué (humain, coup valide), on change de joueur.
 
-        if (joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
+        if (l>=0 && c>=0 && l<jeu.plateau.lignes() && c<jeu.plateau.colonnes()&&joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
             jeu.miseAJour();
             changeJoueur();
         }
@@ -66,19 +66,35 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void basculeJoueurIA(int j, int t) {
         Configuration.instance().logger().info("Nouveau type " + t + " pour le joueur " + j);
         typeJoueur[j] = t;
+        if(j==0){
+            jeu.IA1=t;
+            if(t==1){
+                jeu.IA1_ref=1;
+            }
+        }else{
+            jeu.IA2=t;
+            if(t==1){
+                jeu.IA2_ref=1;
+            }
+        }
     }
 
     public void tictac() {
         if (!jeu.estTermine()) {
             if (decompte == 0) {
                 int type = typeJoueur[joueurCourant];
+                int courant = joueurs[joueurCourant][type].num() + 1;
                 // Lorsque le temps est écoulé on le transmet au joueur courant.
                 // Si un coup a été joué (IA) on change de joueur.
                 if (joueurs[joueurCourant][type].tempsEcoule()) {
+                    jeu.change_ia_state(joueurCourant,0);
                     changeJoueur();
-                } else {
+                    if(jeu.isIA(joueurCourant)){
+                        jeu.change_ia_state(joueurCourant,1);
+                    }
+                }
+                else {
                     // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.
-                    int courant = joueurs[joueurCourant][type].num() + 1;
                     System.out.println("On vous attend, joueur " + courant);
                     decompte = lenteurAttente;
                 }

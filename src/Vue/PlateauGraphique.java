@@ -13,7 +13,7 @@ import Moteur.Jeu;
 Classe permettant de dessiner la grille et le score
 */
 public class PlateauGraphique extends JComponent implements Observateur{
-    int largeur, hauteur, largeurCase, hauteurCase,margin_x,margin_y,margin_x_score,margin_y_score,largeurScore,hauteurScore,largeurNom,hauteurNom;
+    int largeur, hauteur, largeurCase, hauteurCase,margin_x,margin_y,margin_x_score,margin_y_score,largeurScore,hauteurScore,largeurNom,hauteurNom,hauteur_texte1,hauteur_texte2;
     Graphics2D drawable;
     Jeu jeu;
     PlateauDeJeu plateau;
@@ -43,9 +43,12 @@ public class PlateauGraphique extends JComponent implements Observateur{
         hauteurNom=0;
         largeurNom=0;
         drawable.clearRect(0,0, largeur, hauteur);
+        hauteur_texte1=hauteur+(hauteurScore/6)+10;
+        hauteur_texte2=hauteur+ hauteurScore/6 *4;
         tracerGrille();
         tracerScore();
     }
+
     void tracerImage(ImageCharge img, int x, int y, int lC, int hC){
         drawable.drawImage(img.image(), x, y, lC, hC, null);
     }
@@ -56,12 +59,18 @@ public class PlateauGraphique extends JComponent implements Observateur{
         String j2 = jeu.nom_j2;
         if(jeu.plateau.tourJoueur==0){
             j1+=" X";
+            if(jeu.IA1_ref==1) {
+                j1+=" ATTENTE_IA";
+            }
         }
         else{
             j2+=" X";
+            if(jeu.IA2_ref==1) {
+                j2+=" ATTENTE_IA";
+            }
         }
-        tracerString(new Couleur("CouleurNbPion"),5, hauteur+(hauteurScore/6)+10,j1);
-        tracerString(new Couleur("CouleurNbPion"),5, hauteur+((hauteurScore/6)*4),j2);
+        tracerString(new Couleur("CouleurNbPion"),5, hauteur_texte1,j1);
+        tracerString(new Couleur("CouleurNbPion"),5, hauteur_texte2,j2);
 
         int margin_score_j1=0;
         if(hauteur>500){
