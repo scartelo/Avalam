@@ -252,21 +252,23 @@ public class PlateauDeJeu extends Historique<Coup>{
     /*
     Rejoue le dernier coup annulé ( s'il existe )
     */
-    public void refaireCoup(){
+    public boolean refaireCoup(){
         Coup c = refaire();
         if(c!=null){
             grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
             update_score();
             tourJoueur=(tourJoueur+1)%2;
             Init_pos();
+            return true;
         }else{
             System.out.println("Ne peut pas refaire le coup");
+            return false;
         }
     }
     /*
     Annule le dernier coup joué ( si possible )
     */
-    public void annulerCoup(){
+    public boolean annulerCoup(){
         Coup c=annuler();
         if(c!=null) {
             placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
@@ -274,9 +276,11 @@ public class PlateauDeJeu extends Historique<Coup>{
             update_score();
             tourJoueur=(tourJoueur+1)%2;
             Init_pos();
+            return true;
         }
         else{
             System.out.println("Ne peut pas annuler le coup");
+            return false;
         }
     }
     /*

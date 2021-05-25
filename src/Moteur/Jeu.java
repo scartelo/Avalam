@@ -1,6 +1,5 @@
 package Moteur;
 
-import Global.Configuration;
 import Patterns.Observable;
 import Structures.Iterateur;
 import Structures.Sequence;
@@ -52,13 +51,14 @@ public class Jeu extends Observable {
     /*
     Rejoue un coup qui a été annulé ( si possible )
     */
-    public void refaire(){
-        plateau.refaireCoup();
+    public boolean refaire(){
+        boolean b=plateau.refaireCoup();
         miseAJour();
         if(estTermine()) {
             partieTerminee = true;
             Win_message();
         }
+        return b;
     }
     public void quitter(){
         System.exit(0);
@@ -66,12 +66,13 @@ public class Jeu extends Observable {
     /*
     Annule le dernier coup ( si possible )
     */
-    public void annuler(){
-        plateau.annulerCoup();
+    public boolean annuler(){
+        boolean b=plateau.annulerCoup();
         if(partieTerminee){
             partieTerminee =false;
         }
         miseAJour();
+        return b;
     }
     public void clic(int l, int c){
         plateau.position(l,c);

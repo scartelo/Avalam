@@ -52,10 +52,25 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     public void annuler(){
-        jeu.annuler();update_buttons();
+        boolean b=jeu.annuler();
+        if(b){
+            changeJoueur();
+            if(jeu.isIA(joueurCourant)){
+                jeu.change_ia_state(joueurCourant,1);
+            }
+        }
+        update_buttons();
     }
 
-    public void refaire(){ jeu.refaire();update_buttons(); }
+    public void refaire(){
+        boolean b=jeu.refaire();
+        if(b){
+            changeJoueur();
+            if(jeu.isIA(joueurCourant)){
+                jeu.change_ia_state(joueurCourant,1);
+            }
+        }
+        update_buttons(); }
 
     @Override
     public void fixerInterfaceUtilisateur(InterfaceUtilisateur i) {
@@ -92,6 +107,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                     if(jeu.isIA(joueurCourant)){
                         jeu.change_ia_state(joueurCourant,1);
                     }
+                    update_buttons();
                 }
                 else {
                     // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.
