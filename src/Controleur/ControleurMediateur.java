@@ -24,8 +24,10 @@ public class ControleurMediateur implements CollecteurEvenements {
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
             joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
-            typeJoueur[i] = 0;
+            //typeJoueur[i] = 0;
         }
+        typeJoueur[0]=jeu.IA1;
+        typeJoueur[1]=jeu.IA2;
     }
     public void update_buttons(){
         iu.griser_annuler(jeu.plateau.peutAnnuler());
