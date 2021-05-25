@@ -96,26 +96,23 @@ public class PlateauGraphique extends JComponent implements Observateur{
                 if(!T.estInnocupable()) {
                     tracerCarre(new Couleur("CouleurPlateau"), x+2, y+2, largeurCase-2, hauteurCase-2);
                     if(T.estVide()){
-                        tracerCercle(new Couleur("CouleurVide"), x+2, y+2, largeurCase-2, hauteurCase-2);
+                        tracerCercle(new Couleur("CouleurVide"), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
                     else if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Couleur("CouleurJ1"), x+2, y+2, largeurCase-2, hauteurCase-2);
+                        tracerCercle(new Couleur("CouleurJ1"), x+4, y+4, largeurCase-6, hauteurCase-6);
 
                     } else if (s == 1) {
-                        tracerCercle(new Couleur("CouleurJ2"), x+2, y+2, largeurCase-2, hauteurCase-2);
+                        tracerCercle(new Couleur("CouleurJ2"), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
                         if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
                             tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
                         }else if(!T.estInnocupable() && ! T.estVide()){
-                        int decal=5;
-                        if(hauteur<350) {
-                            decal = 7;
-                        }
-                        tracerImage(couronne, x+decal, y+5, largeurCase-10, hauteurCase-10);
+
+                        tracerImage(couronne, x+10, y+5, largeurCase-15, hauteurCase-15);
                         }
                     if (plateau.x1()!=-1){
-                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+2 , (plateau.x1()*hauteurCase)+margin_y+2, largeurCase-2, hauteurCase-2);
+                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+4 , (plateau.x1()*hauteurCase)+margin_y+4, largeurCase-6, hauteurCase-6);
 
                     }
                 }
@@ -129,7 +126,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.drawString(s,x,y);
     }
     void tracerSurbri(Couleur c, int x, int y, int lc, int hc){
-        drawable.setStroke(new BasicStroke(2));
+        drawable.setStroke(new BasicStroke(3));
         drawable.setColor(c.couleur());
         drawable.drawOval(x,y,lc, hc);
     }
