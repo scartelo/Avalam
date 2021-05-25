@@ -52,7 +52,6 @@ public class PlateauGraphique extends JComponent implements Observateur{
 
     void tracerScore(){
         tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur,hauteurScore);
-        tracerCarre(new Couleur("CouleurVide"), 0, hauteur, largeur,3 );
         String j1 = jeu.nom_j1;
         String j2 = jeu.nom_j2;
         if(jeu.plateau.tourJoueur==0){
@@ -61,18 +60,30 @@ public class PlateauGraphique extends JComponent implements Observateur{
         else{
             j2+=" X";
         }
-        tracerString(new Couleur("CouleurNbPion"),0, hauteur+(hauteurScore/6)+10,j1);
-        tracerString(new Couleur("CouleurNbPion"),0, hauteur+((hauteurScore/6)*4),j2);
+        tracerString(new Couleur("CouleurNbPion"),5, hauteur+(hauteurScore/6)+10,j1);
+        tracerString(new Couleur("CouleurNbPion"),5, hauteur+((hauteurScore/6)*4),j2);
 
+        int margin_score_j1=0;
+        if(hauteur>500){
+            margin_score_j1=-1*(hauteur/100);
+        }
         for(int i=0;i<jeu.plateau.scoreJ1();i++){
-            tracerCercle(new Couleur("CouleurJ1"), i*((hauteurScore/6)+2),hauteur+((hauteurScore/6)*2) , (hauteurScore/6), (hauteurScore/6));
+            tracerCercle(new Couleur("CouleurJ1"), i*((hauteurScore/6)+2)+10,hauteur+((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
         }
         for(int i=0;i<jeu.plateau.scoreJ2();i++){
-            tracerCercle(new Couleur("CouleurJ2"), i*((hauteurScore/6)+2),(hauteur+((hauteurScore/6)*5)) , hauteurScore/6, hauteurScore/6);
+            tracerCercle(new Couleur("CouleurJ2"), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
+        System.out.println(hauteur);
     }
     void tracerGrille(){
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
+        //bord gauche / droite
+        tracerCarre(new Couleur("CouleurBord"), 0, 0, margin_x, hauteur);
+        tracerCarre(new Couleur("CouleurBord"), margin_x+(plateau.lignes()*hauteurCase)+1, 0, largeur, hauteur);
+        //bord haut / bas
+        tracerCarre(new Couleur("CouleurBord"), 0, 0, largeur, margin_y);
+        tracerCarre(new Couleur("CouleurBord"), 0, margin_y+(plateau.colonnes()*largeurCase), largeur, margin_y);
+
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
                 int x = (j * hauteurCase)+margin_x;
@@ -83,7 +94,6 @@ public class PlateauGraphique extends JComponent implements Observateur{
 
 
                 if(!T.estInnocupable()) {
-                    tracerCarre(new Couleur("CouleurOutline"), x, y, largeurCase, hauteurCase);
                     tracerCarre(new Couleur("CouleurPlateau"), x+2, y+2, largeurCase-2, hauteurCase-2);
                     if(T.estVide()){
                         tracerCercle(new Couleur("CouleurVide"), x+2, y+2, largeurCase-2, hauteurCase-2);
@@ -130,9 +140,11 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.drawString(String.valueOf(nbPion),x+(lc/3),y+(hc/2));
     }
     void tracerCarre(Couleur c, int x, int y, int lc, int hc){
-        drawable.setStroke(new BasicStroke(10));
+        drawable.setStroke(new BasicStroke(1));
         drawable.setColor(c.couleur());
         drawable.fillRect(x,y,lc, hc);
+        drawable.setColor(new Couleur("CouleurOutline").couleur());
+        drawable.drawRect(x,y,lc, hc);
     }
     void tracerCercle(Couleur c, int x, int y, int lc, int hc){
         drawable.setColor(c.couleur());
