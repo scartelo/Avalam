@@ -186,7 +186,7 @@ public class PlateauDeJeu extends Historique<Coup>{
     }
 
     private void initialiserLigne2(int l, int c) {
-        if (c < 1 || c > 7)
+        if (c < 2 || c > 7)
             placerTour(INNOCCUPABLE, l, c);
         else
             alterner(l,c);
@@ -289,7 +289,7 @@ public class PlateauDeJeu extends Historique<Coup>{
         if(l<lignes && c<colonnes&&l>=0 && c>=0) {
             //Premier clic
             if (x1 == -1 && y1 == -1) {
-                if (grille[l][c].estJouable()) {
+                if (grille[l][c].estJouable() && !pasDeplacable(grille[l][c])) {
                     x1 = l;
                     y1 = c;
                     play_sound("Pick");
@@ -329,7 +329,8 @@ public class PlateauDeJeu extends Historique<Coup>{
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(!(grille[i][j].estVide()||(grille[i][j].estInnocupable()))){
-                    if(grille[i][j].nbPion()>1 || estIsole(i,j)){
+                    //if(grille[i][j].nbPion()>1 || estIsole(i,j)){// VERSION_1
+                    if(pasDeplacable(grille[i][j])){ // VERSION_2
                         if(grille[i][j].sommetTour()==0){
                             score_1++;
                         }else{
