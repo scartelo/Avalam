@@ -104,9 +104,8 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         }
                         tracerImage(couronne, x+decal, y+5, largeurCase-10, hauteurCase-10);
                         }
-                    if (plateau.x1()!=-1){
-                        tracerSurbri(new Couleur("CouleurSubrillance"),(plateau.y1()*largeurCase)+margin_x+2 , (plateau.x1()*hauteurCase)+margin_y+2, largeurCase-2, hauteurCase-2);
-
+                    if (T.marque() == Integer.parseInt(Configuration.instance().lis("CouleurSubrillance"),16)){
+                        tracerSurbri(new Couleur("CouleurSubrillance"), x+2, y+2, largeurCase-2, hauteurCase-2);
                     }
                 }
             }
