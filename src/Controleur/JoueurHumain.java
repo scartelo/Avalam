@@ -47,6 +47,9 @@ public class JoueurHumain extends Joueur {
                     tourSelectionnee.marquer(false);
                     tourSelectionnee = null;
                     jeu.miseAJour();
+                    if(jeu.estTermine()){
+                        jeu.Win_message();
+                    }
                     return true;
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");

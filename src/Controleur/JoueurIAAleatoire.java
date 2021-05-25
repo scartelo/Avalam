@@ -46,6 +46,10 @@ public class JoueurIAAleatoire extends JoueurIA{
                     if (destTour.estDeplacable(departTour) && destTour.estJouable()){
                         jeu.plateau().Jouer(departTour, destTour);
                         jeu.miseAJour();
+                        if(jeu.estTermine()){
+                            jeu.Win_message();
+                            Configuration.instance().logger().info("Partie terminée");
+                        }
                         return true;
                     }
                 }else {
