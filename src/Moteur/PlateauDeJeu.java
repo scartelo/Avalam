@@ -22,7 +22,6 @@ public class PlateauDeJeu extends Historique<Coup>{
     public PlateauDeJeu() {
         score1=0;
         score2=0;
-        tourJoueur=0;
         lignes = 9;
         colonnes = 9;
         grille = new Tour[lignes][colonnes];

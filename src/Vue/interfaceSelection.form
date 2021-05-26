@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Vue.interfaceSelection">
-  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="10" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="443"/>
+      <xy x="20" y="20" width="500" height="378"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-12632257"/>
+    </properties>
     <border type="none" title=""/>
     <children>
-      <vspacer id="58b0b">
-        <constraints>
-          <grid row="0" column="1" row-span="10" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
-      <grid id="adaf6" binding="panelJ1" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="adaf6" binding="panelJ1" layout-manager="GridLayoutManager" row-count="4" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-400201"/>
+        </properties>
         <border type="none" title="Joueur 1" title-justification="1" title-position="3"/>
         <children>
           <component id="9a0b7" class="javax.swing.JLabel" binding="Nom1">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <focusable value="false"/>
               <text value="Nom"/>
             </properties>
           </component>
@@ -41,9 +41,10 @@
           </component>
           <component id="17494" class="javax.swing.JComboBox" binding="niveauIA1">
             <constraints>
-              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <focusable value="false"/>
               <model>
                 <item value="Facile"/>
                 <item value="Moyen"/>
@@ -53,35 +54,62 @@
           </component>
           <component id="b5d94" class="javax.swing.JLabel" binding="NiveauIA1">
             <constraints>
-              <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <focusable value="false"/>
               <text value="NiveauIA"/>
             </properties>
           </component>
           <component id="8537f" class="javax.swing.JCheckBox" binding="checkIA1">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-400201"/>
+              <focusable value="false"/>
               <text value="Joueur IA"/>
+            </properties>
+          </component>
+          <component id="d383c" class="javax.swing.JCheckBox" binding="joueur1Start">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-400201"/>
+              <focusable value="false"/>
+              <selected value="true"/>
+              <text value="Joueur 1"/>
+            </properties>
+          </component>
+          <component id="2018" class="javax.swing.JLabel" binding="labelCommencer1">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <focusable value="false"/>
+              <text value="Premier tour"/>
             </properties>
           </component>
         </children>
       </grid>
-      <grid id="d39dd" binding="PanelJ2" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="d39dd" binding="PanelJ2" layout-manager="GridLayoutManager" row-count="4" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-400201"/>
+          <verifyInputWhenFocusTarget value="true"/>
+        </properties>
         <border type="none" title="Joueur 2" title-justification="1" title-position="3"/>
         <children>
           <component id="649f0" class="javax.swing.JLabel" binding="Nom2">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <focusable value="false"/>
               <text value="Nom"/>
             </properties>
           </component>
@@ -92,14 +120,16 @@
               </grid>
             </constraints>
             <properties>
+              <focusable value="true"/>
               <text value=""/>
             </properties>
           </component>
           <component id="37848" class="javax.swing.JComboBox" binding="niveauIA2">
             <constraints>
-              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <focusable value="false"/>
               <model>
                 <item value="Facile"/>
                 <item value="Moyen"/>
@@ -109,7 +139,7 @@
           </component>
           <component id="71861" class="javax.swing.JLabel" binding="NiveauIA2">
             <constraints>
-              <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="NiveauIA"/>
@@ -117,22 +147,57 @@
           </component>
           <component id="1423e" class="javax.swing.JCheckBox" binding="checkIA2">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-400201"/>
+              <borderPaintedFlat value="false"/>
+              <focusable value="false"/>
+              <opaque value="true"/>
               <text value="Joueur IA"/>
+              <verticalAlignment value="0"/>
+            </properties>
+          </component>
+          <component id="ffc79" class="javax.swing.JCheckBox" binding="joueur2Start">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-400201"/>
+              <focusable value="false"/>
+              <text value="Joueur 2"/>
+            </properties>
+          </component>
+          <component id="d7e3" class="javax.swing.JLabel" binding="labelCommencer2">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <focusable value="false"/>
+              <text value="Premier tour"/>
             </properties>
           </component>
         </children>
       </grid>
+      <vspacer id="890a2">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
       <component id="e4d9d" class="javax.swing.JButton" binding="Valider">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <focusable value="false"/>
           <text value="Valider"/>
         </properties>
       </component>
+      <vspacer id="8ed13">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
     </children>
   </grid>
 </form>

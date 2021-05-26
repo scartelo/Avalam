@@ -1,6 +1,10 @@
 package Vue;
 
 public interface InterfaceUtilisateur {
+    void update_waiting();
+
+    void reset_waiting();
+
     void basculePleinEcran();
 
     void sauvegarder();

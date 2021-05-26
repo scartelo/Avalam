@@ -5,6 +5,8 @@ import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 import Patterns.Observateur;
@@ -18,7 +20,8 @@ public class PlateauGraphique extends JComponent implements Observateur{
     Jeu jeu;
     PlateauDeJeu plateau;
     ImageCharge couronne;
-
+    static String waiting="ATTENTE_IA";
+    static int cnt_waiting=-1;
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
@@ -60,13 +63,13 @@ public class PlateauGraphique extends JComponent implements Observateur{
         if(jeu.plateau.tourJoueur==0){
             j1+=" X";
             if(jeu.IA1_ref==1) {
-                j1+=" ATTENTE_IA";
+                j1+=waiting;
             }
         }
         else{
             j2+=" X";
             if(jeu.IA2_ref==1) {
-                j2+=" ATTENTE_IA";
+                j2+=waiting;
             }
         }
         tracerString(new Couleur("CouleurNbPion"),5, hauteur_texte1,j1);
@@ -169,5 +172,16 @@ public class PlateauGraphique extends JComponent implements Observateur{
     public void metAJour() {
         repaint();
     }
-
+    public static void reset_attente(){
+        waiting=" ATTENTE_IA";
+        cnt_waiting=-1;
+    }
+    public static void update_attente(){
+        cnt_waiting+=1;
+        if(cnt_waiting>2){
+            reset_attente();
+        }else if(cnt_waiting>=0){
+            waiting+=" .";
+        }
+    }
 }

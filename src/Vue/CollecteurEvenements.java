@@ -13,4 +13,6 @@ public interface CollecteurEvenements {
     void update_buttons();
 
     void tictac();
+
+    void init_joueurs();
 }

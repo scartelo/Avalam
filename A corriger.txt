@@ -1,6 +1,3 @@
-- charger partie depuis menu
-	Bouton refaire/annuler pas à jour
-
--Selection d'une tour de 3 pion isolé mais quand même selectionnable
+-> Nouvelle partie qui n'affiche pas la nouvelle grille
 
 -Enregistrer une partie pendant le tour de l'ia ( problèmes exacts à définir )

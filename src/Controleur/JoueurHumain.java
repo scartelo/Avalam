@@ -14,7 +14,7 @@ public class JoueurHumain extends Joueur {
     public boolean joue(int l, int c){
         if (!jeu.estTermine()) {
             if (tourSelectionnee == null) {
-                if (!jeu.plateau().tour(l, c).estJouable()) {
+                if (!jeu.plateau().tour(l, c).estJouable() || jeu.plateau.pasDeplacable(jeu.plateau().tour(l, c))) {
                     if (jeu.plateau().tour(l, c).estInnocupable())
                         Configuration.instance().logger().warning("Hors grille");
                     else

@@ -13,12 +13,17 @@ public class ControleurMediateur implements CollecteurEvenements {
     InterfaceUtilisateur iu;
     Joueur[][] joueurs;
     int[] typeJoueur;
-    int joueurCourant;
+    public int joueurCourant;
     private int decompte;
     private int lenteurAttente = 100;
+    public boolean new_game;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
+        new_game=false;
+        init_joueurs();
+    }
+    public void init_joueurs(){
         joueurs = new Joueur[2][2];
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
@@ -28,6 +33,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
         typeJoueur[0]=jeu.IA1;
         typeJoueur[1]=jeu.IA2;
+        joueurCourant=jeu.plateau.tourJoueur;
     }
     public void update_buttons(){
         iu.griser_annuler(jeu.plateau.peutAnnuler());
@@ -46,9 +52,10 @@ public class ControleurMediateur implements CollecteurEvenements {
         update_buttons();
     }
 
-    void changeJoueur() {
+    public void changeJoueur() {
         joueurCourant = (joueurCourant + 1) % joueurs.length;
         //decompte = lenteurAttente;
+        iu.reset_waiting();
     }
 
     public void annuler(){
@@ -108,11 +115,13 @@ public class ControleurMediateur implements CollecteurEvenements {
                         jeu.change_ia_state(joueurCourant,1);
                     }
                     update_buttons();
+                    iu.reset_waiting();
                 }
                 else {
                     // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.
                     System.out.println("On vous attend, joueur " + courant);
                     decompte = lenteurAttente;
+                    iu.update_waiting();
                 }
             } else {
                 decompte--;
@@ -155,12 +164,13 @@ public class ControleurMediateur implements CollecteurEvenements {
         switch(commande){
             case "load":
                 iu.load(input);
+                joueurCourant=jeu.plateau.tourJoueur;
+                if(jeu.isIA(joueurCourant)){
+                    jeu.change_ia_state(joueurCourant,1);
+                }
                 break;
             default:
-
         }
-
-
     }
 
 }

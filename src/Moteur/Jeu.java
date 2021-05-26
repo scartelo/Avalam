@@ -11,7 +11,7 @@ public class Jeu extends Observable {
     private int tourFini;
     private boolean partieTerminee;
     public String nom_j1,nom_j2;
-    public int IA1,IA2,niveauIA1,niveauIA2,IA1_ref,IA2_ref; // IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
+    public int IA1,IA2,niveauIA1,niveauIA2,IA1_ref,IA2_ref,tourDep;// IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
     private Tour tourSelectionnee;
     public Jeu(PlateauDeJeu p){
         plateau = p;
@@ -45,7 +45,9 @@ public class Jeu extends Observable {
         JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner()+"\nMerci d'avoir joué à Avalam.","Partie terminée",JOptionPane.PLAIN_MESSAGE);
     }
     public void nouvellePartie(){
-        plateau.initialiserGrille();
+        plateau=new PlateauDeJeu();
+        plateau.tourJoueur=tourDep;
+        partieTerminee = false;
         miseAJour();
     }
     /*
@@ -100,9 +102,9 @@ public class Jeu extends Observable {
             Saves S = new Saves(this);
             if(S.saveExists(n_save)){
                 plateau.initialiserGrille();
-                plateau.tourJoueur=0;
                 plateau.Vider_historique();
                 Sequence<Coup> seq = S.read_save(n_save);
+                plateau.tourJoueur=tourDep;
                 Iterateur<Coup> it = seq.iterateur();
                 if (seq != null) {
                     while (it.aProchain()) {

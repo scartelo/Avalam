@@ -31,19 +31,20 @@ public class InterfaceMenu {
     private JButton startGame;
     private JButton tutorielButton;
     private JComboBox BoxChargerSauvegarde;
-    private static JFrame frame;
+    private JRadioButton muteRadioButton;
+    public static JFrame frame;
+    private  boolean is_muted;
     Jeu jeu;
-
+    ImageIcon logo_fenetre;
     public InterfaceMenu() {
         jeu = new Jeu(new PlateauDeJeu());
-        Saves save = new Saves(jeu);
-        for(int i=0;i<save.l_saves.size();i++){
-            BoxChargerSauvegarde.addItem(save.l_saves.get(i));
-        }
+        init_sauvegardes();
+        URL url = getClass().getResource("/Images/logo_fenetre.png");
+        logo_fenetre = new ImageIcon(url);
         chargerUnePartieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Charger_Partie(1);
+                Charger_Partie();
             }
         });
         quitterButton.addActionListener(new ActionListener() {
@@ -65,6 +66,27 @@ public class InterfaceMenu {
                 show_tutoriel();
             }
         });
+        muteRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stop_sound();
+            }
+        });
+    }
+    public void init_sauvegardes(){
+        Saves save = new Saves(jeu);
+        for(int i=0;i<save.l_saves.size();i++){
+            String s=save.l_saves.get(i);
+            String jour;String mois; String annee;String heure;String minute;String seconde;
+            jour= s.substring(0,2);
+            mois=s.substring(3,5);
+            annee=s.substring(6,8);
+            heure=s.substring(10,12);
+            minute=s.substring(13,15);
+            seconde=s.substring(16,18);
+            String out=jour+"/"+mois+"/"+annee+"  "+heure+":"+minute+":"+seconde;
+            BoxChargerSauvegarde.addItem(out);
+        }
     }
     public void show_tutoriel(){
         JFrame tutoriel = new JFrame();
@@ -83,26 +105,39 @@ public class InterfaceMenu {
         frame.setVisible(b);
         if(b){
             sound.play();
+        }else{
+            try {
+                sound.stop();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
         }
     }
-    public void Nouvelle_Partie(String nom_j1,String nom_j2,int ia1, int ia2, int n_ia1,int n_ia2){
+    public void Nouvelle_Partie(String nom_j1,String nom_j2,int ia1, int ia2, int n_ia1,int n_ia2,int tourDep,int tourCourant){
         jeu.nom_j1=nom_j1;
         jeu.nom_j2=nom_j2;
         jeu.IA1=ia1;
         jeu.IA2=ia2;
         jeu.niveauIA1=n_ia1;
         jeu.niveauIA2=n_ia2;
+        jeu.tourDep=tourDep;
+        jeu.plateau.tourJoueur=tourCourant;
         ControleurMediateur controleur = new ControleurMediateur(jeu);
         InterfaceGraphique.demarrer(jeu, controleur);
+
         stop_sound();
         frame.setVisible(false);
     }
 
-    public void Charger_Partie(int n_save){
+    public void Charger_Partie(){
         int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
             if(jeu.load(BoxChargerSauvegarde.getSelectedIndex()+1,1)){
-                Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2,jeu.IA1,jeu.IA2,jeu.niveauIA1,jeu.niveauIA2);
+                Nouvelle_Partie(jeu.nom_j1,jeu.nom_j2,jeu.IA1,jeu.IA2,jeu.niveauIA1,jeu.niveauIA2,jeu.tourDep,jeu.plateau.tourJoueur);
             }
             else{
                 JOptionPane.showMessageDialog(null, "La sauvegarde n'existe pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -116,19 +151,26 @@ public class InterfaceMenu {
         }
     }
 
-    public static void main(String[] args) {
-        frame = new JFrame("Menu");
+    public void Menu_principal() {
+        frame = new JFrame( "Menu principal");
+        frame.setIconImage(logo_fenetre.getImage());
         menu_music();
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setSize(300, 400);
+        frame.setSize(300, 405);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
     public void stop_sound(){
         try {
+            if(!is_muted){
             sound.stop();
+            is_muted=true;}
+            else{
+                menu_music();
+            }
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -137,11 +179,12 @@ public class InterfaceMenu {
             e.printStackTrace();
         }
     }
-    public static void menu_music(){
+    public void menu_music(){
         sound= null;
         try {
             sound = new Audio("8bitMenu");
             sound.change_volume(-30);
+            is_muted=false;
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {

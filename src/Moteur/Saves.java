@@ -58,6 +58,7 @@ public class Saves{
             myWriter.write(jeu.IA2+"\n");
             myWriter.write(jeu.niveauIA1+"\n");
             myWriter.write(jeu.niveauIA2+"\n");
+            myWriter.write(jeu.tourDep+"\n");
             Iterateur<Coup> it_p = passe.iterateur();
             Iterateur<Coup> it_f = futur.iterateur();
 
@@ -101,6 +102,8 @@ public class Saves{
             jeu.niveauIA1=next;
             next = myReader.nextInt();
             jeu.niveauIA2=next;
+            next = myReader.nextInt();
+            jeu.tourDep=next;
             next =0;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();

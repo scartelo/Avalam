@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 /*
 Classe permettant d'afficher la grille, le score, et un JMenuBar contenant les fonctionnalités du jeu ( refaire,annuler,sauvegarder...)
@@ -25,7 +26,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
     Jeu jeu;
-
+    ImageIcon logo_fenetre;
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
         jeu=j;
         controle = c;
@@ -33,11 +34,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         controle = new ControleurMediateur(jeu);
         //Boite dialogue load
         j.ajouteObservateur(this);
+        URL url = getClass().getResource("/Images/logo_fenetre.png");
+        logo_fenetre = new ImageIcon(url);
     }
 
     @Override
     public void run() {
         frame = new JFrame("Avalam");
+        frame.setIconImage(logo_fenetre.getImage());
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -74,10 +78,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         annulRef.add(refaire);
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
-        annulRef.add(iaJ1);
+        //annulRef.add(iaJ1); / Ne doit pas être là dans l'interface finale
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
-        annulRef.add(iaJ2);
+        //annulRef.add(iaJ2);/ Ne doit pas être là dans l'interface finale
         l_partie=menu_partie();
 
         m_bar.add(l_partie);
@@ -92,6 +96,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame.setSize(570, 500);
         frame.setMinimumSize(new Dimension(570,400));
         frame.setLocationRelativeTo(null);
+        controle.update_buttons();
         frame.setVisible(true);
     }
     public JMenu menu_sauvegarde(){
@@ -201,6 +206,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         }
 
     }
+    public void update_waiting(){
+        PlateauGraphique.update_attente();
+        metAJour();
+    }
+    public void reset_waiting(){
+        PlateauGraphique.reset_attente();
+        metAJour();
+    }
     @Override
     public void sauvegarder() {
         int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
@@ -216,6 +229,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         if(res==JOptionPane.YES_OPTION){
             sauvegarder();
             jeu.load(Integer.parseInt(c),0);
+            controle.update_buttons();
+            metAJour();
         }
     }
 
@@ -236,6 +251,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         if(res==JOptionPane.YES_OPTION){
             sauvegarder();
             jeu.nouvellePartie();
+            plateauGraphique = new PlateauGraphique(jeu);
+            controle.init_joueurs();
+            plateauGraphique.metAJour();
+            //InterfaceGraphique.demarrer(jeu, controle);
+
             metAJour();
         }
     }
@@ -246,7 +266,6 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         if(res== JOptionPane.YES_OPTION){
             InterfaceMenu m = new InterfaceMenu();
             m.showMenu(true);
-            m.menu_music();
             frame.dispose();
             metAJour();
         }

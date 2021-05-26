@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 public class interfaceSelection {
     private JPanel panelJ1;
@@ -20,9 +21,13 @@ public class interfaceSelection {
     private JPanel PanelJ2;
     private JLabel NiveauIA2;
     private JLabel NiveauIA1;
+    private JCheckBox joueur2Start;
+    private JCheckBox joueur1Start;
+    private JLabel labelCommencer1;
+    private JLabel labelCommencer2;
     private static JFrame frame;
-
-    private int IA1,IA2,niveau1,niveau2; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
+    ImageIcon logo_fenetre;
+    private int IA1,IA2,niveau1,niveau2,tourDep; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
     private String J1,J2;   //Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
     private boolean enabled1,enabled2;
     public interfaceSelection() {
@@ -32,10 +37,15 @@ public class interfaceSelection {
         IA2=0;
         niveau1=0;
         niveau2=0;
+        tourDep=0;
         enabled1=false;
         enabled2=false;
         niveauIA1.setEnabled(enabled1);
         niveauIA2.setEnabled(enabled2);
+        joueur1Start.setEnabled(false);
+        joueur2Start.setEnabled(true);
+        URL url = getClass().getResource("/Images/logo_fenetre.png");
+        logo_fenetre = new ImageIcon(url);
 
         checkIA1.addActionListener(new ActionListener() {
             @Override
@@ -62,7 +72,7 @@ public class interfaceSelection {
                     J2=nomJ2.getText();
                 }
                 InterfaceMenu m = new InterfaceMenu();
-                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2);
+                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2,tourDep,tourDep);
                 frame.dispose();
             }
         });
@@ -82,6 +92,24 @@ public class interfaceSelection {
             }
         });
 
+        joueur1Start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tourDep=0;
+                joueur2Start.setSelected(false);
+                joueur1Start.setEnabled(false);
+                joueur2Start.setEnabled(true);
+            }
+        });
+        joueur2Start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tourDep=1;
+                joueur1Start.setSelected(false);
+                joueur2Start.setEnabled(false);
+                joueur1Start.setEnabled(true);
+            }
+        });
     }
     public int difficultee(String diff){
         switch(diff){
@@ -99,9 +127,10 @@ public class interfaceSelection {
     public void selection() {
         frame = new JFrame("Séléction des joueurs");
         frame.setContentPane(new interfaceSelection().MainPanel);
+        frame.setIconImage(logo_fenetre.getImage());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
-        frame.setSize(300, 300);
+        frame.setSize(300, 360);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
