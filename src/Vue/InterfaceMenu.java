@@ -159,7 +159,7 @@ public class InterfaceMenu {
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setSize(300, 405);
+        frame.setSize(305, 460);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
