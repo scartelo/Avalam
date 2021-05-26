@@ -27,9 +27,11 @@ public class PlateauGraphique extends JComponent implements Observateur{
     public String Col_J2;
     static String waiting="ATTENTE_IA";
     static int cnt_waiting=-1;
+    public boolean aff_voisins;
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
+        aff_voisins=false;
         couronne=new ImageCharge(ImageCharge.charge("Images/couronne.png"));
         if(jeu.couleur){ // true si dans l'ordre "normal" ; false si inversé
             Col_J1="CouleurJ1";
@@ -113,7 +115,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         couple = v.extraitTete();
                         int i_v= couple.premier();
                         int j_v=couple.second();
-                        if(T.estDeplacable(plateau.tour(i_v,j_v))){
+                        if(aff_voisins&&T.estDeplacable(plateau.tour(i_v,j_v))){
                             int x_v = (j_v * hauteurCase)+margin_x;
                             int y_v = (i_v * largeurCase)+margin_y;
                             tracerSurbri(new Couleur("CouleurSurbriVoisin"), x_v+4, y_v+4, largeurCase-6, hauteurCase-6);

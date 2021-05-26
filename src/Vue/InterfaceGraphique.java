@@ -21,7 +21,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
     JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
-    JToggleButton iaJ1, iaJ2;
+    JToggleButton iaJ1, iaJ2,voisins;
     private boolean maximized;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
@@ -68,8 +68,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         // Annuler / Refaire
         Box annulRef = Box.createHorizontalBox();
         annuler = createButton("<", "annuler");
+        annuler.setToolTipText("Annule le dernier coup joué");
         griser_annuler(false);
         refaire = createButton(">", "refaire");
+        refaire.setToolTipText("Rejoue le dernier coup annulé");
         griser_refaire(false);
         restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
@@ -82,8 +84,12 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
         //annulRef.add(iaJ2);/ Ne doit pas être là dans l'interface finale
+        voisins = createToggleButton("Voisins");
+        voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
+        voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
+        annulRef.add(voisins);
         l_partie=menu_partie();
-
+        l_partie.setToolTipText("Menu de la partie");
         m_bar.add(l_partie);
         m_bar.add(annulRef);
         m_bar.add(Box.createHorizontalGlue());
@@ -126,6 +132,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         JMenu m = new JMenu("Partie");
 
         JMenuItem newgame = new JMenuItem("Nouvelle Partie");
+        newgame.setToolTipText("Partie rapide avec les mêmes options");
         newgame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 controle.commande("nouvellePartie");
@@ -133,7 +140,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             }
         });
         m.add(newgame);
-        JMenuItem save = new JMenuItem("Enregistrer");
+        JMenuItem save = new JMenuItem("Sauvegarder");
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 controle.commande("sauvegarder");
@@ -242,7 +249,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             metAJour();
         }
     }
-
+    public void aff_voisin() {
+        plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
+    }
 
 
     @Override

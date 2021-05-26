@@ -159,6 +159,9 @@ public class ControleurMediateur implements CollecteurEvenements {
             case "pleinecran":
                 iu.basculePleinEcran();
                 break;
+            case "aff_voisins":
+                iu.aff_voisin();
+                break;
             default:
                 return false;
         }
