@@ -131,6 +131,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
             } else {
                 decompte--;
+                if(decompte%20==0){
+                    iu.update_waiting();
+                }
             }
         }
     }

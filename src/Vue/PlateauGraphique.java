@@ -64,6 +64,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         hauteur_texte2=hauteur+ hauteurScore/6 *4;
         tracerGrille();
         tracerScore();
+        tracer_Surbri_ia();
         tracer_Surbri();
     }
 
@@ -101,6 +102,17 @@ public class PlateauGraphique extends JComponent implements Observateur{
             tracerCercle(new Couleur(Col_J2), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
     }
+    void tracer_Surbri_ia(){
+        for (int i = 0; i< plateau.lignes(); i++){
+            for (int j = 0; j < plateau.colonnes(); j++) {
+                if(plateau.tour(i,j).est_select_ia()){
+                    int x = (j * hauteurCase)+margin_x;
+                    int y = (i * largeurCase)+margin_y;
+                    tracerSurbri(new Couleur("CouleurSubrillanceIA"), x+4, y+4, largeurCase-6, hauteurCase-6);
+                }
+            }
+        }
+    }
     void tracer_Surbri(){
         for (int i = 0; i< plateau.lignes(); i++){
             for (int j = 0; j < plateau.colonnes(); j++){
@@ -108,17 +120,19 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     int x = (j * hauteurCase)+margin_x;
                     int y = (i * largeurCase)+margin_y;
                     tracerSurbri(new Couleur("CouleurSubrillance"), x+4, y+4, largeurCase-6, hauteurCase-6);
-                    Tour T=plateau.tour(i,j);
-                    Sequence<Couple<Integer,Integer>> v=jeu.plateau.voisins(T.ligne(),T.colonne());
-                    Couple<Integer,Integer> couple;
-                    while(!v.estVide()){
-                        couple = v.extraitTete();
-                        int i_v= couple.premier();
-                        int j_v=couple.second();
-                        if(aff_voisins&&T.estDeplacable(plateau.tour(i_v,j_v))){
-                            int x_v = (j_v * hauteurCase)+margin_x;
-                            int y_v = (i_v * largeurCase)+margin_y;
-                            tracerSurbri(new Couleur("CouleurSurbriVoisin"), x_v+4, y_v+4, largeurCase-6, hauteurCase-6);
+                    if(aff_voisins){
+                        Tour T=plateau.tour(i,j);
+                        Sequence<Couple<Integer,Integer>> v=jeu.plateau.voisins(T.ligne(),T.colonne());
+                        Couple<Integer,Integer> couple;
+                        while(!v.estVide()){
+                            couple = v.extraitTete();
+                            int i_v= couple.premier();
+                            int j_v=couple.second();
+                            if(T.estDeplacable(plateau.tour(i_v,j_v))){
+                                int x_v = (j_v * hauteurCase)+margin_x;
+                                int y_v = (i_v * largeurCase)+margin_y;
+                                tracerSurbri(new Couleur("CouleurSurbriVoisin"), x_v+4, y_v+4, largeurCase-6, hauteurCase-6);
+                            }
                         }
                     }
                     break;
@@ -170,7 +184,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         }
     }
     void tracerString(Couleur c, int x, int y,String s){
-        Font font = new Font("Comic Sans MS",Font.BOLD,hauteurScore/6);
+        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,hauteurScore/6);
         drawable.setFont(font);
         drawable.setColor(c.couleur());
         drawable.drawString(s,x,y);
@@ -181,7 +195,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.drawOval(x,y,lc, hc);
     }
     void tracerNbPion(Couleur c, int x, int y, int lc, int hc,int nbPion){
-        Font font = new Font("Comic Sans MS",Font.BOLD,hc/2);
+        Font font = new Font(Configuration.instance().lis("FontPion"),Font.PLAIN,hc/2);
         drawable.setFont(font);
         drawable.setColor(c.couleur());
         drawable.drawString(String.valueOf(nbPion),x+(lc/3),y+(hc/2));

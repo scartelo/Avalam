@@ -46,6 +46,7 @@ public class JoueurHumain extends Joueur {
                             "Déplacement de la tour (" + tourSelectionnee.ligne() + "," + tourSelectionnee.colonne() + ") vers la tour (" + dest.ligne() + "," + dest.colonne() + ") effectué");
                     tourSelectionnee.marquer(false);
                     tourSelectionnee = null;
+                    jeu.plateau.deselection_ia();
                     jeu.miseAJour();
                     if(jeu.estTermine()){
                         jeu.Win_message();
@@ -57,7 +58,9 @@ public class JoueurHumain extends Joueur {
                     return true;
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");
-                    jeu.plateau().play_sound("Error");
+                    if(!(dest.ligne()==tourSelectionnee.ligne() && dest.colonne()==tourSelectionnee.colonne())) {
+                        jeu.plateau().play_sound("Error");
+                    }
                     tourSelectionnee.marquer(false);
                     tourSelectionnee = null;
                     jeu.miseAJour();

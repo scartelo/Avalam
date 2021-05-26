@@ -9,6 +9,7 @@ public class Tour {
     int contenu;
     int ligne, colonne;
     boolean selection;
+    public boolean selection_ia;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
 
@@ -19,6 +20,7 @@ public class Tour {
         sequencePion =sequencePion();
         nbPion = nbPion();
         selection=false;
+        selection_ia=false;
     }
 
     public int contenu(){
@@ -103,5 +105,7 @@ public class Tour {
     public boolean setEstSelectionee(){
         return selection;
     }
-}
+    public boolean est_select_ia(){return selection_ia;}
+        }
 
+                                       

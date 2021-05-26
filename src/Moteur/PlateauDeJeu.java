@@ -397,4 +397,19 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
         return true;
     }
+
+    public void deselection_ia() {
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                if(grille[i][j].selection_ia){
+                    grille[i][j].selection_ia=false;
+                }
+            }
+        }
+    }
+
+    public void selection_ia(Tour departTour, Tour destTour) {
+        departTour.selection_ia=true;
+        destTour.selection_ia=true;
+    }
 }

@@ -45,6 +45,8 @@ public class JoueurIAAleatoire extends JoueurIA{
                     Tour destTour = jeu.plateau().tour(destL, destC);
                     if (destTour.estDeplacable(departTour) && destTour.estJouable()){
                         jeu.plateau().Jouer(departTour, destTour);
+                        jeu.plateau.deselection_ia();
+                        jeu.plateau.selection_ia(departTour,destTour);
                         jeu.miseAJour();
                         if(jeu.estTermine()){
                             jeu.Win_message();
