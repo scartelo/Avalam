@@ -24,8 +24,9 @@ public class interfaceSelection {
     private JCheckBox joueur2Start;
     private JCheckBox joueur1Start;
     private JLabel labelCommencer1;
-    private JLabel labelCommencer2;
+    private JRadioButton couleur;
     private static JFrame frame;
+    private boolean color;
     ImageIcon logo_fenetre;
     private int IA1,IA2,niveau1,niveau2,tourDep; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
     private String J1,J2;   //Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
@@ -44,6 +45,7 @@ public class interfaceSelection {
         niveauIA2.setEnabled(enabled2);
         joueur1Start.setEnabled(false);
         joueur2Start.setEnabled(true);
+        color=true;
         URL url = getClass().getResource("/Images/logo_fenetre.png");
         logo_fenetre = new ImageIcon(url);
 
@@ -72,7 +74,7 @@ public class interfaceSelection {
                     J2=nomJ2.getText();
                 }
                 InterfaceMenu m = new InterfaceMenu();
-                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2,tourDep,tourDep);
+                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2,tourDep,tourDep,color);
                 frame.dispose();
             }
         });
@@ -110,6 +112,12 @@ public class interfaceSelection {
                 joueur1Start.setEnabled(true);
             }
         });
+        couleur.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                color=!color;
+            }
+        });
     }
     public int difficultee(String diff){
         switch(diff){
@@ -130,7 +138,7 @@ public class interfaceSelection {
         frame.setIconImage(logo_fenetre.getImage());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
-        frame.setSize(300, 360);
+        frame.setSize(400, 360);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

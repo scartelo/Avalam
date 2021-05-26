@@ -13,6 +13,7 @@ public class Jeu extends Observable {
     public String nom_j1,nom_j2;
     public int IA1,IA2,niveauIA1,niveauIA2,IA1_ref,IA2_ref,tourDep;// IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
     private Tour tourSelectionnee;
+    public boolean couleur;// true si dans l'ordre "normal" ; false si inversé
     public Jeu(PlateauDeJeu p){
         plateau = p;
         tourFini = 0;

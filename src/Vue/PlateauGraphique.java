@@ -20,12 +20,21 @@ public class PlateauGraphique extends JComponent implements Observateur{
     Jeu jeu;
     PlateauDeJeu plateau;
     ImageCharge couronne;
+    public String Col_J1;
+    public String Col_J2;
     static String waiting="ATTENTE_IA";
     static int cnt_waiting=-1;
     public PlateauGraphique(Jeu j){
         jeu=j;
         plateau = jeu.plateau;
         couronne=new ImageCharge(ImageCharge.charge("Images/couronne.png"));
+        if(jeu.couleur){ // true si dans l'ordre "normal" ; false si inversé
+            Col_J1="CouleurJ1";
+            Col_J2="CouleurJ2";
+        }else{
+            Col_J2="CouleurJ1";
+            Col_J1="CouleurJ2";
+        }
     }
 
     @Override
@@ -80,10 +89,10 @@ public class PlateauGraphique extends JComponent implements Observateur{
             margin_score_j1=-1*(hauteur/100);
         }
         for(int i=0;i<jeu.plateau.scoreJ1();i++){
-            tracerCercle(new Couleur("CouleurJ1"), i*((hauteurScore/6)+2)+10,hauteur+((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
+            tracerCercle(new Couleur(Col_J1), i*((hauteurScore/6)+2)+10,hauteur+((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
         }
         for(int i=0;i<jeu.plateau.scoreJ2();i++){
-            tracerCercle(new Couleur("CouleurJ2"), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
+            tracerCercle(new Couleur(Col_J2), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
     }
     void tracerGrille(){
@@ -111,10 +120,10 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     }
                     else if (s == 0) {
                         //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Couleur("CouleurJ1"), x+4, y+4, largeurCase-6, hauteurCase-6);
+                        tracerCercle(new Couleur(Col_J1), x+4, y+4, largeurCase-6, hauteurCase-6);
 
                     } else if (s == 1) {
-                        tracerCercle(new Couleur("CouleurJ2"), x+4, y+4, largeurCase-6, hauteurCase-6);
+                        tracerCercle(new Couleur(Col_J2), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
                         if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
                             tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);

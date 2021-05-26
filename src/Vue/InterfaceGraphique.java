@@ -254,9 +254,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             plateauGraphique = new PlateauGraphique(jeu);
             controle.init_joueurs();
             frame.dispose();
+            Dimension dim = frame.getSize();
+            Point location = frame.getLocation();
             run();
-            //InterfaceGraphique.demarrer(jeu, controle);
-
+            frame.setSize(dim);
+            frame.setLocation(location);
             metAJour();
         }
     }

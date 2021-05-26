@@ -59,6 +59,11 @@ public class Saves{
             myWriter.write(jeu.niveauIA1+"\n");
             myWriter.write(jeu.niveauIA2+"\n");
             myWriter.write(jeu.tourDep+"\n");
+            if(jeu.couleur){
+                myWriter.write(1+"\n");
+            }else{
+                myWriter.write(0+"\n");
+            }
             Iterateur<Coup> it_p = passe.iterateur();
             Iterateur<Coup> it_f = futur.iterateur();
 
@@ -104,6 +109,12 @@ public class Saves{
             jeu.niveauIA2=next;
             next = myReader.nextInt();
             jeu.tourDep=next;
+            next = myReader.nextInt();
+            if(next==1){
+                jeu.couleur=true;
+            }else{
+                jeu.couleur=false;
+            }
             next =0;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();

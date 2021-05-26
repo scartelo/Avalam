@@ -1,1 +1,4 @@
+->besoin d'une fonction pour arrêter la fonction 'tictac()' controleurMediateur
+    Sinon lors d'une nouvelle partie deux instances s'executent en parallèle
+
 -(vieux bug, à vérifier) Enregistrer une partie pendant le tour de l'ia ( problèmes exacts à définir )
