@@ -271,6 +271,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             m.showMenu(true);
             frame.dispose();
             metAJour();
+            controle.change_play_state();
         }
     }
     public void griser_annuler(boolean b){

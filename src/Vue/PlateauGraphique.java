@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 
 import Patterns.Observateur;
 import Moteur.Jeu;
+import Structures.Couple;
+import Structures.Sequence;
+
 /*
 Classe permettant de dessiner la grille et le score
 */
@@ -59,6 +62,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         hauteur_texte2=hauteur+ hauteurScore/6 *4;
         tracerGrille();
         tracerScore();
+        tracer_Surbri();
     }
 
     void tracerImage(ImageCharge img, int x, int y, int lC, int hC){
@@ -93,6 +97,31 @@ public class PlateauGraphique extends JComponent implements Observateur{
         }
         for(int i=0;i<jeu.plateau.scoreJ2();i++){
             tracerCercle(new Couleur(Col_J2), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
+        }
+    }
+    void tracer_Surbri(){
+        for (int i = 0; i< plateau.lignes(); i++){
+            for (int j = 0; j < plateau.colonnes(); j++){
+                if(plateau.tour(i,j).setEstSelectionee()){
+                    int x = (j * hauteurCase)+margin_x;
+                    int y = (i * largeurCase)+margin_y;
+                    tracerSurbri(new Couleur("CouleurSubrillance"), x+4, y+4, largeurCase-6, hauteurCase-6);
+                    Tour T=plateau.tour(i,j);
+                    Sequence<Couple<Integer,Integer>> v=jeu.plateau.voisins(T.ligne(),T.colonne());
+                    Couple<Integer,Integer> couple;
+                    while(!v.estVide()){
+                        couple = v.extraitTete();
+                        int i_v= couple.premier();
+                        int j_v=couple.second();
+                        if(T.estDeplacable(plateau.tour(i_v,j_v))){
+                            int x_v = (j_v * hauteurCase)+margin_x;
+                            int y_v = (i_v * largeurCase)+margin_y;
+                            tracerSurbri(new Couleur("CouleurSurbriVoisin"), x_v+4, y_v+4, largeurCase-6, hauteurCase-6);
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
     void tracerGrille(){
@@ -132,7 +161,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         tracerImage(couronne, x+10, y+5, largeurCase-15, hauteurCase-15);
                         }
                     if (T.setEstSelectionee()){
-                        tracerSurbri(new Couleur("CouleurSubrillance"), x+4, y+4, largeurCase-6, hauteurCase-6);
+
                     }
                 }
             }

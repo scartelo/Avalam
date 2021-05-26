@@ -6,8 +6,6 @@ import Moteur.Jeu;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
-import javax.swing.*;
-
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
     InterfaceUtilisateur iu;
@@ -16,12 +14,12 @@ public class ControleurMediateur implements CollecteurEvenements {
     public int joueurCourant;
     private int decompte;
     private int lenteurAttente = 100;
-    public boolean new_game;
+    public boolean playing;
 
     public ControleurMediateur(Jeu j){
         jeu=j;
-        new_game=false;
         init_joueurs();
+        playing=true;
     }
     public void init_joueurs(){
         joueurs = new Joueur[2][2];
@@ -34,6 +32,14 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur[0]=jeu.IA1;
         typeJoueur[1]=jeu.IA2;
         joueurCourant=jeu.plateau.tourJoueur;
+    }
+
+    @Override
+    public boolean playing() {
+        return playing;
+    }
+    public void change_play_state(){
+        playing=!playing;
     }
     public void update_buttons(){
         iu.griser_annuler(jeu.plateau.peutAnnuler());

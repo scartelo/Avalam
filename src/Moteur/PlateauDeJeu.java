@@ -214,6 +214,8 @@ public class PlateauDeJeu extends Historique<Coup>{
             for (int j=c-1; j<=c+1 ; j++){
                 if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0)
                     voisins.insereTete(new Couple<>(i,j));
+                    if(l==4&&c==3){
+                    }
             }
         }
         return voisins;

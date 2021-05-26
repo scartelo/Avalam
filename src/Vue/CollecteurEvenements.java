@@ -15,4 +15,8 @@ public interface CollecteurEvenements {
     void tictac();
 
     void init_joueurs();
+
+    boolean playing();
+
+    void change_play_state();
 }
