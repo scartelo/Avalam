@@ -253,7 +253,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             jeu.nouvellePartie();
             plateauGraphique = new PlateauGraphique(jeu);
             controle.init_joueurs();
-            plateauGraphique.metAJour();
+            frame.dispose();
+            run();
             //InterfaceGraphique.demarrer(jeu, controle);
 
             metAJour();

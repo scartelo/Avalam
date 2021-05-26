@@ -1,3 +1,1 @@
--> Nouvelle partie qui n'affiche pas la nouvelle grille
-
--Enregistrer une partie pendant le tour de l'ia ( problèmes exacts à définir )
+-(vieux bug, à vérifier) Enregistrer une partie pendant le tour de l'ia ( problèmes exacts à définir )
