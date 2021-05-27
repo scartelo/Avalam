@@ -100,7 +100,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         time.start();
         controle.fixerInterfaceUtilisateur(this);
         frame.setSize(570, 500);
-        frame.setMinimumSize(new Dimension(570,400));
+        frame.setMinimumSize(new Dimension(570,460));
         frame.setLocationRelativeTo(null);
         controle.update_buttons();
         frame.setVisible(true);

@@ -25,7 +25,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
     ImageCharge couronne;
     public String Col_J1;
     public String Col_J2;
-    static String waiting="ATTENTE_IA";
+    static String waiting="";
     static int cnt_waiting=-1;
     public boolean aff_voisins;
     public PlateauGraphique(Jeu j){
@@ -76,18 +76,27 @@ public class PlateauGraphique extends JComponent implements Observateur{
         tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur,hauteurScore);
         String j1 = jeu.nom_j1;
         String j2 = jeu.nom_j2;
+        int y,width;
+        Couleur col;
+        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,hauteurScore/6);
         if(jeu.plateau.tourJoueur==0){
-            j1+=" X";
+            width = drawable.getFontMetrics(font).stringWidth(j1);
             if(jeu.IA1_ref==1) {
                 j1+=waiting;
             }
+            col=new Couleur(Col_J1);
+            y=hauteur_texte1;
+
         }
         else{
-            j2+=" X";
+            width = drawable.getFontMetrics(font).stringWidth(j2);
             if(jeu.IA2_ref==1) {
                 j2+=waiting;
             }
+            col=new Couleur(Col_J2);
+            y=hauteur_texte2;
         }
+        tracerCarre(col, 3, y-(hauteurScore/6)+3,width+2,(hauteurScore/6));
         tracerString(new Couleur("CouleurNbPion"),5, hauteur_texte1,j1);
         tracerString(new Couleur("CouleurNbPion"),5, hauteur_texte2,j2);
 
@@ -227,7 +236,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
         repaint();
     }
     public static void reset_attente(){
-        waiting=" ATTENTE_IA";
+        waiting="";
         cnt_waiting=-1;
     }
     public static void update_attente(){
