@@ -5,10 +5,18 @@ Cette classe est utilisée pour la gestion d'historique
 */
 public class Coup {
     Tour src;
-    Tour dst;
+    Tour dest;
 
-    public Coup(Tour source,Tour dest){
+    public Coup(Tour source,Tour dst){
         src=source;
-        dst=dest;
+        dest =dst;
+    }
+
+    public Tour src(){
+        return src;
+    }
+
+    public Tour dest(){
+        return dest;
     }
 }

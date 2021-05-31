@@ -110,7 +110,7 @@ public class Jeu extends Observable {
                 if (seq != null) {
                     while (it.aProchain()) {
                         Coup c = it.prochain();
-                        plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dst.ligne,c.dst.colonne);
+                        plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dest.ligne,c.dest.colonne);
                     }
                     for(int i=0;i<S.taille_futur;i++){
                         plateau.annulerCoup();

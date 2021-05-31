@@ -8,7 +8,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
-public class PlateauDeJeu extends Historique<Coup>{
+public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private Tour[][] grille;
     public int tourJoueur;
     private int lignes, colonnes;
@@ -254,7 +254,7 @@ public class PlateauDeJeu extends Historique<Coup>{
     public boolean refaireCoup(){
         Coup c = refaire();
         if(c!=null){
-            grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
+            grille[c.dest.ligne][c.dest.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
             update_score();
             tourJoueur=(tourJoueur+1)%2;
             Init_pos();
@@ -270,7 +270,7 @@ public class PlateauDeJeu extends Historique<Coup>{
     public boolean annulerCoup(){
         Coup c=annuler();
         if(c!=null) {
-            placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
+            placerTour(c.dest.contenu(),c.dest.ligne,c.dest.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
             update_score();
             tourJoueur=(tourJoueur+1)%2;
@@ -411,5 +411,20 @@ public class PlateauDeJeu extends Historique<Coup>{
     public void selection_ia(Tour departTour, Tour destTour) {
         departTour.selection_ia=true;
         destTour.selection_ia=true;
+    }
+
+    @Override
+    public PlateauDeJeu clone(){
+        PlateauDeJeu clone = null;
+        try {
+            clone = (PlateauDeJeu) super.clone();
+            clone.grille = grille.clone();
+
+        } catch (CloneNotSupportedException e) {
+            Configuration.instance().logger().severe("Clone échoué");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return clone;
     }
 }

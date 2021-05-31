@@ -45,6 +45,9 @@ public class JoueurIAAleatoire extends JoueurIA{
                     Tour destTour = jeu.plateau().tour(destL, destC);
                     if (destTour.estDeplacable(departTour) && destTour.estJouable()){
                         jeu.plateau().Jouer(departTour, destTour);
+                        Configuration.instance().logger().info(
+                                "La tour (" + departTour.ligne() + "," + departTour.colonne() + ") a été déplacée vers (" + destTour.ligne() + "," + destTour.colonne() + ")"
+                        );
                         jeu.plateau.deselection_ia();
                         jeu.plateau.selection_ia(departTour,destTour);
                         jeu.miseAJour();

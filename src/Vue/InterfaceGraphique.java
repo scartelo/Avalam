@@ -80,10 +80,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         annulRef.add(refaire);
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
-        //annulRef.add(iaJ1); / Ne doit pas être là dans l'interface finale
+        //annulRef.add(iaJ1); // Ne doit pas être là dans l'interface finale
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
-        //annulRef.add(iaJ2);/ Ne doit pas être là dans l'interface finale
+        //annulRef.add(iaJ2);// Ne doit pas être là dans l'interface finale
         voisins = createToggleButton("Voisins");
         voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
         voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));

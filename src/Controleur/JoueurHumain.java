@@ -27,7 +27,7 @@ public class JoueurHumain extends Joueur {
                     Configuration.instance().logger().warning("Cette tour est isolée, elle ne peut pas être sélectionner");
                     return false;
                 } else {
-                    tourSelectionnee = jeu.plateau().tour(l, c);
+                    tourSelectionnee = jeu.plateau().tour(l,c);
                     /*tourSelectionnee.marquer(
                             Integer.parseInt(Configuration.instance().lis("CouleurSubrillance"),16)
                     );*/
@@ -45,6 +45,7 @@ public class JoueurHumain extends Joueur {
                     Configuration.instance().logger().info(
                             "Déplacement de la tour (" + tourSelectionnee.ligne() + "," + tourSelectionnee.colonne() + ") vers la tour (" + dest.ligne() + "," + dest.colonne() + ") effectué");
                     tourSelectionnee.marquer(false);
+
                     tourSelectionnee = null;
                     jeu.plateau.deselection_ia();
                     jeu.miseAJour();
@@ -62,6 +63,7 @@ public class JoueurHumain extends Joueur {
                         jeu.plateau().play_sound("Error");
                     }
                     tourSelectionnee.marquer(false);
+
                     tourSelectionnee = null;
                     jeu.miseAJour();
                     return false;

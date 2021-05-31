@@ -196,9 +196,9 @@ public class PlateauGraphique extends JComponent implements Observateur{
 
                         tracerImage(couronne, x+10, y+5, largeurCase-15, hauteurCase-15);
                         }
-                    if (T.setEstSelectionee()){
+                    /*if (T.setEstSelectionee()){
 
-                    }
+                    }*/
                 }
             }
         }

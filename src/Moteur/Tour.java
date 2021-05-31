@@ -92,9 +92,9 @@ public class Tour {
     // marquer une tour c-à-d mettre une couleur sur les 3 octects de poids forts de contenu
     // surlignage
 
-    /*public void marquer(int valeur){
+    public void marquer(int valeur){
         contenu = (contenu & 0xFF) | (valeur << 8);
-    }*/
+    }
     public void marquer(boolean b){
         selection=b;
     }

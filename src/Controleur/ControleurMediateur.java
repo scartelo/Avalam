@@ -27,6 +27,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
             joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //typeJoueur[i] = 0;
         }
         typeJoueur[0]=jeu.IA1;
@@ -182,6 +183,8 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
                 break;
             default:
+                Configuration.instance().logger().severe("Commande inconnue");
+                System.exit(1);
         }
     }
 

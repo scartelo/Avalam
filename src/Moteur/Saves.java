@@ -69,12 +69,12 @@ public class Saves{
 
             while (it_p.aProchain()){
                 Coup c = it_p.prochain();
-                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
+                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dest.ligne+" "+c.dest.colonne+"\n");
             }
             myWriter.write("-1\n");
             while (it_f.aProchain()){
                 Coup c = it_f.prochain();
-                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
+                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dest.ligne+" "+c.dest.colonne+"\n");
             }
             myWriter.close();
             update_dir();
