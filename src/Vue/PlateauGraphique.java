@@ -179,7 +179,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         //bord gauche / droite
         for (int j = 0; j< plateau.colonnes();  j++){
             for (int i = 0; i < plateau.lignes(); i++) {
-                if(!plateau.grille()[i][j].estInnocupable()){
+                if(!plateau.grille()[i][j].estInnocupable() &&!plateau.grille()[i][j].estVide() ){
                     int[] coord= to_iso(i,j);
                     int x=coord[0];
                     int y=coord[1];
