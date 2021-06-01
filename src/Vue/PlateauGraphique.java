@@ -71,10 +71,10 @@ public class PlateauGraphique extends JComponent implements Observateur {
         ori_y = margin_y / hauteurCase;
 
         //tracerGrille();
-        tracerGrille_iso();
         //tracerScore();
         //tracer_Surbri_ia();
         //tracer_Surbri();
+        tracerGrille_iso();
         tracerString(new Couleur("CouleurNbPion"),0,20,"x :"+t_x+"   y :"+t_y);
         tracerString(new Couleur("CouleurNbPion"),0,40,"OffX :"+offsetX+"   OffY :"+offsetY);
         tracerString(new Couleur("CouleurNbPion"),0,60,"SCREEN_W :"+largeur+"   SCREEN_H :"+hauteur);
@@ -135,50 +135,6 @@ public class PlateauGraphique extends JComponent implements Observateur {
             }
         }
     }
-
-    private void tracerFleche(Couleur c, int x, int y, int w, int h) {
-
-        Polygon arrowHead = new Polygon();
-
-        arrowHead.addPoint(x + w, y);
-        arrowHead.addPoint(x + w + h, y + h / 2);
-        arrowHead.addPoint(x + w + h, y - h / 2);
-
-        drawable.setColor(c.couleur());
-
-        drawable.fill(arrowHead);
-        drawable.setStroke(new BasicStroke(1));
-        drawable.setColor(Color.BLACK);
-        drawable.draw(arrowHead);
-    }
-
-    void tracerDiamond(int x, int y, int l, int h,boolean fill) {
-        int x1, y1, x2, y2, x3, y3, x4, y4;
-        x1 = x;
-        y1 = y + h / 2;
-        x2 = x1 + l / 2;
-        y2 = y;
-        x3 = x + l;
-        y3 = y1;
-        x4 = x2;
-        y4 = y + h;
-        drawable.drawLine(x1, y1, x2, y2);
-        drawable.drawLine(x2, y2, x3, y3);
-        drawable.drawLine(x3, y3, x4, y4);
-        drawable.drawLine(x4, y4, x1, y1);
-        int px[] = {x1, x2, x3, x4};
-        int py[] = {y1, y2, y3, y4};
-        if(fill)
-            drawable.fillPolygon(px,py,4);
-    }
-
-    public boolean in_Triangle( int x1, int y1, int x2, int y2, int x3, int y3, int x, int y){
-        int denominator = ((y2 - y3)*(x1 - x3) + (x3 - x2)*(y1 - y3));
-        int a =((y2 - y3)*(x - x3) + (x3 - x2)*(y - y3)) / denominator;
-        int b=((y3 - y1)*(x - x3) + (x1 - x3)*(y - y3)) / denominator;
-        int c=1 - a - b;
-        return 0 <= a && a <= 1 && 0 <= b && b <= 1 && 0 <= c && c <= 1;
-    }
     public int[] to_grid(int x,int y){
         int i,j;
         cellX=x/largeurCase;
@@ -212,7 +168,6 @@ public class PlateauGraphique extends JComponent implements Observateur {
         return new int[]{i,j};
     }
 
-
     public int[] to_iso(int x,int y){
         int i=(ori_x*largeurCase)+(x-y)*(largeurCase/2);
         int j=(ori_y*hauteurCase)+(x+y)*(hauteurCase/2);
@@ -220,6 +175,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
     }
     void tracerGrille_iso(){
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true);
+        //tracerDiamond(ori_x,ori_y, plateau.lignes()*largeurCase,plateau.colonnes()*hauteurCase, true);
         //bord gauche / droite
         for (int j = 0; j< plateau.colonnes();  j++){
             for (int i = 0; i < plateau.lignes(); i++) {
@@ -238,7 +194,11 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     }else{
                         drawable.setColor(Color.BLACK);
                     }
-                tracerDiamond(x,y,largeurCase,hauteurCase,fill);
+                    if(plateau.grille()[i][j].setEstSelectionee()){
+                        drawable.setColor(Color.BLUE);
+
+                    }
+                    tracerDiamond(x,y,largeurCase,hauteurCase,fill);
                 drawable.setColor(Color.BLACK);
                 tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,plateau.grille()[i][j].nbPion());
 
@@ -289,6 +249,55 @@ public class PlateauGraphique extends JComponent implements Observateur {
             }
         }
     }
+    private void tracerFleche(Couleur c, int x, int y, int w, int h) {
+
+        Polygon arrowHead = new Polygon();
+
+        arrowHead.addPoint(x + w, y);
+        arrowHead.addPoint(x + w + h, y + h / 2);
+        arrowHead.addPoint(x + w + h, y - h / 2);
+
+        drawable.setColor(c.couleur());
+
+        drawable.fill(arrowHead);
+        drawable.setStroke(new BasicStroke(1));
+        drawable.setColor(Color.BLACK);
+        drawable.draw(arrowHead);
+    }
+
+    void tracerDiamond(int x, int y, int l, int h,boolean fill) {
+        int x1, y1, x2, y2, x3, y3, x4, y4;
+        x1 = x;
+        y1 = y + h / 2;
+        x2 = x1 + l / 2;
+        y2 = y;
+        x3 = x + l;
+        y3 = y1;
+        x4 = x2;
+        y4 = y + h;
+
+        int px[] = {x1, x2, x3, x4};
+        int py[] = {y1, y2, y3, y4};
+        if(fill)
+            drawable.fillPolygon(px,py,4);
+            drawable.fillPolygon(new int[]{x4,x3,x3,x4},new int[]{y4,y3,y3+10,y4+10},4);
+            drawable.fillPolygon(new int[]{x1,x4,x4,x1},new int[]{y1,y4,y4+10,y1+10},4);
+            //face supérieur de la tuile
+        drawable.setColor(Color.BLACK);
+        drawable.drawLine(x1, y1, x2, y2);
+        drawable.drawLine(x2, y2, x3, y3);
+        drawable.drawLine(x3, y3, x4, y4);
+        drawable.drawLine(x4, y4, x1, y1);
+        //3D côté gauche
+        drawable.drawLine(x1,y1,x1,y1+10);
+        drawable.drawLine(x4,y4,x4,y4+10);
+        drawable.drawLine(x1,y1+10,x4,y4+10);
+        //3D côté droit
+        drawable.drawLine(x4,y4,x4,y4+10);
+        drawable.drawLine(x3,y3,x3,y3+10);
+        drawable.drawLine(x3,y3+10,x4,y4+10);
+    }
+
     int tracerString(Couleur c, int x, int y,String s){
         Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,hauteurScore/6);
         drawable.setFont(font);
