@@ -78,11 +78,10 @@ public class Tour {
                 break;
 
             case 5:
-                res=(byte) (contenu & 128);
-                break;
+                return sommetTour();
 
             default:
-                return 0;
+                return 1;
         }
 
         return (byte) (res >> 3+(i-1));
