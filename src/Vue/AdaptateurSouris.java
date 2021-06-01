@@ -14,14 +14,15 @@ public class AdaptateurSouris extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e){
-        int tmp_c=e.getX()- plateau_graphique.margin_x;
-        int tmp_l=e.getY()- plateau_graphique.margin_y;
-        int c = tmp_c / plateau_graphique.largeurCase();
-        int l = tmp_l / plateau_graphique.hauteurCase();
-        if(tmp_c<0||tmp_l<0){
+        int l,c;
+        int []coord = plateau_graphique.to_grid(e.getX(),e.getY());
+        c=coord[1];
+        l=coord[0];
+        if(c<0||l<0){
             c=-1;
             l=-1;
         }
+        plateau_graphique.affichage(l,c);
         controle.clicSouris(l,c);
     }
 
