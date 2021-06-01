@@ -58,6 +58,36 @@ public class Tour {
         }
         else{return false;}
     }
+    public byte niemePion(int i){
+        byte res;
+        switch(i){
+            case 1:
+                res=(byte) (contenu & 8);
+                break;
+
+            case 2:
+                res=(byte) (contenu & 16);
+                break;
+
+            case 3:
+                res=(byte) (contenu & 32);
+                break;
+
+            case 4:
+                res=(byte) (contenu & 64);
+                break;
+
+            case 5:
+                res=(byte) (contenu & 128);
+                break;
+
+            default:
+                return 0;
+        }
+
+        return (byte) (res >> 3+(i-1));
+    }
+
     /*
     Renvoie si la tour T est déplacable sur la tour (self)
     */
