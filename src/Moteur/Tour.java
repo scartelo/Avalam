@@ -3,7 +3,7 @@ package Moteur;
 public class Tour {
     // 1 octet
     //sequence de pion| nb de pion
-    //    0 0 0 1 1   | 1 0 0
+    //    0 0 0 1 0   | 0 1 0
     byte sequencePion;
     byte nbPion;
     int contenu;
@@ -45,6 +45,36 @@ public class Tour {
         return (byte) (contenu >> 3+nbPion()-1);
     }
 
+
+    public byte niemePion(int i){
+        byte res;
+        switch(i){
+            case 1:
+                res=(byte) (contenu & 8);
+                break;
+
+            case 2:
+                res=(byte) (contenu & 16);
+                break;
+
+            case 3:
+                res=(byte) (contenu & 32);
+                break;
+
+            case 4:
+                res=(byte) (contenu & 64);
+                break;
+
+            case 5:
+                res=(byte) (contenu & 128);
+                break;
+
+            default:
+                return 0;
+        }
+
+        return (byte) (res >> 3+(i-1));
+    }
     /*
     Ajoute la tour t au dessus de la tour(self)
     */

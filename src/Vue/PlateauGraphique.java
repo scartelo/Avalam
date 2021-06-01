@@ -184,13 +184,15 @@ public class PlateauGraphique extends JComponent implements Observateur{
                         tracerCercle(new Couleur("CouleurVide"), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
                     else if (s == 0) {
-                        //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Couleur(Col_J1), x+4, y+4, largeurCase-6, hauteurCase-6);
+
+                        //tracerCercle(new Couleur(Col_J1), x+4, y+4, largeurCase-6, hauteurCase-6);
 
                     } else if (s == 1) {
-                        tracerCercle(new Couleur(Col_J2), x+4, y+4, largeurCase-6, hauteurCase-6);
+                        //tracerCercle(new Couleur(Col_J2), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
                         if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
+
+                            tracerTour(x+4,y+4,largeurCase, largeurCase-20,T);
                             tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
                         }else if(!T.estInnocupable() && ! T.estVide()){
 
@@ -200,6 +202,37 @@ public class PlateauGraphique extends JComponent implements Observateur{
 
                     }*/
                 }
+            }
+        }
+    }
+    void tracerPion(Couleur c, int x, int y, int lc, int hc){
+        int hauteurPion =hc/3;
+
+
+        drawable.setColor(c.couleur());
+        drawable.fillOval(x, y+hauteurPion, lc, hc);
+        drawable.setColor(Color.black);
+        drawable.drawOval(x, y+hauteurPion, lc, hc);
+
+        drawable.setColor(c.couleur());
+        drawable.fillRect(x,y+hc/2,lc,hauteurPion);
+
+        drawable.setColor(Color.black);
+        drawable.drawLine(x, y+hc/2, x, y+(hc/2)+hauteurPion);
+        drawable.drawLine(x+lc, y+hc/2, x + lc, y+(hc/2)+hauteurPion);
+
+        drawable.setColor(c.couleur());
+        drawable.fillOval(x,y, lc, hc);
+        drawable.setColor(Color.black);
+        drawable.drawOval(x,y, lc, hc);
+    }
+    void tracerTour(int x, int y, int lc, int hc,Tour T){
+        for(int i=1;i<=T.nbPion();i++){
+
+            if (T.niemePion(i) == 0) {
+                tracerPion(new Couleur(Col_J1), x + 4, (y + 4)-((largeurCase-20)/3)*(i-1), largeurCase, largeurCase - 20);
+            } else if (T.niemePion(i) == 1) {
+                tracerPion(new Couleur(Col_J2), x+4, (y + 4)-((largeurCase-20)/3)*(i-1), largeurCase, largeurCase - 20);
             }
         }
     }
