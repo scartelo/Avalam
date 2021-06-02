@@ -22,7 +22,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
     Graphics2D drawable;
     Jeu jeu;
     PlateauDeJeu plateau;
-    ImageCharge couronne;
+    ImageCharge border;
     public String Col_J1;
     public String Col_J2;
     static String waiting = "ATTENTE_IA";
@@ -35,7 +35,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         plateau = jeu.plateau;
         aff_voisins = false;
         transparency=false;
-        couronne = new ImageCharge(ImageCharge.charge("Images/couronne.png"));
+        //border = new ImageCharge(ImageCharge.charge("Images/border.png"));
         if (jeu.couleur) { // true si dans l'ordre "normal" ; false si inversé
             Col_J1 = "CouleurJ1";
             Col_J2 = "CouleurJ2";
@@ -55,7 +55,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         largeur = getSize().width;
         hauteur = getSize().height;
         largeurScore = largeur / 2;
-        hauteurScore = hauteur / 5;
+        hauteurScore = (int)(hauteurCase*1.5)-4;
         //hauteur = hauteur - hauteurScore;
         largeurCase = largeur / plateau.colonnes();
         hauteurCase = hauteur / plateau.lignes();
@@ -65,13 +65,12 @@ public class PlateauGraphique extends JComponent implements Observateur {
         hauteurNom = 0;
         largeurNom = 0;
         drawable.clearRect(0, 0, largeur, hauteur);
-        hauteur_texte1 = hauteur + (hauteurScore / 6) + 10;
-        hauteur_texte2 = hauteur + hauteurScore / 6 * 4;
+        hauteur_texte1 = (hauteurScore / 6) + 10;
+        hauteur_texte2 = hauteurScore / 6 * 4;
 
         ori_x = margin_x / largeurCase;
         ori_y = margin_y / hauteurCase;
         //tracerGrille();
-        //tracerScore();
         //tracer_Surbri_ia();
         //tracer_Surbri();
         tracerGrille_iso();
@@ -88,42 +87,6 @@ public class PlateauGraphique extends JComponent implements Observateur {
     void tracerImage(ImageCharge img, int x, int y, int lC, int hC) {
         drawable.drawImage(img.image(), x, y, lC, hC, null);
     }
-
-    void tracerScore() {
-        tracerCarre(new Couleur("CouleurScore"), 0, hauteur, largeur, hauteurScore,true);
-        String j1 = jeu.nom_j1;
-        String j2 = jeu.nom_j2;
-
-        int w1 = tracerString(new Couleur("CouleurNbPion"), 5, hauteur_texte1, j1);
-
-
-        int w2 = tracerString(new Couleur("CouleurNbPion"), 5, hauteur_texte2, j2);
-        if (jeu.plateau.tourJoueur == 0) {
-            tracerFleche(new Couleur(Col_J1), 5, hauteur_texte1 - hauteurScore / 12, w1, hauteurScore / 8);
-            if (jeu.IA1_ref == 1) {
-                tracerString(new Couleur("CouleurNbPion"), w1 + hauteurScore / 4, hauteur_texte1, waiting);
-            }
-        } else {
-            tracerFleche(new Couleur(Col_J2), 5, hauteur_texte2 - hauteurScore / 12, w2, hauteurScore / 8);
-            if (jeu.IA2_ref == 1) {
-                tracerString(new Couleur("CouleurNbPion"), w2 + hauteurScore / 4, hauteur_texte2, waiting);
-            }
-        }
-
-        int margin_score_j1 = 0;
-        if (hauteur > 500) {
-            margin_score_j1 = -1 * (hauteur / 100);
-        }
-
-        for (int i = 0; i < jeu.plateau.scoreJ1(); i++) {
-
-            tracerCercle(new Couleur(Col_J1), i * ((hauteurScore / 6) + 2) + 10, hauteur + ((hauteurScore / 6) * 2) + margin_score_j1, (hauteurScore / 6), (hauteurScore / 6));
-        }
-        for (int i = 0; i < jeu.plateau.scoreJ2(); i++) {
-            tracerCercle(new Couleur(Col_J2), i * ((hauteurScore / 6) + 2) + 10, (int) (hauteur + ((hauteurScore / 6) * 4.5)), hauteurScore / 6, hauteurScore / 6);
-        }
-    }
-
 
     public int[] to_grid(int x,int y){
         int i,j;
@@ -188,10 +151,53 @@ public class PlateauGraphique extends JComponent implements Observateur {
         int j=(ori_y*hauteurCase)+(x+y)*(hauteurCase/2);
         return new int[]{i,j};
     }
+    void tracerScore(){
+        //Score
+        tracerCarre(new Couleur("CouleurScore"), largeur/4, 0, largeurScore, hauteurScore,true);
+        String j1 = jeu.nom_j1;
+        String j2 = jeu.nom_j2;
+
+        int w1=tracerString(new Couleur("CouleurNbPion"),largeur/4, hauteur_texte1/2,j1);
+
+
+        int w2=tracerString(new Couleur("CouleurNbPion"),largeur/4, hauteur_texte2,j2);
+        if(jeu.plateau.tourJoueur==0){
+            tracerFleche(new Couleur(Col_J1),5+(largeur/4), hauteur_texte1/3,w1,hauteurScore/8);
+            if(jeu.IA1_ref==1) {
+                tracerString(new Couleur("CouleurNbPion"),w1+(largeur/4)+5+hauteurScore/8, hauteur_texte1,waiting);
+            }
+        }
+        else{
+            tracerFleche(new Couleur(Col_J2),5+(largeur/4), hauteur_texte2-hauteurScore/12,w2,hauteurScore/8);
+            if(jeu.IA2_ref==1) {
+                tracerString(new Couleur("CouleurNbPion"),w2+(largeur/4)+5+hauteurScore/8, hauteur_texte2,waiting);
+            }
+        }
+
+        int margin_score_j1=0;
+        if(hauteur>500){
+            margin_score_j1=-1*(hauteur/100);
+        }
+
+        for(int i=0;i<jeu.plateau.scoreJ1();i++){
+
+            tracerCercle(new Couleur(Col_J1), (largeur/4)+i*((hauteurScore/6)+2)+10,((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
+        }
+        for(int i=0;i<jeu.plateau.scoreJ2();i++){
+            tracerCercle(new Couleur(Col_J2), (largeur/4)+i*(((hauteurScore/6))+2)+10,(int)(((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
+        }
+    }
     void tracerGrille_iso(){
-        tracerCarre(new Couleur("CouleurScore"), 0, 0, largeur, hauteur,true);
+        //Fond
+        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true);
         drawable.setColor(new Couleur("CouleurJeu").couleur());
+        // bord de l'image
+        //tracerImage(border,0,0,largeur,hauteur);
+
+        //Plateau de jeu
         tracerDiamond( ori_x-(largeurCase/2), ori_y-(hauteurCase/2), largeurCase*(plateau.lignes()+1), hauteurCase*(plateau.colonnes()+1),20,true);
+        tracerScore();
+
         marquer_voisins();
         for (int j = 0; j< plateau.colonnes();  j++){
             for (int i = 0; i < plateau.lignes(); i++) {
