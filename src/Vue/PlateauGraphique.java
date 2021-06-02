@@ -69,16 +69,15 @@ public class PlateauGraphique extends JComponent implements Observateur {
 
         ori_x = margin_x / largeurCase;
         ori_y = margin_y / hauteurCase;
-
         //tracerGrille();
         //tracerScore();
         //tracer_Surbri_ia();
         //tracer_Surbri();
         tracerGrille_iso();
-        tracerString(new Couleur("CouleurNbPion"),0,20,"x :"+t_x+"   y :"+t_y);
+        /*tracerString(new Couleur("CouleurNbPion"),0,20,"x :"+t_x+"   y :"+t_y);
         tracerString(new Couleur("CouleurNbPion"),0,40,"OffX :"+offsetX+"   OffY :"+offsetY);
         tracerString(new Couleur("CouleurNbPion"),0,60,"SCREEN_W :"+largeur+"   SCREEN_H :"+hauteur);
-
+        */
 
     }
     void affichage(int x, int y){
@@ -124,17 +123,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         }
     }
 
-    void tracer_Surbri_ia() {
-        for (int i = 0; i < plateau.lignes(); i++) {
-            for (int j = 0; j < plateau.colonnes(); j++) {
-                if (plateau.tour(i, j).est_select_ia()) {
-                    int x = (j * hauteurCase) + margin_x;
-                    int y = (i * largeurCase) + margin_y;
-                    tracerSurbri(new Couleur("CouleurSubrillanceIA"), x + 4, y + 4, largeurCase - 6, hauteurCase - 6);
-                }
-            }
-        }
-    }
+
     public int[] to_grid(int x,int y){
         int i,j;
         cellX=x/largeurCase;
@@ -167,40 +156,69 @@ public class PlateauGraphique extends JComponent implements Observateur {
         }
         return new int[]{i,j};
     }
-
+    public void marquer_voisins(){
+            int i_sel=-1;
+            int j_sel=-1;
+            for(int i=0;i<plateau.lignes();i++){
+                for(int j=0;j<plateau.colonnes();j++){
+                    plateau.grille()[i][j].voisin = false;
+                    if(plateau.grille()[i][j].estSelectionee()){
+                        i_sel=i;
+                        j_sel=j;
+                    }
+                }
+            }
+            if(i_sel!=-1 && j_sel!=-1) {
+                Tour T = plateau.tour(i_sel, j_sel);
+                Sequence<Couple<Integer, Integer>> v = jeu.plateau.voisins(T.ligne(), T.colonne());
+                Couple<Integer, Integer> couple;
+                while (!v.estVide()) {
+                    couple = v.extraitTete();
+                    int i_v = couple.premier();
+                    int j_v = couple.second();
+                    if (T.estDeplacable(plateau.tour(i_v, j_v))) {
+                        plateau.grille()[i_v][j_v].voisin = true;
+                    }
+                }
+            }
+    }
     public int[] to_iso(int x,int y){
         int i=(ori_x*largeurCase)+(x-y)*(largeurCase/2);
         int j=(ori_y*hauteurCase)+(x+y)*(hauteurCase/2);
         return new int[]{i,j};
     }
     void tracerGrille_iso(){
-        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true);
-        //tracerDiamond(ori_x,ori_y, plateau.lignes()*largeurCase,plateau.colonnes()*hauteurCase, true);
-        //bord gauche / droite
+        tracerCarre(new Couleur("CouleurScore"), 0, 0, largeur, hauteur,true);
+        drawable.setColor(new Couleur("CouleurJeu").couleur());
+        tracerDiamond( ori_x-(largeurCase/2), ori_y-(hauteurCase/2), largeurCase*(plateau.lignes()+1), hauteurCase*(plateau.colonnes()+1),20,true);
+        marquer_voisins();
         for (int j = 0; j< plateau.colonnes();  j++){
             for (int i = 0; i < plateau.lignes(); i++) {
-                if(!plateau.grille()[i][j].estInnocupable() &&!plateau.grille()[i][j].estVide() ){
+                if(!plateau.grille()[i][j].estInnocupable()){
                     int[] coord= to_iso(i,j);
                     int x=coord[0];
                     int y=coord[1];
                     boolean fill=false;
                     fill=true;
                     if(plateau.grille()[i][j].estJouable()){
-                        if(plateau.grille()[i][j].sommetTour()==0){
-                            drawable.setColor(Color.RED);
-                        }else{
-                            drawable.setColor(Color.YELLOW);
-                        }
-                    }else{
-                        drawable.setColor(Color.BLACK);
+                        drawable.setColor(new Couleur("CouleurPlateau").couleur());
+                    }else if(!plateau.grille()[i][j].estVide() ){
+                        drawable.setColor(new Couleur("CouleurVide").couleur());
                     }
-                    if(plateau.grille()[i][j].setEstSelectionee()){
+                    if(plateau.grille()[i][j].est_select_ia()){
+                        drawable.setColor(new Couleur("CouleurSubrillanceIA").couleur());
+                    }
+                    if( aff_voisins&&plateau.grille()[i][j].marqueVoisin()){
+                        drawable.setColor(new Couleur("CouleurSurbriVoisin").couleur());
+                    }
+                    if(plateau.grille()[i][j].estSelectionee()){
                         drawable.setColor(Color.BLUE);
-
                     }
-                    tracerDiamond(x,y,largeurCase,hauteurCase,fill);
-                drawable.setColor(Color.BLACK);
-                tracerTour(x,y,10,10,plateau.grille()[i][j]);
+                    if(!plateau.grille()[i][j].estVide()||plateau.grille()[i][j].est_select_ia()){
+                        tracerDiamond(x,y,largeurCase,hauteurCase,10,fill);
+                        drawable.setColor(Color.BLACK);
+                        tracerTour(x,y,10,10,plateau.grille()[i][j]);
+                    }
                 }
             }
         }
@@ -227,57 +245,17 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawOval(x,y, lc, hc);
     }
     void tracerTour(int x, int y, int lc, int hc,Tour T){
+        if(T.nbPion()==5 ||plateau.pasDeplacable(T)){
+            drawable.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.2));
+        }
         for(int i=1;i<=T.nbPion();i++){
-
             if (T.niemePion(i) == 0) {
                 tracerPion(new Couleur(Col_J1), x + largeurCase/4, (y + 4)-((largeurCase)/12)*(i-1), largeurCase/2, hauteurCase/2);
             } else if (T.niemePion(i) == 1) {
                 tracerPion(new Couleur(Col_J2), x+largeurCase/4, (y + 4)-((largeurCase)/12)*(i-1), largeurCase/2, hauteurCase/2);
             }
         }
-    }
-    void tracerGrille(){
-        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true);
-        //bord gauche / droite
-        tracerCarre(new Couleur("CouleurBord"), 0, 0, margin_x, hauteur,true);
-        tracerCarre(new Couleur("CouleurBord"), margin_x+(plateau.lignes()*hauteurCase)+1, 0, largeur, hauteur,true);
-        //bord haut / bas
-        tracerCarre(new Couleur("CouleurBord"), 0, 0, largeur, margin_y,true);
-        tracerCarre(new Couleur("CouleurBord"), 0, margin_y+(plateau.colonnes()*largeurCase), largeur, margin_y,true);
-
-        for (int i = 0; i< plateau.lignes(); i++){
-            for (int j = 0; j < plateau.colonnes(); j++){
-                int x = (j * hauteurCase)+margin_x;
-                int y = (i * largeurCase)+margin_y;
-                Tour T = plateau.tour(i,j);
-                int s=T.sommetTour();
-                int n=T.nbPion();
-
-
-                if(!T.estInnocupable()) {
-                    tracerCarre(new Couleur("CouleurPlateau"), x+2, y+2, largeurCase-2, hauteurCase-2,true);
-                    if(T.estVide()){
-                        tracerCercle(new Couleur("CouleurVide"), x+4, y+4, largeurCase-6, hauteurCase-6);
-                    }
-                    else if (s == 0) {
-                        //tracerImage(PionJaune, x, y, largeurCase, hauteurCase);
-                        tracerCercle(new Couleur(Col_J1), x+4, y+4, largeurCase-6, hauteurCase-6);
-
-                    } else if (s == 1) {
-                        tracerCercle(new Couleur(Col_J2), x+4, y+4, largeurCase-6, hauteurCase-6);
-                    }
-                        if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
-                            tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
-                        }else if(!T.estInnocupable() && ! T.estVide()){
-
-                        tracerImage(couronne, x+10, y+5, largeurCase-15, hauteurCase-15);
-                        }
-                    /*if (T.setEstSelectionee()){
-
-                    }*/
-                }
-            }
-        }
+        drawable.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1));
     }
     private void tracerFleche(Couleur c, int x, int y, int w, int h) {
 
@@ -295,7 +273,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.draw(arrowHead);
     }
 
-    void tracerDiamond(int x, int y, int l, int h,boolean fill) {
+    void tracerDiamond(int x, int y, int l, int h,int bord_h,boolean fill) {
         int x1, y1, x2, y2, x3, y3, x4, y4;
         x1 = x;
         y1 = y + h / 2;
@@ -310,8 +288,8 @@ public class PlateauGraphique extends JComponent implements Observateur {
         int py[] = {y1, y2, y3, y4};
         if(fill)
             drawable.fillPolygon(px,py,4);
-            drawable.fillPolygon(new int[]{x4,x3,x3,x4},new int[]{y4,y3,y3+10,y4+10},4);
-            drawable.fillPolygon(new int[]{x1,x4,x4,x1},new int[]{y1,y4,y4+10,y1+10},4);
+            drawable.fillPolygon(new int[]{x4,x3,x3,x4},new int[]{y4,y3,y3+bord_h,y4+bord_h},4);
+            drawable.fillPolygon(new int[]{x1,x4,x4,x1},new int[]{y1,y4,y4+bord_h,y1+bord_h},4);
             //face supérieur de la tuile
         drawable.setColor(Color.BLACK);
         drawable.drawLine(x1, y1, x2, y2);
@@ -319,13 +297,13 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawLine(x3, y3, x4, y4);
         drawable.drawLine(x4, y4, x1, y1);
         //3D côté gauche
-        drawable.drawLine(x1,y1,x1,y1+10);
-        drawable.drawLine(x4,y4,x4,y4+10);
-        drawable.drawLine(x1,y1+10,x4,y4+10);
+        drawable.drawLine(x1,y1,x1,y1+bord_h);
+        drawable.drawLine(x4,y4,x4,y4+bord_h);
+        drawable.drawLine(x1,y1+bord_h,x4,y4+bord_h);
         //3D côté droit
-        drawable.drawLine(x4,y4,x4,y4+10);
-        drawable.drawLine(x3,y3,x3,y3+10);
-        drawable.drawLine(x3,y3+10,x4,y4+10);
+        drawable.drawLine(x4,y4,x4,y4+bord_h);
+        drawable.drawLine(x3,y3,x3,y3+bord_h);
+        drawable.drawLine(x3,y3+bord_h,x4,y4+bord_h);
     }
 
     int tracerString(Couleur c, int x, int y,String s){

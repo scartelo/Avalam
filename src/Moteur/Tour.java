@@ -10,6 +10,7 @@ public class Tour {
     int ligne, colonne;
     boolean selection;
     public boolean selection_ia;
+    public boolean voisin;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
 
@@ -21,8 +22,10 @@ public class Tour {
         nbPion = nbPion();
         selection=false;
         selection_ia=false;
+        voisin=false;
     }
-
+    public boolean marqueVoisin(){
+        return voisin;}
     public int contenu(){
         return contenu;
     }
@@ -96,7 +99,7 @@ public class Tour {
     /*
     Renvoie si la tour T est voisine de la tour self
     */
-    public boolean estVoisin(Tour T){ return (! T.estInnocupable() && !T.estVide()) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
+    public boolean estVoisin(Tour T){ return (! T.estInnocupable() && !T.estVide()) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (!(T.ligne == ligne && T.colonne == colonne))); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }
     public boolean estJouable(){
@@ -131,7 +134,7 @@ public class Tour {
     public int marque(){
         return contenu >> 8;
     }
-    public boolean setEstSelectionee(){
+    public boolean estSelectionee(){
         return selection;
     }
     public boolean est_select_ia(){return selection_ia;}
