@@ -27,13 +27,14 @@ public class PlateauGraphique extends JComponent implements Observateur {
     public String Col_J2;
     static String waiting = "ATTENTE_IA";
     static int cnt_waiting = -1;
-    public boolean aff_voisins;
+    public boolean aff_voisins,transparency;
     public int t_x,t_y,offsetX,offsetY,cellX,cellY,ori_x,ori_y;
 
     public PlateauGraphique(Jeu j) {
         jeu = j;
         plateau = jeu.plateau;
         aff_voisins = false;
+        transparency=false;
         couronne = new ImageCharge(ImageCharge.charge("Images/couronne.png"));
         if (jeu.couleur) { // true si dans l'ordre "normal" ; false si inversé
             Col_J1 = "CouleurJ1";
@@ -200,10 +201,10 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     int y=coord[1];
                     boolean fill=false;
                     fill=true;
-                    if(plateau.grille()[i][j].estJouable()){
+                    if(plateau.grille()[i][j].estJouable() && ! plateau.estIsole(i,j)){
                         drawable.setColor(new Couleur("CouleurPlateau").couleur());
-                    }else if(!plateau.grille()[i][j].estVide() ){
-                        drawable.setColor(new Couleur("CouleurVide").couleur());
+                    }else if(!plateau.grille()[i][j].estVide() ||plateau.estIsole(i,j) ){
+                        drawable.setColor(new Couleur("CouleurTourFinie").couleur());
                     }
                     if(plateau.grille()[i][j].est_select_ia()){
                         drawable.setColor(new Couleur("CouleurSubrillanceIA").couleur());
@@ -245,7 +246,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawOval(x,y, lc, hc);
     }
     void tracerTour(int x, int y, int lc, int hc,Tour T){
-        if(T.nbPion()==5 ||plateau.pasDeplacable(T)){
+        if(T.nbPion()==5 ||plateau.pasDeplacable(T)||transparency){
             drawable.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.2));
         }
         for(int i=1;i<=T.nbPion();i++){

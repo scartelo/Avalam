@@ -166,6 +166,8 @@ public class ControleurMediateur implements CollecteurEvenements {
             case "aff_voisins":
                 iu.aff_voisin();
                 break;
+            case "transparency":
+                iu.aff_transparence();
             default:
                 return false;
         }

@@ -22,4 +22,6 @@ public interface InterfaceUtilisateur {
     void load(String input);
 
     void aff_voisin();
+
+    void aff_transparence();
 }

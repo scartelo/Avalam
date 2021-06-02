@@ -20,7 +20,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     private static JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
-    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
+    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu,transparency;
     JToggleButton iaJ1, iaJ2,voisins;
     private boolean maximized;
     JMenu l_partie, l_sauvegardes;
@@ -73,11 +73,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         refaire = createButton(">", "refaire");
         refaire.setToolTipText("Rejoue le dernier coup annulé");
         griser_refaire(false);
+        transparency=createButton("Transparence","transparency");
+        transparency.setToolTipText("Affiche toutes les tours en transparent");
         restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
+        annulRef.add(transparency);
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
         //annulRef.add(iaJ1); // Ne doit pas être là dans l'interface finale
@@ -153,6 +156,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m.add(l_sauvegardes);
 
         return m;
+    }
+    public void aff_transparence(){
+        plateauGraphique.transparency=!plateauGraphique.transparency;
     }
     public static void showFrame(boolean b){
         frame.setVisible(b);
