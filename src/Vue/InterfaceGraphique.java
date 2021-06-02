@@ -20,8 +20,17 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     private static JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
-    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu,transparency;
+    JButton annuler;
+    JButton refaire;
+    JButton restart;
+    JButton sauvegarde;
+    JButton loadbut;
+    JButton quitter;
+    JButton menu;
+    JButton transparency;
+    JToggleButton tourFinie;
     JToggleButton iaJ1, iaJ2,voisins;
+    JPanel game_panel;
     private boolean maximized;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
@@ -53,12 +62,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
 
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
-
+        game_panel=new JPanel();
+        game_panel.setSize(100,200);
         Box principal=Box.createHorizontalBox();
-
         Box boxJeu = Box.createVerticalBox();
         boxJeu.add(plateauGraphique);
-        boxJeu.setAlignmentY(Component.CENTER_ALIGNMENT);
         boxJeu.setPreferredSize(new Dimension(500, 400));
         principal.add(boxJeu);
 
@@ -75,12 +83,16 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         griser_refaire(false);
         transparency=createButton("Transparence","transparency");
         transparency.setToolTipText("Affiche toutes les tours en transparent");
+        tourFinie = createToggleButton("Tours finies");
+        tourFinie.setToolTipText("Enlève l'affichage des tours finies");
+        tourFinie.addActionListener(new AdaptateurCommande(controle,"tourFinie"));
         restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
         annulRef.add(transparency);
+        annulRef.add(tourFinie);
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
         //annulRef.add(iaJ1); // Ne doit pas être là dans l'interface finale
@@ -107,6 +119,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame.setLocationRelativeTo(null);
         controle.update_buttons();
         frame.setVisible(true);
+
+
     }
     public JMenu menu_sauvegarde(){
         //liste des sauvegardes sous forme de menu
@@ -257,6 +271,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     }
     public void aff_voisin() {
         plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
+    }
+    public void aff_tourFinie() {
+        plateauGraphique.aff_tourFinie = !plateauGraphique.aff_tourFinie;
     }
 
 

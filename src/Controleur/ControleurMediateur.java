@@ -168,6 +168,8 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "transparency":
                 iu.aff_transparence();
+            case "tourFinie":
+                iu.aff_tourFinie();
             default:
                 return false;
         }

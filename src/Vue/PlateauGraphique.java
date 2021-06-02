@@ -18,6 +18,7 @@ import Structures.Sequence;
 Classe permettant de dessiner la grille et le score
 */
 public class PlateauGraphique extends JComponent implements Observateur {
+    public boolean aff_tourFinie;
     int largeur, hauteur, largeurCase, hauteurCase, margin_x, margin_y, margin_x_score, margin_y_score, largeurScore, hauteurScore, largeurNom, hauteurNom, hauteur_texte1, hauteur_texte2;
     Graphics2D drawable;
     Jeu jeu;
@@ -35,6 +36,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         plateau = jeu.plateau;
         aff_voisins = false;
         transparency=false;
+        aff_tourFinie=true;
         //border = new ImageCharge(ImageCharge.charge("Images/border.png"));
         if (jeu.couleur) { // true si dans l'ordre "normal" ; false si inversé
             Col_J1 = "CouleurJ1";
@@ -153,24 +155,24 @@ public class PlateauGraphique extends JComponent implements Observateur {
     }
     void tracerScore(){
         //Score
-        tracerCarre(new Couleur("CouleurScore"), largeur/4, 0, largeurScore, hauteurScore,true);
+        tracerCarre(new Couleur("CouleurScore"), largeur/4, 0, largeurScore, hauteurScore,true,true);
         String j1 = jeu.nom_j1;
         String j2 = jeu.nom_j2;
 
-        int w1=tracerString(new Couleur("CouleurNbPion"),largeur/4, hauteur_texte1/2,j1);
+        int w1=tracerString(new Couleur("CouleurNbPion"),3+largeur/4, 3+hauteur_texte1/2,j1);
 
 
-        int w2=tracerString(new Couleur("CouleurNbPion"),largeur/4, hauteur_texte2,j2);
+        int w2=tracerString(new Couleur("CouleurNbPion"),3+largeur/4, hauteur_texte2,j2);
         if(jeu.plateau.tourJoueur==0){
-            tracerFleche(new Couleur(Col_J1),5+(largeur/4), hauteur_texte1/3,w1,hauteurScore/8);
+            tracerFleche(new Couleur(Col_J1),10+(largeur/4), 3+(hauteur_texte1/3),w1,hauteurScore/8);
             if(jeu.IA1_ref==1) {
-                tracerString(new Couleur("CouleurNbPion"),w1+(largeur/4)+5+hauteurScore/8, hauteur_texte1,waiting);
+                tracerString(new Couleur("CouleurNbPion"),w1+(largeur/4)+10+hauteurScore/8,3+ hauteur_texte1,waiting);
             }
         }
         else{
-            tracerFleche(new Couleur(Col_J2),5+(largeur/4), hauteur_texte2-hauteurScore/12,w2,hauteurScore/8);
+            tracerFleche(new Couleur(Col_J2),10+(largeur/4), hauteur_texte2-hauteurScore/12,w2,hauteurScore/8);
             if(jeu.IA2_ref==1) {
-                tracerString(new Couleur("CouleurNbPion"),w2+(largeur/4)+5+hauteurScore/8, hauteur_texte2,waiting);
+                tracerString(new Couleur("CouleurNbPion"),w2+(largeur/4)+10+hauteurScore/8, hauteur_texte2,waiting);
             }
         }
 
@@ -189,7 +191,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
     }
     void tracerGrille_iso(){
         //Fond
-        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true);
+        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true,false);
         drawable.setColor(new Couleur("CouleurJeu").couleur());
         // bord de l'image
         //tracerImage(border,0,0,largeur,hauteur);
@@ -207,10 +209,12 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     int y=coord[1];
                     boolean fill=false;
                     fill=true;
+                    boolean finie=false;
                     if(plateau.grille()[i][j].estJouable() && ! plateau.estIsole(i,j)){
                         drawable.setColor(new Couleur("CouleurPlateau").couleur());
                     }else if(!plateau.grille()[i][j].estVide() ||plateau.estIsole(i,j) ){
                         drawable.setColor(new Couleur("CouleurTourFinie").couleur());
+                        finie=true;
                     }
                     if(plateau.grille()[i][j].est_select_ia()){
                         drawable.setColor(new Couleur("CouleurSubrillanceIA").couleur());
@@ -224,7 +228,8 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     if(!plateau.grille()[i][j].estVide()||plateau.grille()[i][j].est_select_ia()){
                         tracerDiamond(x,y,largeurCase,hauteurCase,10,fill);
                         drawable.setColor(Color.BLACK);
-                        tracerTour(x,y,10,10,plateau.grille()[i][j]);
+                        if(!finie || (finie && aff_tourFinie)){
+                        tracerTour(x,y,10,10,plateau.grille()[i][j]);}
                     }
                 }
             }
@@ -332,14 +337,25 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.setColor(c.couleur());
         drawable.drawString(String.valueOf(nbPion),x+(lc/3),y+(hc/2));
     }
-    void tracerCarre(Couleur c, int x, int y, int lc, int hc,boolean fill){
+    void tracerCarre(Couleur c, int x, int y, int lc, int hc,boolean fill,boolean rounded){
         drawable.setStroke(new BasicStroke(1));
         drawable.setColor(c.couleur());
-        if(fill) {
-            drawable.fillRect(x, y, lc, hc);
+        if(!rounded){
+            if(fill) {
+                drawable.fillRect(x, y, lc, hc);
+            }
+            drawable.setColor(new Couleur("CouleurOutline").couleur());
+            drawable.drawRect(x,y,lc, hc);
+        }else{
+            int arc_W=15;
+            int arc_H=15;
+            if(fill) {
+                drawable.fillRoundRect(x, y, lc, hc,arc_W,arc_H);
+
+            }
+            drawable.setColor(new Couleur("CouleurOutline").couleur());
+            drawable.drawRoundRect(x,y,lc, hc,arc_W,arc_H);
         }
-        drawable.setColor(new Couleur("CouleurOutline").couleur());
-        drawable.drawRect(x,y,lc, hc);
     }
     void tracerCercle(Couleur c, int x, int y, int lc, int hc){
         drawable.setColor(c.couleur());
