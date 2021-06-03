@@ -26,8 +26,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
-            //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
+            //joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //typeJoueur[i] = 0;
         }
         typeJoueur[0]=jeu.IA1;

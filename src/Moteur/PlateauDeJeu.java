@@ -2,6 +2,7 @@ package Moteur;
 
 import Global.Configuration;
 import Structures.Couple;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -218,8 +219,24 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         }
         return voisins;
     }
+
+    // Retourne les tours voisines encore jouables
+    public Sequence voisinsJouables(Sequence voisins){
+        Sequence resultat = Configuration.instance().nouvelleSequence();
+        Iterateur it = voisins.iterateur();
+        while (it.aProchain()){
+            Couple<Integer, Integer> couple = (Couple<Integer, Integer>) it.prochain();
+            Tour t = tour(couple.premier(),couple.second());
+            if (t.estJouable()){
+                resultat.insereTete(t);
+            }
+        }
+        return resultat;
+    }
+
+
     /*
-    Créer une tour selon son contenu et la place sur la grille à la position i,j
+    Place une tour ayant un contenu à une position (l,c) de la grille
     */
     public void placerTour(int contenu, int l, int c){
         Tour tour = new Tour(contenu, l, c);
@@ -240,12 +257,13 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
         tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
         if(dst.ajouteTour(src)){
-            Coup c = new Coup(tmp_src,tmp_dst);
+            Coup c = new Coup(tourJoueur,tmp_src,tmp_dst);
             nouveau(c);
+            System.out.println("j'ai créé un coup");
             tourJoueur=(tourJoueur+1)%2;
             Init_pos();
             update_score();
-            play_sound("Drop");
+            //play_sound("Drop");
         }
     }
     /*
@@ -275,6 +293,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             update_score();
             tourJoueur=(tourJoueur+1)%2;
             Init_pos();
+            System.out.println("j'ai annulé un coup");
             return true;
         }
         else{

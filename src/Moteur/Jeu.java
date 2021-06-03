@@ -45,11 +45,13 @@ public class Jeu extends Observable {
     public void Win_message(){
         JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner()+"\nMerci d'avoir joué à Avalam.","Partie terminée",JOptionPane.PLAIN_MESSAGE);
     }
-    public void nouvellePartie(){
-        plateau=new PlateauDeJeu();
+    public Jeu nouvellePartie(){
+        /*plateau=new PlateauDeJeu();
         plateau.tourJoueur=tourDep;
-        partieTerminee = false;
+        partieTerminee = false;*/
+        Jeu j = new Jeu(new PlateauDeJeu());
         miseAJour();
+        return j;
     }
     /*
     Rejoue un coup qui a été annulé ( si possible )
