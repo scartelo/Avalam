@@ -23,10 +23,11 @@ public class JoueurIAMinMax extends JoueurIA {
 
     private int evaluation() {
         if (num == 0) {
-            return jeu.plateau().scoreJ1();
-        } else {
             return jeu.plateau().scoreJ2();
+        } else {
+            return jeu.plateau().scoreJ1();
         }
+        //return r.nextInt(10);
     }
    /* private int evaluation(PlateauDeJeu p) {
         int resultat = 0;
@@ -81,7 +82,7 @@ public class JoueurIAMinMax extends JoueurIA {
         Configuration.instance().logger().info("idest et  : " + tour.ligne() + ", " + tour.colonne() + ") a été selectionnée");
          */
         System.out.println("avant min max");
-        CoupIA coup = miniMax(jeu.plateau(), null, 2, true);
+        CoupIA coup = miniMax(jeu.plateau(), null, 4, true);
         System.out.println("apres min max");
         afficheCoup(coup);
         jeu.plateau().Jouer(coup.src(), coup.dest());
