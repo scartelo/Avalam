@@ -1,5 +1,8 @@
 package Moteur;
 
+import Structures.Iterateur;
+import Structures.Sequence;
+
 public class TestPlateau {
     public static void main(String[] args) {
 
@@ -76,6 +79,39 @@ public class TestPlateau {
 
         System.out.println("Test refaire un coup 5 ( echec ) ");
         p.refaireCoup();
+        p.afficher_grille();
+
+
+        System.out.println("Test Voisins jouables ");
+        Sequence v = p.voisins(0,5);
+        Sequence j = p.voisinsJouables(v);
+        Iterateur it = j.iterateur();
+        while (it.aProchain()){
+            Tour t = (Tour) it.prochain();
+            t.afficher();
+
+        }
+
+        System.out.println("Test Voisins jouables (0,0) ");
+        Sequence v2 = p.voisins(0,0);
+        Sequence j2 = p.voisinsJouables(v2);
+        Iterateur it2 = j2.iterateur();
+        while (it2.aProchain()){
+            Tour t = (Tour) it2.prochain();
+            t.afficher();
+
+        }
+
+        System.out.println("Test Voisins jouables (5,2) ");
+        Sequence v3 = p.voisins(5,2);
+        Sequence j3 = p.voisinsJouables(v3);
+        Iterateur it3 = j3.iterateur();
+        while (it3.aProchain()){
+            Tour t = (Tour) it3.prochain();
+            t.afficher();
+
+        }
+
         p.afficher_grille();
 
 
