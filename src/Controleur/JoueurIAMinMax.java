@@ -13,6 +13,7 @@ import java.util.Random;
 public class JoueurIAMinMax extends JoueurIA {
     Random r;
     Sequence<Coup> coupJouables;
+    int nbCoups = 0; // Coups à l'avance en debut de partie
 
     JoueurIAMinMax(int n, Jeu jj) {
         super(n, jj);
@@ -28,6 +29,93 @@ public class JoueurIAMinMax extends JoueurIA {
             return jeu.plateau().scoreJ1();
         }
         //return r.nextInt(10);
+    }
+
+    public Tour selectionTourDansZone(PlateauDeJeu p, int zone) {
+        int infBorneL = 0, supBorneL = 0, infBorneC = 0, supBorneC = 0;
+        switch (zone) {
+            case 0:
+                infBorneL = 0;
+                supBorneL = 5;
+                infBorneC = 0;
+                supBorneC = 5;
+                break;
+            case 1:
+                infBorneL = 0;
+                supBorneL = 5;
+                infBorneC = 5;
+                supBorneC = 9;
+                break;
+            case 2:
+                infBorneL = 5;
+                supBorneL = 9;
+                infBorneC = 0;
+                supBorneC = 5;
+                break;
+            case 3:
+                infBorneL = 5;
+                supBorneL = 9;
+                infBorneC = 5;
+                supBorneC = 9;
+                break;
+            default:
+                Configuration.instance().logger().severe("Zone inconnue");
+                System.exit(1);
+
+        }
+        Tour tour = selectionAleatoireAvecBorne(p, infBorneL, infBorneC, supBorneL, supBorneC);
+        return tour;
+
+    }
+
+    public Tour selectionAleatoireAvecBorne(PlateauDeJeu p, int biL, int biC, int bsL, int bsC) {
+        /*int departL = biL + r.nextInt(bsL - biL);
+        int departC = biC + r.nextInt(bsC - biC);
+        Tour tour = p.tour(departL, departC);*/
+        Sequence mesTours = Configuration.instance().nouvelleSequence();
+        int nbMesTours = 0;
+        Tour resultat = null;
+        for (int i=biL; i < bsL; i++){
+            for (int j=biC; j < bsC; j++){
+                Tour tour = p.tour(i, j);
+                if (!p.pasDeplacable(tour) && tour.sommetTour() == num){
+                    mesTours.insereQueue(tour);
+                    nbMesTours++;
+                }
+            }
+        }
+        Iterateur it = mesTours.iterateur();
+        int positionTourAjouer = r.nextInt(nbMesTours);
+        int k = 0;
+        while (it.aProchain()){
+            Tour tourAJouer = (Tour) it.prochain();
+            if (k == positionTourAjouer){
+                resultat = tourAJouer;
+            }else {
+                k++;
+            }
+        }
+
+        return resultat;
+    }
+
+    public void couvrirAdversaire(PlateauDeJeu p) {
+        int sommet = (num == 0) ? 0 : 1;
+        int zone = r.nextInt(4); // on divise le plateau en 4 zones
+        Tour tour = selectionTourDansZone(p, zone);
+        Sequence voisins = jeu.plateau().voisins(tour.ligne(), tour.colonne());
+        Iterateur vJouables = jeu.plateau().voisinsJouables(voisins).iterateur();
+        Sequence toursAdverses = Configuration.instance().nouvelleSequence();
+        while (vJouables.aProchain()) {
+            Tour tourVoisines = (Tour) vJouables.prochain();
+            if (tourVoisines.sommetTour() != num) {
+                if (tour.estDeplacable(tourVoisines)) {
+                    toursAdverses.insereQueue(tourVoisines);
+                }
+            }
+        }
+        Tour tourAJouer = (Tour) toursAdverses.extraitTete();
+        p.Jouer(tour, tourAJouer);
     }
    /* private int evaluation(PlateauDeJeu p) {
         int resultat = 0;
@@ -51,42 +139,22 @@ public class JoueurIAMinMax extends JoueurIA {
         double[][] scores = new double[9][9];
         double max = 0;
         int ldep = 0, cdep = 0;
-        double resultat;
-        Couple<Integer, Integer> v ;
 
-        for (int i = 0; i < jeu.plateau().lignes(); i++) {
-            for (int j = 0; j < jeu.plateau().colonnes(); j++) {
-                if (jeu.plateau().tour(i, j).estJouable()) {
-                    System.out.println(" i = " + i + ", j = " + j);
-                    //resultat = miniMax(jeu.plateau(),jeu.plateau().tour(i, j), 2, true);
-                    System.out.println("score  :" + resultat);
-                    if (max <= resultat.premier()) {
-                        max = resultat.premier();
-                        ldep = i;
-                        cdep = j;
-                    }
-                }
+        Couple<Integer, Integer> v;
+        Couple<Double, Tour> resultat = null;
+        Tour tour = null;
 
-            }
+        if (nbCoups < 6) {
+            couvrirAdversaire(jeu.plateau());
+            nbCoups++;
+        } else {
+            System.out.println("avant min max");
+            CoupIA coup = miniMax(jeu.plateau(), null, 2, true);
+            System.out.println("apres min max");
+            afficheCoup(coup);
+            jeu.plateau().Jouer(coup.src(), coup.dest());
+            jeu.miseAJour();
         }
-        //Configuration.instance().logger().info("i et  : " + ldep + ", " + cdep + ") a été selectionnée");
-        //Sequence<Couple<Integer, Integer>> voisins;
-        //voisins = jeu.plateau().voisins(ldep,cdep);
-        //Sequence voisinsJouables = jeu.plateau().voisinsJouables(voisins);
-        //Tour tourVoisine = (Tour) voisinsJouables.extraitTete();
-        //int vl = (int) v.premier();
-        //int vc = (int) v.second();
-        jeu.plateau().Jouer(jeu.plateau().tour(ldep, cdep), tour);
-        Configuration.instance().logger().info("i et  : " + ldep + ", " + cdep + ") a été selectionnée");
-
-        Configuration.instance().logger().info("idest et  : " + tour.ligne() + ", " + tour.colonne() + ") a été selectionnée");
-         */
-        System.out.println("avant min max");
-        CoupIA coup = miniMax(jeu.plateau(), null, 4, true);
-        System.out.println("apres min max");
-        afficheCoup(coup);
-        jeu.plateau().Jouer(coup.src(), coup.dest());
-        jeu.miseAJour();
         return true;
     }
 
@@ -95,7 +163,7 @@ public class JoueurIAMinMax extends JoueurIA {
         Sequence<Sequence<CoupIA>> sequenceCoups = Configuration.instance().nouvelleSequence();
         for (int i = 0; i < p.lignes(); i++) {
             for (int j = 0; j < p.colonnes(); j++) {
-                if (p.tour(i,j).estJouable()) {
+                if (p.tour(i, j).estJouable()) {
                     Sequence voisins = p.voisins(i, j);
                     Iterateur voisinsJouables = p.voisinsJouables(voisins).iterateur();
                     Sequence<CoupIA> coupsPossibles = Configuration.instance().nouvelleSequence();
@@ -136,7 +204,7 @@ public class JoueurIAMinMax extends JoueurIA {
             //coup.fixerValeur(evaluation());
             //pcopy = jouerCoup(coup, pcopy);
             coup.fixerValeur(evaluation());
-            System.out.println("deplacement "+(joueurMax?"max":"min")+" / horizon="+horizon);
+            System.out.println("deplacement " + (joueurMax ? "max" : "min") + " / horizon=" + horizon);
             //pcopy.annuler();
 
             return coup;
@@ -158,8 +226,10 @@ public class JoueurIAMinMax extends JoueurIA {
                 //pcopy.Jouer(t, tourVoisine);
                 Sequence<CoupIA> coupCourant = (Sequence<CoupIA>) it.prochain();
                 Iterateur coupCourantIt = coupCourant.iterateur();
-                while (coupCourantIt.aProchain()){
+                while (coupCourantIt.aProchain()) {
                     CoupIA coup = (CoupIA) coupCourantIt.prochain();
+                    System.out.print("coup dans while = ");
+                    afficheCoup(coup);
                     CoupIA coupMinMax = miniMax(pcopy, coup, horizon - 1, !joueurMax);
                     if (joueurMax) {
                         coupAJouer = (coupAJouer.valeur() > coupMinMax.valeur()) ? coupAJouer : coupMinMax;
@@ -175,7 +245,7 @@ public class JoueurIAMinMax extends JoueurIA {
                 //pcopy = jouerCoup(coupAJouer, pcopy);
 
                 //result = new CoupIA(t, tourVoisine, maxEval);
-                System.out.println("deplacement "+(joueurMax?"max":"min")+" / horizon="+horizon);
+                System.out.println("deplacement " + (joueurMax ? "max" : "min") + " / horizon=" + horizon);
                 /*CoupIA coupMinMax = miniMax(pcopy, coupAJouer, horizon - 1, !joueurMax);
                 if (joueurMax) {
                     coupAJouer = (coupAJouer.valeur() > coupMinMax.valeur()) ? coupAJouer : coupMinMax;
