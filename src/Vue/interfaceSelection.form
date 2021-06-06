@@ -36,7 +36,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value=""/>
+              <text value="Joueur 1"/>
               <toolTipText value=""/>
             </properties>
           </component>
@@ -102,7 +102,7 @@
             </constraints>
             <properties>
               <focusable value="true"/>
-              <text value=""/>
+              <text value="Joueur 2"/>
             </properties>
           </component>
           <component id="37848" class="javax.swing.JComboBox" binding="niveauIA2">

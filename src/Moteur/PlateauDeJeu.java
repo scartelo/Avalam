@@ -75,7 +75,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             couple=v.extraitTete();
             int i= couple.premier();
             int j=couple.second();
-            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable()){
+            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable() && grille[i][j].estDeplacable(grille[l][c]) ){
                 if(grille[i][j].nbPion()>0){
                     return false;
                 }

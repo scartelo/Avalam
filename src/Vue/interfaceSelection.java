@@ -28,7 +28,7 @@ public class interfaceSelection {
     private static JFrame frame;
     private boolean color;
     ImageIcon logo_fenetre;
-    private int IA1,IA2,niveau1,niveau2,tourDep; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
+    private int IA1,IA2,niveau1,niveau2,tourDep,MAX_CHAR; //IA = 1 si active  ou 0 si inactive    // niveau1 = 0 : facile / 1:moyen / 2:difficile
     private String J1,J2;   //Contient le nom des joueurs ( par défaut "Joueur 1" et "Joueur 2" )
     private boolean enabled1,enabled2;
     public interfaceSelection() {
@@ -39,6 +39,7 @@ public class interfaceSelection {
         niveau1=0;
         niveau2=0;
         tourDep=0;
+        MAX_CHAR=10;
         enabled1=false;
         enabled2=false;
         niveauIA1.setEnabled(enabled1);
@@ -69,13 +70,18 @@ public class interfaceSelection {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!nomJ1.getText().isEmpty()){
-                    J1=nomJ1.getText();}
+                    J1=nomJ1.getText();
+                }
                 if(!nomJ2.getText().isEmpty()){
                     J2=nomJ2.getText();
                 }
-                InterfaceMenu m = new InterfaceMenu();
-                m.Nouvelle_Partie(J1,J2,IA1,IA2,niveau1,niveau2,tourDep,tourDep,color);
-                frame.dispose();
+                if(J1.length()>MAX_CHAR || J2.length()>MAX_CHAR) {
+                    JOptionPane.showMessageDialog(null,"Le nom des joueurs ne doit contenir que "+MAX_CHAR+" caractères au maximum.","Erreur",JOptionPane.ERROR_MESSAGE);
+                }else {
+                    InterfaceMenu m = new InterfaceMenu();
+                    m.Nouvelle_Partie(J1, J2, IA1, IA2, niveau1, niveau2, tourDep, tourDep, color);
+                    frame.dispose();
+                }
             }
         });
         niveauIA1.addActionListener(new ActionListener() {

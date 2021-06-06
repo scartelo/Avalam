@@ -26,4 +26,6 @@ public interface InterfaceUtilisateur {
     void aff_transparence();
 
     void aff_tourFinie();
+
+    void fullscreen();
 }

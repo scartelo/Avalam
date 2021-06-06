@@ -30,6 +30,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
     static int cnt_waiting = -1;
     public boolean aff_voisins,transparency;
     public int t_x,t_y,offsetX,offsetY,cellX,cellY,ori_x,ori_y;
+    private float alpha;
 
     public PlateauGraphique(Jeu j) {
         jeu = j;
@@ -56,7 +57,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable = (Graphics2D) graphics;
         largeur = getSize().width;
         hauteur = getSize().height;
-        largeurScore = largeur / 2;
+        largeurScore = largeur / 3;
         hauteurScore = (int)(hauteurCase*1.5)-4;
         //hauteur = hauteur - hauteurScore;
         largeurCase = largeur / plateau.colonnes();
@@ -75,11 +76,44 @@ public class PlateauGraphique extends JComponent implements Observateur {
         //tracerGrille();
         //tracer_Surbri_ia();
         //tracer_Surbri();
+        //Fond
+        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true,false);
+        drawable.setColor(new Couleur("CouleurJeu").couleur());
+        // bord de l'image
+        //tracerImage(border,0,0,largeur,hauteur);
+
+        //Plateau de jeu
+        tracerDiamond( ori_x-(largeurCase/2), ori_y-(hauteurCase/2), largeurCase*(plateau.lignes()+1), hauteurCase*(plateau.colonnes()+1),20,true);
+        tracerScore();
         tracerGrille_iso();
+        tracer_Turn();
         /*tracerString(new Couleur("CouleurNbPion"),0,20,"x :"+t_x+"   y :"+t_y);
         tracerString(new Couleur("CouleurNbPion"),0,40,"OffX :"+offsetX+"   OffY :"+offsetY);
-        tracerString(new Couleur("CouleurNbPion"),0,60,"SCREEN_W :"+largeur+"   SCREEN_H :"+hauteur);
         */
+        //tracerString(new Couleur("CouleurNbPion"),0,60,"SCREEN_W :"+largeur+"   SCREEN_H :"+hauteur,40);
+
+    }
+    void tracer_Turn(){
+        String text ="";
+        String j1 = jeu.nom_j1;
+        String j2 = jeu.nom_j2;
+        Couleur c;
+        if(plateau.tourJoueur==0){
+            text+=j1;
+            c= new Couleur(Col_J1);
+        }else{
+            text+=j2;
+            c= new Couleur(Col_J2);
+        }
+        tracerCarre(c, -10, -10, largeur/6, 40+15+30+((hauteur/2)/10),true,true);
+        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,(hauteur/2)/10);
+        drawable.setFont(font);
+        int w =drawable.getFontMetrics().stringWidth("Au tour de");
+        tracerString(new Couleur("CouleurNbPion"),((largeur/6)-w-10)/2,(hauteur/2)/10,"Au tour de",(hauteur/2)/10);
+        font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,(hauteur/2)/8);
+        drawable.setFont(font);
+        w =drawable.getFontMetrics().stringWidth(text);
+        tracerString(new Couleur("CouleurNbPion"),((largeur/6)-w-10)/2,40+15+((hauteur/2)/10),text,(hauteur/2)/8);
 
     }
     void affichage(int x, int y){
@@ -102,21 +136,16 @@ public class PlateauGraphique extends JComponent implements Observateur {
         int py[] = {hauteurCase/2, 0, hauteurCase/2, hauteurCase};
         Polygon diamond= new Polygon(px,py,4);
         if(!diamond.contains(offsetX,offsetY)){              /// Fonction qui permet de regarder si le point selec est dans le losange compris dans le rectangle de traçage
-            System.out.println("NOT IN POLY");
             if(offsetX<largeurCase/2 && offsetY<hauteurCase/2){ /// Regarde dans quel coin du rectangle le point est situé
                 i-=1;
-                System.out.println("IN TOP LEFT");
             }else if(offsetX<largeurCase/2 && offsetY>hauteurCase/2){ // vert
                 j+=1;
-                System.out.println("BOTTOM LEFT");
 
             }else if(offsetX>largeurCase/2 && offsetY<hauteurCase/2){ //bleu
                 j-=1;
-                System.out.println("BOTTOM RIGHT");
 
             }else if(offsetX>largeurCase/2 && offsetY > hauteurCase/2){
                 i+=1;
-                System.out.println("TOP RIGHT");
 
             }
         }
@@ -155,24 +184,24 @@ public class PlateauGraphique extends JComponent implements Observateur {
     }
     void tracerScore(){
         //Score
-        tracerCarre(new Couleur("CouleurScore"), largeur/4, 0, largeurScore, hauteurScore,true,true);
+        tracerCarre(new Couleur("CouleurScore"), largeur/3, 0, largeurScore, hauteurScore,true,true);
         String j1 = jeu.nom_j1;
         String j2 = jeu.nom_j2;
 
-        int w1=tracerString(new Couleur("CouleurNbPion"),3+largeur/4, 3+hauteur_texte1/2,j1);
+        int w1=tracerString(new Couleur("CouleurNbPion"),3+largeur/3, 3+hauteur_texte1/2,j1,(hauteurScore/6));
 
 
-        int w2=tracerString(new Couleur("CouleurNbPion"),3+largeur/4, hauteur_texte2,j2);
+        int w2=tracerString(new Couleur("CouleurNbPion"),3+largeur/3, hauteur_texte2,j2,(hauteurScore/6));
         if(jeu.plateau.tourJoueur==0){
-            tracerFleche(new Couleur(Col_J1),10+(largeur/4), 3+(hauteur_texte1/3),w1,hauteurScore/8);
+            tracerFleche(new Couleur(Col_J1),10+(largeur/3), 3+(hauteur_texte1/3),w1,hauteurScore/8);
             if(jeu.IA1_ref==1) {
-                tracerString(new Couleur("CouleurNbPion"),w1+(largeur/4)+10+hauteurScore/8,3+ hauteur_texte1,waiting);
+                tracerString(new Couleur("CouleurNbPion"),w1+(largeur/3)+10+hauteurScore/8,3+ hauteur_texte1/2,waiting,(hauteurScore/6));
             }
         }
         else{
-            tracerFleche(new Couleur(Col_J2),10+(largeur/4), hauteur_texte2-hauteurScore/12,w2,hauteurScore/8);
+            tracerFleche(new Couleur(Col_J2),10+(largeur/3), hauteur_texte2-hauteurScore/12,w2,hauteurScore/8);
             if(jeu.IA2_ref==1) {
-                tracerString(new Couleur("CouleurNbPion"),w2+(largeur/4)+10+hauteurScore/8, hauteur_texte2,waiting);
+                tracerString(new Couleur("CouleurNbPion"),w2+(largeur/3)+10+hauteurScore/8, hauteur_texte2,waiting,(hauteurScore/6));
             }
         }
 
@@ -183,23 +212,13 @@ public class PlateauGraphique extends JComponent implements Observateur {
 
         for(int i=0;i<jeu.plateau.scoreJ1();i++){
 
-            tracerCercle(new Couleur(Col_J1), (largeur/4)+i*((hauteurScore/6)+2)+10,((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
+            tracerCercle(new Couleur(Col_J1), (largeur/3)+i*((hauteurScore/6)+2)+10,((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
         }
         for(int i=0;i<jeu.plateau.scoreJ2();i++){
-            tracerCercle(new Couleur(Col_J2), (largeur/4)+i*(((hauteurScore/6))+2)+10,(int)(((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
+            tracerCercle(new Couleur(Col_J2), (largeur/3)+i*(((hauteurScore/6))+2)+10,(int)(((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
     }
     void tracerGrille_iso(){
-        //Fond
-        tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur,true,false);
-        drawable.setColor(new Couleur("CouleurJeu").couleur());
-        // bord de l'image
-        //tracerImage(border,0,0,largeur,hauteur);
-
-        //Plateau de jeu
-        tracerDiamond( ori_x-(largeurCase/2), ori_y-(hauteurCase/2), largeurCase*(plateau.lignes()+1), hauteurCase*(plateau.colonnes()+1),20,true);
-        tracerScore();
-
         marquer_voisins();
         for (int j = 0; j< plateau.colonnes();  j++){
             for (int i = 0; i < plateau.lignes(); i++) {
@@ -213,7 +232,11 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     if(plateau.grille()[i][j].estJouable() && ! plateau.estIsole(i,j)){
                         drawable.setColor(new Couleur("CouleurPlateau").couleur());
                     }else if(!plateau.grille()[i][j].estVide() ||plateau.estIsole(i,j) ){
-                        drawable.setColor(new Couleur("CouleurTourFinie").couleur());
+                        if(plateau.grille()[i][j].sommetTour()==0){
+                            drawable.setColor(new Couleur(Col_J1).couleur());
+                        }else{
+                            drawable.setColor(new Couleur(Col_J2).couleur());
+                        }
                         finie=true;
                     }
                     if(plateau.grille()[i][j].est_select_ia()){
@@ -245,7 +268,10 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawOval(x, y+hauteurPion, lc, hc);
 
         drawable.setColor(c.couleur());
-        drawable.fillRect(x,y+hc/2,lc,hauteurPion);
+
+        if(!transparency){
+            drawable.fillRect(x,y+hc/2,lc,hauteurPion);
+        }
 
         drawable.setColor(Color.black);
         drawable.drawLine(x, y+hc/2, x, y+(hc/2)+hauteurPion);
@@ -257,7 +283,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawOval(x,y, lc, hc);
     }
     void tracerTour(int x, int y, int lc, int hc,Tour T){
-        if(T.nbPion()==5 ||plateau.pasDeplacable(T)||transparency){
+        if(transparency){
             drawable.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)0.2));
         }
         for(int i=1;i<=T.nbPion();i++){
@@ -318,19 +344,15 @@ public class PlateauGraphique extends JComponent implements Observateur {
         drawable.drawLine(x3,y3+bord_h,x4,y4+bord_h);
     }
 
-    int tracerString(Couleur c, int x, int y,String s){
-        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,hauteurScore/6);
+    int tracerString(Couleur c, int x, int y,String s,int hauteur_texte){
+        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,hauteur_texte);
         drawable.setFont(font);
         drawable.setColor(c.couleur());
 
         drawable.drawString(s,x,y);
         return drawable.getFontMetrics().stringWidth(s);
     }
-    void tracerSurbri(Couleur c, int x, int y, int lc, int hc){
-        drawable.setStroke(new BasicStroke(3));
-        drawable.setColor(c.couleur());
-        drawable.drawOval(x,y,lc, hc);
-    }
+
     void tracerNbPion(Couleur c, int x, int y, int lc, int hc,int nbPion){
         Font font = new Font(Configuration.instance().lis("FontPion"),Font.PLAIN,hc/2);
         drawable.setFont(font);

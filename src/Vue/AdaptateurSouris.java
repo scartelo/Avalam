@@ -22,7 +22,6 @@ public class AdaptateurSouris extends MouseAdapter {
             c=-1;
             l=-1;
         }
-        plateau_graphique.affichage(l,c);
         controle.clicSouris(l,c);
     }
 
