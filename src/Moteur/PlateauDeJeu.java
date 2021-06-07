@@ -1,7 +1,7 @@
 package Moteur;
 
+import Global.Audio;
 import Global.Configuration;
-import Structures.Couple;
 import Structures.Iterateur;
 import Structures.Sequence;
 
@@ -63,21 +63,26 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private boolean estInnoccupable(int l, int c) {
         return tour(l,c).contenu() == INNOCCUPABLE;
     }
+
     public boolean estAccessible(int l, int c){
-        return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
+        return (l>0 && l<lignes) && (c>0 && c<colonnes);
     }
     /*
     Renvoie un booléen désignant si un pion est isolé sur la grille
     */
     public boolean estIsole(int l,int c){
-        Sequence<Couple<Integer,Integer>> v=voisins(l,c);
-        Couple<Integer,Integer> couple;
-        while(!v.estVide()){
-            couple=v.extraitTete();
+        /*Sequence<Couple<Integer,Integer>> v=voisins(l,c);
+        Couple<Integer,Integer> couple;*/
+        Sequence toursVoisines = voisins(l,c);
+        Sequence voisinesJouables = voisinsJouables(toursVoisines);
+        Iterateur it = toursVoisines.iterateur();
+        while(it.aProchain()){
+            /*couple=v.extraitTete();
             int i= couple.premier();
-            int j=couple.second();
-            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable()){
-                if(grille[i][j].nbPion()>0){
+            int j=couple.second();*/
+            Tour voisine = (Tour) it.prochain();
+            if(!grille[voisine.ligne()][voisine.colonne()].estVide() && !grille[voisine.ligne()][voisine.colonne()].estInnocupable()){
+                if(grille[voisine.ligne()][voisine.colonne()].nbPion()>0){
                     return false;
                 }
             }
@@ -94,7 +99,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             }
         }
         Vider_historique();
-        Init_pos();
+        //Init_pos();
     }
     /*
     Initialise une case de la grille selon sa position sur la grille
@@ -129,7 +134,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
                 initialiserLigne8(l,c);
                 break;
             default:
-                System.err.println("Erreur Hors grille");
+                Configuration.instance().logger().severe("Erreur Hors grille");
         }
     }
     /*
@@ -213,8 +218,11 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         Sequence voisins = Configuration.instance().nouvelleSequence();
         for (int i=l-1; i<=l+1; i++){
             for (int j=c-1; j<=c+1 ; j++){
-                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0)
-                    voisins.insereTete(new Couple<>(i,j));
+                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0) {
+                    Tour tour = grille[i][j];
+                    //voisins.insereTete(new Couple<>(i, j));
+                    voisins.insereQueue(tour);
+                }
             }
         }
         return voisins;
@@ -225,8 +233,9 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         Sequence resultat = Configuration.instance().nouvelleSequence();
         Iterateur it = voisins.iterateur();
         while (it.aProchain()){
-            Couple<Integer, Integer> couple = (Couple<Integer, Integer>) it.prochain();
-            Tour t = tour(couple.premier(),couple.second());
+            /*Couple<Integer, Integer> couple = (Couple<Integer, Integer>) it.prochain();
+            Tour t = tour(couple.premier(),couple.second());*/
+            Tour t = (Tour) it.prochain();
             if (t.estJouable()){
                 resultat.insereTete(t);
             }
@@ -261,11 +270,12 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             nouveau(c);
             System.out.println("j'ai créé un coup");
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
-            update_score();
+            //Init_pos();
+            //update_score();
             //play_sound("Drop");
         }
     }
+
     /*
     Rejoue le dernier coup annulé ( s'il existe )
     */
@@ -273,9 +283,9 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         Coup c = refaire();
         if(c!=null){
             grille[c.dest.ligne][c.dest.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
-            update_score();
+            //update_score();
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
+            //Init_pos();
             return true;
         }else{
             System.out.println("Ne peut pas refaire le coup");
@@ -290,9 +300,9 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         if(c!=null) {
             placerTour(c.dest.contenu(),c.dest.ligne,c.dest.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
-            update_score();
+            //update_score();
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
+            //Init_pos();
             System.out.println("j'ai annulé un coup");
             return true;
         }
@@ -307,7 +317,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     Si il s'agit du deuxième clic : Si le coup définit par les deux clics est jouable alors le coup est joué
                                     Sinon le premier clic est deselectionné
     */
-    public void position(int l,int c){
+    /*public void position(int l,int c){
         if(l<lignes && c<colonnes&&l>=0 && c>=0) {
             //Premier clic
             if (x1 == -1 && y1 == -1) {
@@ -322,7 +332,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             //Deuxième clic équivalent au premier = on annule le premier clic
             } else if (x1 == l && y1 == c) {
                 System.err.println("Même positions");
-                Init_pos();
+                //Init_pos();
             } else {
                 //deuxième clic différent du premier
                 if (grille[x1][y1].estDeplacable(grille[l][c])) {
@@ -332,7 +342,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
                     Jouer_pos(x1, y1, x2, y2);
                 } else {
                     play_sound("Error");
-                    Init_pos();
+                    //Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");
                 }
             }
@@ -340,7 +350,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             play_sound("Error");
             System.err.println("Hors de la grille");
         }
-    }
+    }*/
     /*
     Met à jour le score des deux joueurs selon l'état du plateau
     */
@@ -365,9 +375,11 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         score1=score_1;
         score2=score_2;
     }
+
+
     /*
     Joue un son dans res/Audio selon sound_name ( nom du fichier )
-    */
+    *//*
     public void play_sound(String sound_name){
         Audio sound= null;
         try {
@@ -380,7 +392,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             e.printStackTrace();
         }
         sound.play();
-    }
+    }*/
     /*
     Affiche la grille sur le terminal
     */
@@ -404,13 +416,16 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         }
     }
     public boolean pasDeplacable(Tour t){
-        Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
-        Couple<Integer,Integer> couple;
-        while(!v.estVide()){
-            couple=v.extraitTete();
+        /*Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
+        Couple<Integer,Integer> couple;*/
+        Sequence toursVoisines = voisins(t.ligne(), t.colonne());
+        Iterateur it = toursVoisines.iterateur();
+        while(it.aProchain()){
+            /*couple=v.extraitTete();
             int i= couple.premier();
-            int j=couple.second();
-            if(t.estDeplacable(grille[i][j])){
+            int j=couple.second();*/
+            Tour voisine = (Tour) it.prochain();
+            if(t.estDeplacable(grille[voisine.ligne()][voisine.colonne()])){
                 return false;
             }
         }

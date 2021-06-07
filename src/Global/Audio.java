@@ -1,4 +1,4 @@
-package Moteur;
+package Global;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,12 +7,13 @@ import javax.sound.sampled.*;
 
 public class Audio {
 
+    private static Audio instance = null;
     // to store current position
-    Long currentFrame;
-    Clip clip;
+    static Long currentFrame;
+    static Clip clip;
 
     // current status of clip
-    String status;
+    static String status;
 
     AudioInputStream audioInputStream;
     static String filePath;
@@ -30,13 +31,17 @@ public class Audio {
         // open audioInputStream to the clip
         clip.open(audioInputStream);
     }
+
+    public static Audio instance(String sound_name) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        return instance = new Audio(sound_name);
+    }
     /*
     Permet de jouer l'audio en cours
     */
-    public void boucle(){
+    public static void boucle(){
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
-    public void play()
+    public static void play()
     {
         //start the clip
         clip.start();
@@ -95,7 +100,7 @@ public class Audio {
     /*
     Arrête l'audio actuel
     */
-    public void stop() throws UnsupportedAudioFileException,
+    public static void stop() throws UnsupportedAudioFileException,
             IOException, LineUnavailableException
     {
         currentFrame = 0L;
@@ -123,7 +128,7 @@ public class Audio {
     /*
     Permet de reset le stream de l'audio
     */
-    public void change_volume(float db){
+    public static void change_volume(float db){
         FloatControl gainControl =
                 (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         gainControl.setValue(db);
@@ -135,6 +140,24 @@ public class Audio {
                 new File(filePath).getAbsoluteFile());
         clip.open(audioInputStream);
         clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    /*
+    Joue un son dans res/Audio selon sound_name ( nom du fichier )
+    */
+    public static void play_sound(String sound_name){
+        Audio sound = null;
+        try {
+            //sound = new Audio(sound_name);
+            sound = instance(sound_name);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        sound.play();
     }
 
 }

@@ -26,8 +26,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            //joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
-            joueurs[i][1] = new JoueurIAMinMax(i, jeu);
+            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //joueurs[i][1] = new JoueurIAAlphaBeta(i, jeu);
             //typeJoueur[i] = 0;
         }
@@ -55,9 +55,15 @@ public class ControleurMediateur implements CollecteurEvenements {
         if (l>=0 && c>=0 && l<jeu.plateau.lignes() && c<jeu.plateau.colonnes()&&joueurs[joueurCourant][typeJoueur[joueurCourant]].joue(l, c)) {
             jeu.miseAJour();
             changeJoueur();
+            update_buttons();
+            if(jeu.estTermine()){
+                iu.Win_message();
+                Configuration.instance().logger().info("Partie terminée");
+            }
+
         }
         //jeu.clic(l,c);
-        update_buttons();
+
     }
 
     public void changeJoueur() {
@@ -85,7 +91,12 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.change_ia_state(joueurCourant,1);
             }
         }
-        update_buttons(); }
+        update_buttons();
+        if(jeu.estTermine()){
+            iu.Win_message();
+            Configuration.instance().logger().info("Partie terminée");
+        }
+    }
 
     @Override
     public void fixerInterfaceUtilisateur(InterfaceUtilisateur i) {
@@ -124,6 +135,10 @@ public class ControleurMediateur implements CollecteurEvenements {
                     }
                     update_buttons();
                     iu.reset_waiting();
+                    if(jeu.estTermine()){
+                        iu.Win_message();
+                        Configuration.instance().logger().info("Partie terminée");
+                    }
                 }
                 else {
                     // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.

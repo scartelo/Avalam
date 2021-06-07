@@ -1,19 +1,20 @@
 package Moteur;
 
+import Global.Configuration;
 import Patterns.Observable;
 import Structures.Iterateur;
 import Structures.Sequence;
 
 import javax.swing.*;
 
-public class Jeu extends Observable {
+public class Jeu extends Observable implements Cloneable {
     public PlateauDeJeu plateau;
     private int tourFini;
     private boolean partieTerminee;
     public String nom_j1,nom_j2;
     public int IA1,IA2,niveauIA1,niveauIA2,IA1_ref,IA2_ref,tourDep;// IA1 = 1 si active ou 0 si inactive      niveauIA = 0 facile, 1 moyen, 2 difficile
-    private Tour tourSelectionnee;
     public boolean couleur;// true si dans l'ordre "normal" ; false si inversé
+    int scoreJ1, scoreJ2;
     public Jeu(PlateauDeJeu p){
         plateau = p;
         tourFini = 0;
@@ -21,6 +22,8 @@ public class Jeu extends Observable {
         IA1=0;IA2=0;niveauIA1=0;niveauIA2=0;IA1_ref=0;IA2_ref=0;
         nom_j1 = "Joueur 1";
         nom_j2 = "Joueur 2";
+        scoreJ1 = 0;
+        scoreJ2 = 0;
     }
     public void change_ia_state(int IA, int ref){
         if(IA==0){
@@ -33,17 +36,21 @@ public class Jeu extends Observable {
     Renvoie une string du joueur ayant le plus grand score ou égalité
     */
     public String get_winner(){
-        if(plateau.score1==plateau.score2){
+        if(scoreJ1 == scoreJ2){
             return "Egalité entre les joueurs.";
-        }else if(plateau.score1>plateau.score2){
-            return  nom_j1+" gagne la partie.";
+        }else if(scoreJ1 > scoreJ2){
+            return  nom_j1 + " gagne la partie.";
         }
         else{
-            return nom_j2+" gagne la partie.";
+            return nom_j2 + " gagne la partie.";
         }
     }
-    public void Win_message(){
-        JOptionPane.showMessageDialog(null,"La partie est terminée !\n"+get_winner()+"\nMerci d'avoir joué à Avalam.","Partie terminée",JOptionPane.PLAIN_MESSAGE);
+    public String Win_message(){
+        String message = "";
+        message = "La partie est terminée !" + "\n";
+        message +=  get_winner() + "\n";
+        message += "Merci d'avoir joué à Avalam." + "\n";
+        return message;
     }
     public Jeu nouvellePartie(){
         /*plateau=new PlateauDeJeu();
@@ -58,11 +65,12 @@ public class Jeu extends Observable {
     */
     public boolean refaire(){
         boolean b=plateau.refaireCoup();
-        miseAJour();
         if(estTermine()) {
             partieTerminee = true;
             Win_message();
         }
+        MAJScore();
+        miseAJour();
         return b;
     }
     public void quitter(){
@@ -72,13 +80,15 @@ public class Jeu extends Observable {
     Annule le dernier coup ( si possible )
     */
     public boolean annuler(){
-        boolean b=plateau.annulerCoup();
+        boolean b = plateau.annulerCoup();
         if(partieTerminee){
-            partieTerminee =false;
+            partieTerminee = false;
         }
+        MAJScore();
         miseAJour();
         return b;
     }
+    /*
     public void clic(int l, int c){
         plateau.position(l,c);
         miseAJour();
@@ -86,7 +96,7 @@ public class Jeu extends Observable {
             partieTerminee =true;
             Win_message();
         }
-    }
+    }*/
 
     /*
     Sauvegarde la partie ( historique )
@@ -112,19 +122,22 @@ public class Jeu extends Observable {
                 if (seq != null) {
                     while (it.aProchain()) {
                         Coup c = it.prochain();
-                        plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dest.ligne,c.dest.colonne);
+                        //plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dest.ligne,c.dest.colonne);
+                        jouer(c.src(), c.dest());
                     }
                     for(int i=0;i<S.taille_futur;i++){
-                        plateau.annulerCoup();
+                        //plateau.annulerCoup();
+                        annuler();
                     }
-                    plateau.update_score();
+                    //plateau.update_score();
+                    MAJScore();
                     miseAJour();
                     return true;
                 } else {
-                    System.err.println("Erreur lors de la lecture de la sauvegarde");
+                    Configuration.instance().logger().severe("Erreur lors de la lecture de la sauvegarde");
                 }
             }else {
-                System.err.println("La sauvegarde n'existe pas");
+                Configuration.instance().logger().severe("La sauvegarde n'existe pas");
             }
         return false;
     }
@@ -154,7 +167,8 @@ public class Jeu extends Observable {
                 }
             }
         }
-        plateau.update_score();
+        //plateau.update_score();
+        //MAJScore();
         return res;
     }
     public boolean isIA(int joueur){
@@ -163,7 +177,58 @@ public class Jeu extends Observable {
         }
         return false;
     }
+
+    public void jouer(Tour src, Tour dest){
+        plateau.Jouer(src, dest);
+        //plateau = this.plateau();
+        MAJScore();
+    }
     public PlateauDeJeu plateau(){
         return plateau;
     }
+
+    @Override
+    public Jeu clone(){
+        Jeu clone = null;
+        try {
+            clone = (Jeu) super.clone();
+        } catch (CloneNotSupportedException e) {
+            Configuration.instance().logger().severe("Clone échoué");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return clone;
+    }
+
+    // Renvoie le score du joueur de numéro num
+    public int score(int num){
+        if (num == 0){
+            return scoreJ1;
+        }else if (num == 1){
+            return scoreJ2;
+        }
+        return 0;
+    }
+
+    // Met à jour le score de la partie
+    public void MAJScore(){
+        int score1 = 0;
+        int score2 = 0;
+        for (int i=0; i<plateau.lignes(); i++){
+            for (int j=0; j<plateau.colonnes(); j++){
+                Tour tour = plateau.tour(i,j);
+                if (!tour.estInnocupable() && !tour.estVide()){
+                    if(plateau.pasDeplacable(tour)){
+                        if (tour.sommetTour() == 0)
+                            score1 += 1;
+                        else
+                            score2 += 1;
+                    }
+                }
+            }
+        }
+        scoreJ1 = score1;
+        scoreJ2 = score2;
+    }
+
 }

@@ -213,6 +213,13 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         }
 
     }
+
+    @Override
+    public void Win_message(){
+        String message = jeu.Win_message();
+        JOptionPane.showMessageDialog(null,message,"Partie terminée",JOptionPane.PLAIN_MESSAGE);
+    }
+
     public void update_waiting(){
         PlateauGraphique.update_attente();
         metAJour();
@@ -265,10 +272,12 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             frame.dispose();
             Dimension dim = frame.getSize();
             Point location = frame.getLocation();
-            run();
+
             frame.setSize(dim);
             frame.setLocation(location);
             metAJour();
+            //run();
+            InterfaceGraphique.demarrer(jeu, controle);
         }
     }
 

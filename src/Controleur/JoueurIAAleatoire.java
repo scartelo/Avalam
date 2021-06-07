@@ -1,5 +1,6 @@
 package Controleur;
 
+import Global.Audio;
 import Global.Configuration;
 import Moteur.Jeu;
 import Moteur.Tour;
@@ -31,18 +32,20 @@ public class JoueurIAAleatoire extends JoueurIA{
     @Override
     boolean tempsEcoule() {
         Tour departTour = selectionAleatoire();
+        //Audio.play_sound("Pick");
         Configuration.instance().logger().info(
                 "La tour (" + departTour.ligne() + ", " + departTour.colonne() + ") a été selectionnée");
         Sequence voisinsDepart = jeu.plateau.voisins(departTour.ligne(), departTour.colonne());
-        int position = r.nextInt(8); // choix aléatoire parmi les 8 voisins
+        int position = r.nextInt(8); // choix aléatoire parmi les 8 voisins maximum
         int i = 0;
         Iterateur it = voisinsDepart.iterateur();
         while (it.aProchain()){
                 if (i == position){
-                    Couple c = (Couple) it.prochain();
+                    /*Couple c = (Couple) it.prochain();
                     int destL = (int) c.premier();
                     int destC = (int) c.second();
-                    Tour destTour = jeu.plateau().tour(destL, destC);
+                    Tour destTour = jeu.plateau().tour(destL, destC);*/
+                    Tour destTour = (Tour) it.prochain();
                     if (destTour.estDeplacable(departTour) && destTour.estJouable()){
                         jeu.plateau().Jouer(departTour, destTour);
                         Configuration.instance().logger().info(
@@ -51,10 +54,8 @@ public class JoueurIAAleatoire extends JoueurIA{
                         jeu.plateau.deselection_ia();
                         jeu.plateau.selection_ia(departTour,destTour);
                         jeu.miseAJour();
-                        if(jeu.estTermine()){
-                            jeu.Win_message();
-                            Configuration.instance().logger().info("Partie terminée");
-                        }
+                        Audio.play_sound("Drop");
+
                         return true;
                     }
                 }else {

@@ -1,5 +1,6 @@
 package Controleur;
 
+import Global.Audio;
 import Global.Configuration;
 import Moteur.Jeu;
 import Moteur.Tour;
@@ -19,11 +20,11 @@ public class JoueurHumain extends Joueur {
                         Configuration.instance().logger().warning("Hors grille");
                     else
                         Configuration.instance().logger().warning("Cette tour n'est pas jouable");
-                    jeu.plateau().play_sound("Error");
+                    Audio.play_sound("Error");
                     return false;
                 }
                 else if (jeu.plateau().estIsole(l, c)) {
-                    jeu.plateau().play_sound("Error");
+                    Audio.play_sound("Error");
                     Configuration.instance().logger().warning("Cette tour est isolée, elle ne peut pas être sélectionner");
                     return false;
                 } else {
@@ -35,13 +36,15 @@ public class JoueurHumain extends Joueur {
                     jeu.miseAJour();
                     Configuration.instance().logger().info(
                             "La tour (" + tourSelectionnee.ligne() + ", " + tourSelectionnee.colonne() + ") a été selectionnée");
-                    jeu.plateau().play_sound("Pick");
+                    Audio.play_sound("Pick");
                     return false;
                 }
             } else {
                 Tour dest = jeu.plateau().tour(l, c);
                 if (dest.estJouable() && dest.estDeplacable(tourSelectionnee)) {
-                    jeu.plateau().Jouer(tourSelectionnee, dest);
+                    //jeu.plateau().Jouer(tourSelectionnee, dest);
+                    jeu.jouer(tourSelectionnee, dest);
+                    Audio.play_sound("Drop");
                     Configuration.instance().logger().info(
                             "Déplacement de la tour (" + tourSelectionnee.ligne() + "," + tourSelectionnee.colonne() + ") vers la tour (" + dest.ligne() + "," + dest.colonne() + ") effectué");
                     tourSelectionnee.marquer(false);
@@ -49,9 +52,7 @@ public class JoueurHumain extends Joueur {
                     tourSelectionnee = null;
                     jeu.plateau.deselection_ia();
                     jeu.miseAJour();
-                    if(jeu.estTermine()){
-                        jeu.Win_message();
-                    }
+
                     int prochain_joueur=(num()+1)%2;
                     if(jeu.isIA(prochain_joueur)){
                         jeu.change_ia_state(prochain_joueur,1);
@@ -60,7 +61,7 @@ public class JoueurHumain extends Joueur {
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");
                     if(!(dest.ligne()==tourSelectionnee.ligne() && dest.colonne()==tourSelectionnee.colonne())) {
-                        jeu.plateau().play_sound("Error");
+                        Audio.play_sound("Error");
                     }
                     tourSelectionnee.marquer(false);
 

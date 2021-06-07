@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import Patterns.Observateur;
 import Moteur.Jeu;
 import Structures.Couple;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 /*
@@ -21,7 +22,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
     int largeur, hauteur, largeurCase, hauteurCase,margin_x,margin_y,margin_x_score,margin_y_score,largeurScore,hauteurScore,largeurNom,hauteurNom,hauteur_texte1,hauteur_texte2;
     Graphics2D drawable;
     Jeu jeu;
-    PlateauDeJeu plateau;
+    //PlateauDeJeu plateau;
     ImageCharge couronne;
     public String Col_J1;
     public String Col_J2;
@@ -30,7 +31,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
     public boolean aff_voisins;
     public PlateauGraphique(Jeu j){
         jeu=j;
-        plateau = jeu.plateau;
+        //plateau = jeu.plateau;
         aff_voisins=false;
         couronne=new ImageCharge(ImageCharge.charge("Images/couronne.png"));
         if(jeu.couleur){ // true si dans l'ordre "normal" ; false si inversé
@@ -50,11 +51,11 @@ public class PlateauGraphique extends JComponent implements Observateur{
         largeurScore=largeur/2;
         hauteurScore=hauteur/5;
         hauteur=hauteur-hauteurScore;
-        largeurCase = largeur / plateau.colonnes();
-        hauteurCase = hauteur / plateau.lignes();
+        largeurCase = largeur / jeu.plateau().colonnes();
+        hauteurCase = hauteur / jeu.plateau().lignes();
         largeurCase = hauteurCase = Math.min(largeurCase, hauteurCase);
-        margin_x=(largeur-(largeurCase*plateau.colonnes()))/2;
-        margin_y=(hauteur-(hauteurCase*plateau.lignes()))/2;
+        margin_x=(largeur-(largeurCase*jeu.plateau().colonnes()))/2;
+        margin_y=(hauteur-(hauteurCase*jeu.plateau().lignes()))/2;
         margin_x_score=200;
         margin_y_score=0;
         hauteurNom=0;
@@ -98,19 +99,20 @@ public class PlateauGraphique extends JComponent implements Observateur{
         if(hauteur>500){
             margin_score_j1=-1*(hauteur/100);
         }
+        //System.out.println(jeu.score(0));
+        for(int i=0;i<jeu.score(0);i++){
 
-        for(int i=0;i<jeu.plateau.scoreJ1();i++){
 
             tracerCercle(new Couleur(Col_J1), i*((hauteurScore/6)+2)+10,hauteur+((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
         }
-        for(int i=0;i<jeu.plateau.scoreJ2();i++){
+        for(int i=0;i<jeu.score(1);i++){
             tracerCercle(new Couleur(Col_J2), i*((hauteurScore/6)+2)+10,(int)(hauteur+((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
     }
     void tracer_Surbri_ia(){
-        for (int i = 0; i< plateau.lignes(); i++){
-            for (int j = 0; j < plateau.colonnes(); j++) {
-                if(plateau.tour(i,j).est_select_ia()){
+        for (int i = 0; i< jeu.plateau().lignes(); i++){
+            for (int j = 0; j < jeu.plateau().colonnes(); j++) {
+                if(jeu.plateau().tour(i,j).est_select_ia()){
                     int x = (j * hauteurCase)+margin_x;
                     int y = (i * largeurCase)+margin_y;
                     tracerSurbri(new Couleur("CouleurSubrillanceIA"), x+4, y+4, largeurCase-6, hauteurCase-6);
@@ -134,23 +136,26 @@ public class PlateauGraphique extends JComponent implements Observateur{
         drawable.draw(arrowHead);
     }
     void tracer_Surbri(){
-        for (int i = 0; i< plateau.lignes(); i++){
-            for (int j = 0; j < plateau.colonnes(); j++){
-                if(plateau.tour(i,j).setEstSelectionee()){
+        for (int i = 0; i< jeu.plateau().lignes(); i++){
+            for (int j = 0; j < jeu.plateau().colonnes(); j++){
+                if(jeu.plateau().tour(i,j).setEstSelectionee()){
                     int x = (j * hauteurCase)+margin_x;
                     int y = (i * largeurCase)+margin_y;
                     tracerSurbri(new Couleur("CouleurSubrillance"), x+4, y+4, largeurCase-6, hauteurCase-6);
                     if(aff_voisins){
-                        Tour T=plateau.tour(i,j);
-                        Sequence<Couple<Integer,Integer>> v=jeu.plateau.voisins(T.ligne(),T.colonne());
-                        Couple<Integer,Integer> couple;
-                        while(!v.estVide()){
-                            couple = v.extraitTete();
+                        Tour t = jeu.plateau().tour(i,j);
+                        /*Sequence<Couple<Integer,Integer>> v=jeu.plateau().voisins(T.ligne(),T.colonne());
+                        Couple<Integer,Integer> couple;*/
+                        Iterateur v = jeu.plateau().voisins(t.ligne(), t.colonne()).iterateur();
+                        while(!v.aProchain()){
+                            /*couple = v.extraitTete();
                             int i_v= couple.premier();
-                            int j_v=couple.second();
-                            if(T.estDeplacable(plateau.tour(i_v,j_v))){
-                                int x_v = (j_v * hauteurCase)+margin_x;
-                                int y_v = (i_v * largeurCase)+margin_y;
+                            int j_v=couple.second();*/
+                            Tour voisine = (Tour) v.prochain();
+
+                            if(t.estDeplacable(jeu.plateau().tour(voisine.ligne(), voisine.colonne()))){
+                                int x_v = (voisine.colonne() * hauteurCase)+margin_x;
+                                int y_v = (voisine.ligne() * largeurCase)+margin_y;
                                 tracerSurbri(new Couleur("CouleurSurbriVoisin"), x_v+4, y_v+4, largeurCase-6, hauteurCase-6);
                             }
                         }
@@ -164,16 +169,16 @@ public class PlateauGraphique extends JComponent implements Observateur{
         tracerCarre(new Couleur("CouleurFond"), 0, 0, largeur, hauteur);
         //bord gauche / droite
         tracerCarre(new Couleur("CouleurBord"), 0, 0, margin_x, hauteur);
-        tracerCarre(new Couleur("CouleurBord"), margin_x+(plateau.lignes()*hauteurCase)+1, 0, largeur, hauteur);
+        tracerCarre(new Couleur("CouleurBord"), margin_x+(jeu.plateau().lignes()*hauteurCase)+1, 0, largeur, hauteur);
         //bord haut / bas
         tracerCarre(new Couleur("CouleurBord"), 0, 0, largeur, margin_y);
-        tracerCarre(new Couleur("CouleurBord"), 0, margin_y+(plateau.colonnes()*largeurCase), largeur, margin_y);
+        tracerCarre(new Couleur("CouleurBord"), 0, margin_y+(jeu.plateau().colonnes()*largeurCase), largeur, margin_y);
 
-        for (int i = 0; i< plateau.lignes(); i++){
-            for (int j = 0; j < plateau.colonnes(); j++){
+        for (int i = 0; i< jeu.plateau().lignes(); i++){
+            for (int j = 0; j < jeu.plateau().colonnes(); j++){
                 int x = (j * hauteurCase)+margin_x;
                 int y = (i * largeurCase)+margin_y;
-                Tour T = plateau.tour(i,j);
+                Tour T = jeu.plateau().tour(i,j);
                 int s=T.sommetTour();
                 int n=T.nbPion();
 
@@ -190,7 +195,7 @@ public class PlateauGraphique extends JComponent implements Observateur{
                     } else if (s == 1) {
                         tracerCercle(new Couleur(Col_J2), x+4, y+4, largeurCase-6, hauteurCase-6);
                     }
-                        if(!T.estVide()&&!plateau.pasDeplacable(plateau.tour(i,j))){
+                        if(!T.estVide()&&!jeu.plateau().pasDeplacable(jeu.plateau().tour(i,j))){
                             tracerNbPion(new Couleur("CouleurNbPion"), x+(largeurCase/14), y+(hauteurCase/5), largeurCase, hauteurCase,n);
                         }else if(!T.estInnocupable() && ! T.estVide()){
 
