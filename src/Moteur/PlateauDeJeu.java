@@ -401,10 +401,10 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(tour(i,j).contenu() != INNOCCUPABLE && tour(i,j).contenu()!= TROU){
-                    if(tour(i,j).sommetTour()==1) {
+                    if(tour(i,j).sommetTour()==0) {
                         System.out.print("\u001B[31m" + tour(i, j).nbPion());
                     }
-                    else if(tour(i,j).sommetTour()==0){
+                    else if(tour(i,j).sommetTour()==1){
                         System.out.print("\u001B[33m" + tour(i, j).nbPion());
                     }
                 }else if (tour(i,j).contenu()== TROU){

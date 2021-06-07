@@ -104,6 +104,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         frame.setLocationRelativeTo(null);
         controle.update_buttons();
         frame.setVisible(true);
+        jeu.plateau().afficherGrille();
     }
     public JMenu menu_sauvegarde(){
         //liste des sauvegardes sous forme de menu

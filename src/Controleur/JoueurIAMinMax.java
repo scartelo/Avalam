@@ -24,18 +24,17 @@ public class JoueurIAMinMax extends JoueurIA {
     }
 
 
-
     //Nouvelle version d'evaluation
     //estilation de la chance de p
-    public int evaluationV2(PlateauDeJeu p ){
+    public int evaluationV2(PlateauDeJeu p) {
 
         Sequence<Integer> liste = listeFi(p);
         Iterateur it = liste.iterateur();
         int f;
         int somme = 0;
-        while(it.aProchain()){
+        while (it.aProchain()) {
             f = (int) it.prochain();
-            somme  += f;
+            somme += f;
         }
 
         return somme;
@@ -53,15 +52,14 @@ public class JoueurIAMinMax extends JoueurIA {
                         //System.out.println("avant resultat = " + resultat);
                         f1++;
                         //System.out.println("apres resultat = " + resultat);
-                    }
-                    else if (num != t.sommetTour()){
+                    } else if (num != t.sommetTour()) {
                         f2++;
                     }
                 }
             }
         }
         fi.insereTete(f1);
-        fi.insereTete(f1-f2);
+        fi.insereTete(f1 - f2);
 
         return fi;
     }
@@ -72,47 +70,52 @@ public class JoueurIAMinMax extends JoueurIA {
         //double[][] scores = new double[9][9];
         //double max = 0;
         //int ldep = 0, cdep = 0;
-        Coup meilleurCoup = null;
+        CoupIA meilleurCoup = new CoupIA(null, null);
         double meilleurScore = Double.NEGATIVE_INFINITY;
         int horizon = 0;
 
         Couple<Integer, Integer> v;
         Couple<Double, Tour> resultat = null;
         Tour tour = null;
-        Couple<Tour,Tour> opt = null;
+        Couple<Tour, Tour> opt = null;
 
         if (nbCoups < 5) {
             opt = isBetter(jeu.plateau());
-            if (opt !=null){
+            if (opt != null) {
                 jeu.jouer(opt.premier(), opt.second());
                 jeu.miseAJour();
                 nbCoups++;
-                System.out.println("resulata apres jouer :"+ evaluationV2(jeu.plateau()));
-                System.out.println("nbCoups :"+nbCoups);
-            }
-            else {
+                System.out.println("resulata apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :" + nbCoups);
+            } else {
                 couvrirAdversaire(jeu);
                 nbCoups++;
-                System.out.println("resulata apres jouer :"+ evaluationV2(jeu.plateau()));
-                System.out.println("nbCoups :"+nbCoups);
+                System.out.println("resulata apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :" + nbCoups);
             }
         } else {
-            System.out.println("avant min max");
-            //plateauDeJeu = jeu.plateau();
+           // Jeu clone = jeu.clone();
 
             for (int i = 0; i < jeu.plateau().lignes(); i++) {
                 for (int j = 0; j < jeu.plateau().colonnes(); j++) {
                     Tour selectionnee = jeu.plateau().tour(i, j);
                     if (selectionnee.estJouable() && !jeu.plateau().pasDeplacable(selectionnee)) {
                         Sequence<Tour> voisines = jeu.plateau().voisins(selectionnee.ligne(), selectionnee.colonne());
-                        Iterateur<Tour> vJouables = jeu.plateau().voisinsJouables(voisines).iterateur();
-                        while (vJouables.aProchain()) {
-                            Tour dest = vJouables.prochain();
+                        Iterateur<Tour> jouables = jeu.plateau().voisinsJouables(voisines).iterateur();
+                        while (jouables.aProchain()) {
+                            Tour dest = jouables.prochain();
                             if (dest.estJouable() && selectionnee.estDeplacable(dest)) {
-                                jeu.jouer(selectionnee, dest);
-                                meilleurScore = Math.max(meilleurScore, miniMax(jeu, horizon, true));
-                                jeu.annuler();
-                                meilleurCoup = new Coup(selectionnee, dest);
+                                CoupIA coupMinMax = new CoupIA(selectionnee, dest);
+                                //PlateauDeJeu plateau = simulationCoup(clone.plateau(), coupMinMax);
+                                PlateauDeJeu p = jeu.plateau();
+                                Jeu jj = jeu.clone();
+                                p.jouer(selectionnee,dest);
+                                CoupIA coupAJouer = miniMax(jj, coupMinMax, horizon, true);
+                                annuleCoupIA(p, coupMinMax);
+                                if (coupAJouer.valeur() > meilleurCoup.valeur()) {
+                                    meilleurScore = coupAJouer.valeur();
+                                    meilleurCoup = coupAJouer;
+                                }
                             }
 
                         }
@@ -122,6 +125,7 @@ public class JoueurIAMinMax extends JoueurIA {
                 }
 
             }
+
 
             System.out.println("apres min max");
             meilleurCoup.afficheCoup();
@@ -140,7 +144,7 @@ public class JoueurIAMinMax extends JoueurIA {
             //clone = jeu.clone();
         }
         return true;
-}
+    }
 
     public Sequence<Sequence<CoupIA>> elaborerCoup(boolean joueurMax) {
         PlateauDeJeu p = jeu.plateau().clone();
@@ -168,36 +172,31 @@ public class JoueurIAMinMax extends JoueurIA {
         return sequenceCoups;
     }
 
-    public PlateauDeJeu jouerCoup(CoupIA coup, PlateauDeJeu p) {
+    public PlateauDeJeu simulationCoup(PlateauDeJeu p, Coup coup) {
         PlateauDeJeu plateau = p.clone();
-        plateau.jouer(coup.src(), coup.dest());
-        //coup.fixerValeur(evaluation());
-        //plateau.annuler();
+        System.out.println("Nouveau plateau");
+        if (coup.dest().ajouteTour(coup.src())) {
+            System.out.println("Coup IA joué");
+            coup.afficheCoup();
+            p.placerTour(coup.dest().contenu(), coup.dest().ligne(), coup.dest().colonne());
+            p.afficherGrille();
+            plateau = p.clone();
+        }
         return plateau;
     }
 
-    /*private double evaluation(Jeu jj) {
-        double resultat = 1.0;
-        for (int i=0; i<jj.plateau().lignes(); i++){
-            for (int j=0; j<jj.plateau().colonnes(); j++){
-                Tour tour = jj.plateau().tour(i,j);
-                if (tour.estJouable()){
-                    if (tour.nbPion() == 1){
-                        resultat = 2.0;
-                    }else if (tour.nbPion() == 2){
-                        resultat = 0.25;
-                    }else if (tour.nbPion() == 3){
-                        resultat = 0.50;
-                    }else if (tour.nbPion() == 4){
-                        resultat = 0.75;
-                    }else if (tour.nbPion() == 5){
-                        resultat = 1.0;
-                    }
-                }
-            }
+    private void annuleCoupIA(PlateauDeJeu p, Coup coup) {
+        Coup tmp = coup;
+        if (coup != null){
+            System.out.println("Nouveau plateau");
+            p.placerTour(coup.src().contenu(), coup.src().ligne(), coup.src().colonne());
+            p.placerTour(coup.dest().contenu(), coup.dest().ligne(), coup.dest().colonne());
+            System.out.println("IA a annulé");
+            coup.afficheCoup();
+            p.afficherGrille();
         }
-        return resultat;
-    }*/
+    }
+
 
     private double evaluation(Jeu copy) {
         double diff = 0.0;
@@ -209,13 +208,13 @@ public class JoueurIAMinMax extends JoueurIA {
         return diff;
     }
 
-    double miniMax(Jeu copy, int horizon, boolean joueurMax) {
+    /*double miniMax(Jeu copy, Tour source, int horizon, boolean joueurMax) {
         System.out.println("joueurMax =  " + (joueurMax ? "max" : "min") + " / horizon=" + horizon);
-        if (horizon == 2 || copy.estTermine()) {
+        if (horizon == 0 || copy.estTermine()) {
+            //CoupIA c = new CoupIA(null, null);
+            //c.fixerValeur(evaluation(copy));
             return evaluation(copy);
         } else {
-            int resultat = 0;
-
             double maxEval = joueurMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
             for (int i = 0; i < copy.plateau().lignes(); i++) {
@@ -249,6 +248,45 @@ public class JoueurIAMinMax extends JoueurIA {
 
             return maxEval;
         }
+    }*/
+
+    CoupIA miniMax(Jeu copy, CoupIA source, int horizon, boolean joueurMax) {
+        if (horizon == 0 || copy.estTermine()) {
+            //copy.jouer(source.src(), source.dest());
+            source.fixerValeur((int) evaluation(copy));
+            //copy.annuler();
+            return source;
+        } else {
+            double maxEval = joueurMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+            CoupIA meilleurCoup =null;
+            for (int i = 0; i < copy.plateau().lignes(); i++) {
+                for (int j = 0; j < copy.plateau().colonnes(); j++) {
+                    Tour depart = copy.plateau().tour(i, j);
+                    Sequence<Tour> toursVoisines = copy.plateau().voisins(depart.ligne(), depart.colonne());
+                    Iterateur<Tour> jouables = copy.plateau().voisinsJouables(toursVoisines).iterateur();
+                    while (jouables.aProchain()) {
+                        Tour dest = jouables.prochain();
+                        if (dest.estJouable() && depart.estDeplacable(dest)) {
+                            CoupIA coup = (CoupIA) new Coup(depart, dest);
+                            PlateauDeJeu plateau = simulationCoup(copy.plateau(), coup);
+                            CoupIA coupMinMAx = miniMax(copy, coup, horizon - 1, !joueurMax);
+                            annuleCoupIA(plateau, coup);
+                            if (joueurMax) {
+                                maxEval = (maxEval > coupMinMAx.valeur()) ? maxEval : coupMinMAx.valeur();
+                                meilleurCoup = coup;
+                            } else {
+                                maxEval = (maxEval < coupMinMAx.valeur()) ? maxEval : coupMinMAx.valeur();
+                                meilleurCoup = coup;
+                            }
+
+                        }
+                    }
+                }
+            }
+            return meilleurCoup;
+        }
     }
+
+
 
 }
