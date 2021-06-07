@@ -15,4 +15,10 @@ public class CoupIA extends Coup{
     public void fixerValeur(int v){
         valeur = v;
     }
+
+    @Override
+    public void afficheCoup(){
+        System.out.println("Coup: (" + src().ligne() + "," + src().colonne() + ") -> ("
+                + dest().ligne() + "," + dest().colonne() + ") valeur = " + valeur());
+    }
 }

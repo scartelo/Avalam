@@ -32,4 +32,9 @@ public class Coup {
     public int num(){
         return num;
     }
+
+    public void afficheCoup(){
+        System.out.println("Coup: (" + src().ligne() + "," + src().colonne() + ") -> ("
+                + dest().ligne() + "," + dest().colonne() + ")");
+    }
 }

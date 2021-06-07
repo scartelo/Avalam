@@ -8,8 +8,8 @@ public class testGraphique {
         Jeu jeu= new Jeu(plateau);
         Controleur.ControleurMediateur controle = new Controleur.ControleurMediateur(jeu);
         InterfaceGraphique ig = new InterfaceGraphique(jeu, controle);
-        plateau.Jouer(plateau.tour(3,4),plateau.tour(3,5));
-        plateau.Jouer(plateau.tour(2,5),plateau.tour(3,5));
+        plateau.jouer(plateau.tour(3,4),plateau.tour(3,5));
+        plateau.jouer(plateau.tour(2,5),plateau.tour(3,5));
         ig.demarrer(jeu, controle);
     }
 

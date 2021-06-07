@@ -1,6 +1,7 @@
 package Controleur;
 
 
+import Global.Audio;
 import Global.Configuration;
 import Moteur.Jeu;
 import Vue.CollecteurEvenements;
@@ -26,8 +27,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
-            //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
+            //joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //joueurs[i][1] = new JoueurIAAlphaBeta(i, jeu);
             //typeJoueur[i] = 0;
         }
@@ -57,6 +58,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             changeJoueur();
             update_buttons();
             if(jeu.estTermine()){
+                Audio.play_sound("GaveOver");
                 iu.Win_message();
                 Configuration.instance().logger().info("Partie terminée");
             }
@@ -136,6 +138,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                     update_buttons();
                     iu.reset_waiting();
                     if(jeu.estTermine()){
+                        Audio.play_sound("GameOver");
                         iu.Win_message();
                         Configuration.instance().logger().info("Partie terminée");
                     }

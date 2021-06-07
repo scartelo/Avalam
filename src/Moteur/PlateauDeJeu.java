@@ -1,13 +1,8 @@
 package Moteur;
 
-import Global.Audio;
 import Global.Configuration;
 import Structures.Iterateur;
 import Structures.Sequence;
-
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 
 public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private Tour[][] grille;
@@ -212,7 +207,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             alterner(l,c);
     }
     /*
-    Renvoie une séquence contenant les positions (i,j) des tours voisines qui ne sont pas hors grille
+    Renvoie une séquence des tours voisines à la tour située à la position (l,c)
     */
     public Sequence voisins(int l, int c){
         Sequence voisins = Configuration.instance().nouvelleSequence();
@@ -255,21 +250,25 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     Déplace une tour selon ses coordonnées sur la grille (i,j)
     */
     public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
-        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
+        jouer(grille[i_1][j_1],grille[i_2][j_2]);
     }
 
     /*
     Déplace la tour src sur la tour dst
     */
-    public void Jouer(Tour src, Tour dst){
+    public void jouer(Tour src, Tour dest){
         Tour tmp_src,tmp_dst;
         tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
-        tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
-        if(dst.ajouteTour(src)){
+        tmp_dst=new Tour(dest.contenu(),dest.ligne,dest.colonne);
+        if(dest.ajouteTour(src)){
             Coup c = new Coup(tourJoueur,tmp_src,tmp_dst);
             nouveau(c);
-            System.out.println("j'ai créé un coup");
+            System.out.println("j'ai créé un coup avec : ");
+            src.afficher();
+            dest.afficher();
             tourJoueur=(tourJoueur+1)%2;
+            System.out.println("j'ai joué coup  = ");
+            c.afficheCoup() ;
             //Init_pos();
             //update_score();
             //play_sound("Drop");
@@ -296,14 +295,15 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     Annule le dernier coup joué ( si possible )
     */
     public boolean annulerCoup(){
-        Coup c=annuler();
+        Coup c = annuler();
         if(c!=null) {
             placerTour(c.dest.contenu(),c.dest.ligne,c.dest.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
             //update_score();
             tourJoueur=(tourJoueur+1)%2;
             //Init_pos();
-            System.out.println("j'ai annulé un coup");
+            System.out.println("j'ai annulé le coup");
+            c.afficheCoup();
             return true;
         }
         else{
@@ -397,7 +397,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     Affiche la grille sur le terminal
     */
 
-    public void afficher_grille(){
+    public void afficherGrille(){
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(tour(i,j).contenu() != INNOCCUPABLE && tour(i,j).contenu()!= TROU){

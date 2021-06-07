@@ -22,7 +22,7 @@ public class JoueurIAAleatoire extends JoueurIA{
         int departL = r.nextInt(jeu.plateau().lignes());
         int departC = r.nextInt(jeu.plateau().colonnes());
         Tour departTour = jeu.plateau().tour(departL,departC);
-        while (!departTour.estJouable() || jeu.plateau().estIsole(departL, departC)){
+        while (!departTour.estJouable() || jeu.plateau().pasDeplacable(departTour)){
             departL = r.nextInt(jeu.plateau().lignes());
             departC = r.nextInt(jeu.plateau().colonnes());
             departTour = jeu.plateau().tour(departL,departC);
@@ -35,7 +35,7 @@ public class JoueurIAAleatoire extends JoueurIA{
         //Audio.play_sound("Pick");
         Configuration.instance().logger().info(
                 "La tour (" + departTour.ligne() + ", " + departTour.colonne() + ") a été selectionnée");
-        Sequence voisinsDepart = jeu.plateau.voisins(departTour.ligne(), departTour.colonne());
+        Sequence voisinsDepart = jeu.plateau().voisins(departTour.ligne(), departTour.colonne());
         int position = r.nextInt(8); // choix aléatoire parmi les 8 voisins maximum
         int i = 0;
         Iterateur it = voisinsDepart.iterateur();
@@ -47,12 +47,13 @@ public class JoueurIAAleatoire extends JoueurIA{
                     Tour destTour = jeu.plateau().tour(destL, destC);*/
                     Tour destTour = (Tour) it.prochain();
                     if (destTour.estDeplacable(departTour) && destTour.estJouable()){
-                        jeu.plateau().Jouer(departTour, destTour);
+                        //jeu.plateau().Jouer(departTour, destTour);
+                        jeu.jouer(departTour, destTour);
                         Configuration.instance().logger().info(
                                 "La tour (" + departTour.ligne() + "," + departTour.colonne() + ") a été déplacée vers (" + destTour.ligne() + "," + destTour.colonne() + ")"
                         );
-                        jeu.plateau.deselection_ia();
-                        jeu.plateau.selection_ia(departTour,destTour);
+                        jeu.plateau().deselection_ia();
+                        jeu.plateau().selection_ia(departTour,destTour);
                         jeu.miseAJour();
                         Audio.play_sound("Drop");
 

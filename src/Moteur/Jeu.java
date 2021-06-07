@@ -5,8 +5,6 @@ import Patterns.Observable;
 import Structures.Iterateur;
 import Structures.Sequence;
 
-import javax.swing.*;
-
 public class Jeu extends Observable implements Cloneable {
     public PlateauDeJeu plateau;
     private int tourFini;
@@ -179,7 +177,7 @@ public class Jeu extends Observable implements Cloneable {
     }
 
     public void jouer(Tour src, Tour dest){
-        plateau.Jouer(src, dest);
+        plateau.jouer(src, dest);
         //plateau = this.plateau();
         MAJScore();
     }
