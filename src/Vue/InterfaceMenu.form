@@ -125,7 +125,6 @@
         <properties>
           <background color="-12632257"/>
           <enabled value="true"/>
-          <icon value="Images/muted.png"/>
           <text value=""/>
           <toolTipText value="Couper la musique"/>
         </properties>

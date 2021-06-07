@@ -35,12 +35,18 @@ public class InterfaceMenu {
     public static JFrame frame;
     private  boolean is_muted;
     Jeu jeu;
-    ImageIcon logo_fenetre;
+    ImageIcon logo_fenetre,unmute_ico,mute_ico;
     public InterfaceMenu() {
         jeu = new Jeu(new PlateauDeJeu());
         init_sauvegardes();
         URL url = getClass().getResource("/Images/logo_fenetre.png");
         logo_fenetre = new ImageIcon(url);
+        url = getClass().getResource("/Images/unmute.png");
+        unmute_ico=new ImageIcon(url);
+        url = getClass().getResource("/Images/muted.png");
+        mute_ico=new ImageIcon(url);
+        is_muted=false;
+        muteRadioButton.setIcon(unmute_ico);
         chargerUnePartieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,7 +165,7 @@ public class InterfaceMenu {
         frame.setContentPane(new InterfaceMenu().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setSize(305, 460);
+        frame.setSize(305, 470);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -167,10 +173,12 @@ public class InterfaceMenu {
     public void stop_sound(){
         try {
             if(!is_muted){
-            sound.stop();
-            is_muted=true;}
+                sound.stop();
+                is_muted=true;
+                muteRadioButton.setIcon(mute_ico);}
             else{
                 menu_music();
+                muteRadioButton.setIcon(unmute_ico);
             }
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
