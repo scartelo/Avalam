@@ -24,110 +24,48 @@ public class JoueurIAMinMax extends JoueurIA {
     }
 
 
-    public Tour selectionTourDansZone(PlateauDeJeu p, int zone) {
-        int infBorneL = 0, supBorneL = 0, infBorneC = 0, supBorneC = 0;
-        switch (zone) {
-            case 0 -> {
-                infBorneL = 0;
-                supBorneL = 5;
-                infBorneC = 0;
-                supBorneC = 5;
-            }
-            case 1 -> {
-                infBorneL = 0;
-                supBorneL = 5;
-                infBorneC = 5;
-                supBorneC = 9;
-            }
-            case 2 -> {
-                infBorneL = 5;
-                supBorneL = 9;
-                infBorneC = 0;
-                supBorneC = 5;
-            }
-            case 3 -> {
-                infBorneL = 5;
-                supBorneL = 9;
-                infBorneC = 5;
-                supBorneC = 9;
-            }
-            default -> {
-                Configuration.instance().logger().severe("Zone inconnue");
-                System.exit(1);
-            }
-        }
-        Tour tour = selectionAleatoireAvecBorne(p, infBorneL, infBorneC, supBorneL, supBorneC);
-        return tour;
 
+    //Nouvelle version d'evaluation
+    //estilation de la chance de p
+    public int evaluationV2(PlateauDeJeu p ){
+
+        Sequence<Integer> liste = listeFi(p);
+        Iterateur it = liste.iterateur();
+        int f;
+        int somme = 0;
+        while(it.aProchain()){
+            f = (int) it.prochain();
+            somme  += f;
+        }
+
+        return somme;
     }
 
-    public Tour selectionAleatoireAvecBorne(PlateauDeJeu p, int biL, int biC, int bsL, int bsC) {
-        /*int departL = biL + r.nextInt(bsL - biL);
-        int departC = biC + r.nextInt(bsC - biC);
-        Tour tour = p.tour(departL, departC);*/
-        Sequence mesTours = Configuration.instance().nouvelleSequence();
-        int nbMesTours = 0;
-        Tour resultat = null;
-        for (int i = biL; i < bsL; i++) {
-            for (int j = biC; j < bsC; j++) {
-                Tour tour = p.tour(i, j);
-                if (tour.estJouable() && !p.pasDeplacable(tour) && tour.sommetTour() == num) {
-                    mesTours.insereQueue(tour);
-                    nbMesTours++;
-                }
-            }
-        }
-        Iterateur it = mesTours.iterateur();
-        int positionTourAjouer = r.nextInt(nbMesTours);
-        int k = 0;
-        while (it.aProchain()) {
-            Tour tourAJouer = (Tour) it.prochain();
-            if (k == positionTourAjouer) {
-                resultat = tourAJouer;
-            } else {
-                k++;
-            }
-        }
-
-        return resultat;
-    }
-
-    public void couvrirAdversaire(Jeu copy) {
-        int zone = r.nextInt(4); // on divise le plateau en 4 zones
-        Tour tour = selectionTourDansZone(copy.plateau(), zone);
-        Sequence<Tour> voisins = copy.plateau().voisins(tour.ligne(), tour.colonne());
-        Iterateur<Tour> vJouables = copy.plateau().voisinsJouables(voisins).iterateur();
-        Sequence<Tour> toursAdverses = Configuration.instance().nouvelleSequence();
-        while (vJouables.aProchain()) {
-            Tour tourVoisines = vJouables.prochain();
-            if (tourVoisines.sommetTour() != num) {
-                if (tour.estDeplacable(tourVoisines)) {
-                    toursAdverses.insereQueue(tourVoisines);
-                }
-            }
-        }
-        Tour tourAJouer = toursAdverses.extraitTete();
-        //p.Jouer(tour, tourAJouer);
-        copy.jouer(tour, tourAJouer);
-        copy.plateau().deselection_ia();
-        copy.plateau().selection_ia(tour, tourAJouer);
-    }
-   /* private int evaluation(PlateauDeJeu p) {
-        int resultat = 0;
+    private Sequence<Integer> listeFi(PlateauDeJeu p) {
+        int f1 = 0;// nombre de tour ayant plus de 1 pion
+        int f2 = 0; // // diff entre nobre de tour de joueurIA et joueur ad.
+        Sequence<Integer> fi = Configuration.instance().nouvelleSequence();
         for (int i = 0; i < p.lignes(); i++) {
             for (int j = 0; j < p.colonnes(); j++) {
                 Tour t = p.tour(i, j);
                 if (!t.estVide() && !t.estInnocupable() && t.nbPion() > 1) {
                     if (num == t.sommetTour()) {
-                        System.out.println("avant resultat = " + resultat);
-                        resultat++;
-                        System.out.println("apres resultat = " + resultat);
+                        //System.out.println("avant resultat = " + resultat);
+                        f1++;
+                        //System.out.println("apres resultat = " + resultat);
+                    }
+                    else if (num != t.sommetTour()){
+                        f2++;
                     }
                 }
             }
         }
-        return resultat;
-    }*/
+        fi.insereTete(f1);
+        fi.insereTete(f1-f2);
+
+        return fi;
+    }
+
 
     @Override
     boolean tempsEcoule() {
@@ -138,12 +76,26 @@ public class JoueurIAMinMax extends JoueurIA {
         double meilleurScore = Double.NEGATIVE_INFINITY;
         int horizon = 0;
 
-        //Couple<Integer, Integer> v;
-        //Couple<Double, Tour> resultat = null;
-        //Tour tour = null;
-        if (nbCoups < 2) {
-            couvrirAdversaire(jeu);
-            nbCoups++;
+        Couple<Integer, Integer> v;
+        Couple<Double, Tour> resultat = null;
+        Tour tour = null;
+        Couple<Tour,Tour> opt = null;
+
+        if (nbCoups < 5) {
+            opt = isBetter(jeu.plateau());
+            if (opt !=null){
+                jeu.jouer(opt.premier(), opt.second());
+                jeu.miseAJour();
+                nbCoups++;
+                System.out.println("resulata apres jouer :"+ evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :"+nbCoups);
+            }
+            else {
+                couvrirAdversaire(jeu);
+                nbCoups++;
+                System.out.println("resulata apres jouer :"+ evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :"+nbCoups);
+            }
         } else {
             System.out.println("avant min max");
             //plateauDeJeu = jeu.plateau();
