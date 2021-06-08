@@ -22,6 +22,7 @@ Classe permettant de dessiner la grille et le score
 */
 public class PlateauGraphique extends JComponent implements Observateur {
     public boolean aff_tourFinie;
+    public boolean aff_propose;
     int largeur, hauteur, largeurCase, hauteurCase, margin_x, margin_y, margin_x_score, margin_y_score, largeurScore, hauteurScore, largeurNom, hauteurNom, hauteur_texte1, hauteur_texte2;
     Graphics2D drawable;
     Jeu jeu;
@@ -41,6 +42,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         aff_voisins = false;
         transparency=false;
         aff_tourFinie=true;
+        aff_propose=false;
         if (jeu.couleur) { // true si dans l'ordre "normal" ; false si inversé
             Col_J1 = "CouleurJ1";
             Col_J2 = "CouleurJ2";
@@ -263,6 +265,9 @@ public class PlateauGraphique extends JComponent implements Observateur {
                         drawable.setColor(new Couleur("CouleurSubrillanceIA").couleur());
                     }
                     if( aff_voisins&&plateau.grille()[i][j].marqueVoisin()){
+                        drawable.setColor(new Couleur("CouleurSurbriVoisin").couleur());
+                    }
+                    if( plateau.grille()[i][j].marquePropose()&&aff_propose){
                         drawable.setColor(new Couleur("CouleurSurbriVoisin").couleur());
                     }
                     if(plateau.grille()[i][j].estSelectionee()){

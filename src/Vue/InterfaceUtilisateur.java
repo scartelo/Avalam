@@ -30,4 +30,6 @@ public interface InterfaceUtilisateur {
     void fullscreen();
 
     void Win_message();
+
+    void proposer_coup();
 }

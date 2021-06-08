@@ -7,6 +7,9 @@ import Moteur.Jeu;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class ControleurMediateur implements CollecteurEvenements {
     Jeu jeu;
     InterfaceUtilisateur iu;
@@ -16,11 +19,13 @@ public class ControleurMediateur implements CollecteurEvenements {
     private int decompte;
     private int lenteurAttente = 100;
     public boolean playing;
-
+    public Timer time;
+    public boolean timer;
     public ControleurMediateur(Jeu j){
         jeu=j;
         init_joueurs();
         playing=true;
+        timer=false;
     }
 
     public JoueurIA initiJoueurIA(int niveau, int num, Jeu j){
@@ -62,6 +67,9 @@ public class ControleurMediateur implements CollecteurEvenements {
     public boolean playing() {
         return playing;
     }
+    public void end_timer(){
+        timer=false;
+    }
     public void change_play_state(){
         playing=!playing;
     }
@@ -93,6 +101,9 @@ public class ControleurMediateur implements CollecteurEvenements {
         joueurCourant = (joueurCourant + 1) % joueurs.length;
         decompte = lenteurAttente;
         iu.reset_waiting();
+        timer=false;
+        jeu.plateau.deselect_propose();
+        System.out.println("YO");//Deselectionne propose
     }
 
     public void annuler(){
@@ -169,6 +180,10 @@ public class ControleurMediateur implements CollecteurEvenements {
                     System.out.println("On vous attend, joueur " + joueurs[joueurCourant][type].num());
                     decompte = lenteurAttente;
                     iu.update_waiting();
+                    if (!jeu.isIA(joueurCourant)&&!timer) {
+                        timer=true;
+                        iu.proposer_coup();
+                    }
                 }
             } else {
                 decompte--;

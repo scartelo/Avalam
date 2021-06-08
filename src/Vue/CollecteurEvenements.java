@@ -19,4 +19,6 @@ public interface CollecteurEvenements {
     boolean playing();
 
     void change_play_state();
+
+    void end_timer();
 }

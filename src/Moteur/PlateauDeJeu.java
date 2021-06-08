@@ -457,4 +457,13 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         }
         return clone;
     }
+    public void deselect_propose(){
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                if(grille[i][j].propose){
+                    grille[i][j].propose=false;
+                }
+            }
+        }
+    }
 }

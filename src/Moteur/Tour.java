@@ -1,6 +1,7 @@
 package Moteur;
 
 public class Tour {
+    public boolean propose;
     // 1 octet
     //sequence de pion| nb de pion
     //    0 0 0 1 1   | 1 0 0
@@ -23,6 +24,7 @@ public class Tour {
         selection=false;
         selection_ia=false;
         voisin=false;
+        propose=false;
     }
     public boolean marqueVoisin(){
         return voisin;}
@@ -148,6 +150,9 @@ public class Tour {
         System.out.println("Tour (" + this.ligne + "," + this.colonne() + ")" );
     }
 
+    public boolean marquePropose() {
+        return propose;
+    }
 }
 
                                        

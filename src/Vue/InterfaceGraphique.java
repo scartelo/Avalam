@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
+import java.util.Random;
 import java.util.TimerTask;
 
 /*
@@ -38,6 +39,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JTextField jt;
     Jeu jeu;
     ImageIcon logo_fenetre,logo_home,logo_partie;
+    private boolean timer_propose;
+
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
         jeu=j;
         controle = c;
@@ -53,6 +56,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Image tmp_home2 = tmp_home.getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH ) ;
         logo_home = new ImageIcon( tmp_home2 );
         full_s=false;
+        timer_propose=false;
     }
     public void run(){
         JLabel test= new JLabel();
@@ -309,6 +313,47 @@ public void fullscreen(){
     public void aff_voisin() {
         voisin = !voisin;
         clignotement_voisin();
+    }
+    public void proposer_coup(){
+        if(!timer_propose){
+            java.util.Timer time;
+            time=new java.util.Timer();
+            timer_propose=true;
+            time.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(timer_propose){
+                        //on propose un coup ( ici exemple )
+                        int i=0;
+                        int j=0;
+                        Random r = new Random();
+                        while(!jeu.plateau.grille()[i][j].estJouable()){
+                            i= r.nextInt(8);;
+                            j= r.nextInt(8);;
+                        }
+                        jeu.plateau.grille()[i][j].propose=true;
+                        java.util.Timer time2=new java.util.Timer();
+                        time2.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if(timer_propose) {
+                                    plateauGraphique.aff_propose = !plateauGraphique.aff_propose;
+                                    metAJour();
+                                }else{
+                                    plateauGraphique.aff_propose=false;
+                                    time2.cancel();
+                                }
+                            }
+                        }, 0, 1*1000);
+                    }else{
+                        time.cancel();
+                    }
+                }
+            }, 5*1000);
+        }else{
+            timer_propose=false;
+            controle.end_timer();
+        }
     }
     public void clignotement_voisin(){
         if(voisin){
