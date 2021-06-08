@@ -22,18 +22,39 @@ public class ControleurMediateur implements CollecteurEvenements {
         init_joueurs();
         playing=true;
     }
+
+    public JoueurIA initiJoueurIA(int niveau, int num, Jeu j){
+        JoueurIA joueurIA = null;
+        switch (niveau){
+            case 0:
+                joueurIA = new JoueurIAAleatoire(num, j);
+                break;
+            case 1:
+                joueurIA = new JoueurIAMinMax(num, j);
+                break;
+            case 2:
+                joueurIA = new JoueurIAAlphaBeta(num, j);
+                break;
+            default:
+                Configuration.instance().logger().severe("Niveau IA inconnue");
+                System.exit(1);
+        }
+        assert(joueurIA != null);
+        return joueurIA;
+
+    }
     public void init_joueurs(){
         joueurs = new Joueur[2][2];
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            joueurs[i][1] = initiJoueurIA(jeu.niveau(i), i, jeu);
             //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //joueurs[i][1] = new JoueurIAAlphaBeta(i, jeu);
-            //typeJoueur[i] = 0;
+            typeJoueur[i] = jeu.estIA(i);
         }
-        typeJoueur[0]=jeu.IA1;
-        typeJoueur[1]=jeu.IA2;
+        //typeJoueur[0]=jeu.IA1;
+        //typeJoueur[1]=jeu.IA2;
         joueurCourant=jeu.plateau.tourJoueur;
     }
 
@@ -64,7 +85,6 @@ public class ControleurMediateur implements CollecteurEvenements {
             }
 
         }
-        System.out.println("Je sors de clic souris");
         //jeu.clic(l,c);
 
     }

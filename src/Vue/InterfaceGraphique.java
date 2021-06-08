@@ -69,7 +69,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
         controle.fixerInterfaceUtilisateur(this);
-        frame.setMinimumSize(new Dimension(1400,700));
+        frame.setMinimumSize(new Dimension(1000,700));
         frame.setLocationRelativeTo(null);
         frame.add(plateauGraphique);
         sauvegarde = createButton("Enregistrer","sauvegarder");
