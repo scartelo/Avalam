@@ -155,7 +155,7 @@ public class Jeu extends Observable implements Cloneable {
                             if((i+x>=0 && x+i<plateau.lignes())&&(j+y>=0 && j+y<plateau.colonnes()))  {
                                 if(plateau.grille()[i][j].estDeplacable(plateau.grille()[i+x][y+j])){
                                     res = false;
-                                    break;
+                                    return res;
                                 }
                             }
                         }

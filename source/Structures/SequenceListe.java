@@ -7,6 +7,7 @@ class Maillon<Tutu> {
 
 public class SequenceListe<Titi> implements Sequence<Titi> {
 	Maillon<Titi> tete, queue;
+	int taille;
 
 	public void insereTete(Titi element) {
 		Maillon<Titi> nouveau = new Maillon<>();
@@ -18,6 +19,7 @@ public class SequenceListe<Titi> implements Sequence<Titi> {
 		} else {
 			tete = nouveau;
 		}
+		taille++;
 	}
 
 	public void insereQueue(Titi element) {
@@ -31,6 +33,7 @@ public class SequenceListe<Titi> implements Sequence<Titi> {
 			queue.suivant = nouveau;
 			queue = nouveau;
 		}
+		taille++;
 	}
 
 	public Titi extraitTete() {
@@ -38,6 +41,7 @@ public class SequenceListe<Titi> implements Sequence<Titi> {
 			throw new RuntimeException("Sequence vide !");
 		Titi resultat = tete.element;
 		tete = tete.suivant;
+		taille--;
 		// Ici, oubli de la mise à jour de la queue probablement sans conséquences :
 		// la queue n'est incohérente qu'en cas de liste vide, dans ce cas pas d'itération
 		// possible sur ses éléments et tout sera remis en cohérence à la prochaine insertion
@@ -62,5 +66,9 @@ public class SequenceListe<Titi> implements Sequence<Titi> {
 		}
 		resultat += "]";
 		return resultat;
+	}
+	@Override
+	public int taille(){
+		return  taille;
 	}
 }
