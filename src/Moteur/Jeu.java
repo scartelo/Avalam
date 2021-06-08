@@ -233,4 +233,36 @@ public class Jeu extends Observable implements Cloneable {
     public int scoreJ2() {
         return scoreJ2;
     }
+
+    public int niveau(int num){
+        int resultat = 0;
+        switch (num){
+            case 0:
+                resultat = niveauIA1;
+                break;
+            case 1:
+                resultat = niveauIA2;
+                break;
+            default:
+                Configuration.instance().logger().severe("Niveau IA inconnue");
+                System.exit(1);
+        }
+        return resultat;
+    }
+
+    public int estIA(int num){
+        int resultat = 0;
+        switch (num){
+            case 0:
+                resultat = IA1;
+                break;
+            case 1:
+                resultat = IA2;
+                break;
+            default:
+                Configuration.instance().logger().severe("Numéro IA inconnue");
+                System.exit(1);
+        }
+        return resultat;
+    }
 }
