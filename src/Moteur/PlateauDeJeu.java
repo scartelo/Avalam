@@ -1,14 +1,10 @@
 package Moteur;
 
 import Global.Configuration;
-import Structures.Couple;
+import Structures.Iterateur;
 import Structures.Sequence;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
-
-public class PlateauDeJeu extends Historique<Coup>{
+public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private Tour[][] grille;
     public int tourJoueur;
     private int lignes, colonnes;
@@ -22,7 +18,6 @@ public class PlateauDeJeu extends Historique<Coup>{
     public PlateauDeJeu() {
         score1=0;
         score2=0;
-        tourJoueur=0;
         lignes = 9;
         colonnes = 9;
         grille = new Tour[lignes][colonnes];
@@ -70,13 +65,17 @@ public class PlateauDeJeu extends Historique<Coup>{
     Renvoie un booléen désignant si un pion est isolé sur la grille
     */
     public boolean estIsole(int l,int c){
-        Sequence<Couple<Integer,Integer>> v=voisins(l,c);
-        Couple<Integer,Integer> couple;
-        while(!v.estVide()){
-            couple=v.extraitTete();
-            int i= couple.premier();
-            int j=couple.second();
-            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable()){
+        /*Sequence<Couple<Integer,Integer>> v=voisins(l,c);
+        Couple<Integer,Integer> couple;*/
+        Sequence toursVoisines = voisins(l,c);
+        Sequence voisinesJouables = voisinsJouables(toursVoisines);
+        Iterateur it = toursVoisines.iterateur();
+        while(it.aProchain()){
+            //couple=v.extraitTete();
+            Tour voisine = (Tour) it.prochain();
+            int i= voisine.ligne();
+            int j=voisine.colonne();
+            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable() && grille[i][j].estDeplacable(grille[l][c]) ){
                 if(grille[i][j].nbPion()>0){
                     return false;
                 }
@@ -94,7 +93,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             }
         }
         Vider_historique();
-        Init_pos();
+        //Init_pos();
     }
     /*
     Initialise une case de la grille selon sa position sur la grille
@@ -129,7 +128,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                 initialiserLigne8(l,c);
                 break;
             default:
-                System.err.println("Erreur Hors grille");
+                Configuration.instance().logger().severe("Erreur Hors grille");
         }
     }
     /*
@@ -213,12 +212,32 @@ public class PlateauDeJeu extends Historique<Coup>{
         Sequence voisins = Configuration.instance().nouvelleSequence();
         for (int i=l-1; i<=l+1; i++){
             for (int j=c-1; j<=c+1 ; j++){
-                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0)
-                    voisins.insereTete(new Couple<>(i,j));
+                if((!(i==l && j==c)) && i<lignes && j<colonnes && i>=0 && j>=0) {
+                    Tour tour = grille[i][j];
+                    //voisins.insereTete(new Couple<>(i, j));
+                    voisins.insereQueue(tour);
+                }
             }
         }
         return voisins;
     }
+
+    // Retourne les tours voisines encore jouables
+    public Sequence voisinsJouables(Sequence voisins){
+        Sequence resultat = Configuration.instance().nouvelleSequence();
+        Iterateur it = voisins.iterateur();
+        while (it.aProchain()){
+            /*Couple<Integer, Integer> couple = (Couple<Integer, Integer>) it.prochain();
+            Tour t = tour(couple.premier(),couple.second());*/
+            Tour t = (Tour) it.prochain();
+            if (t.estJouable()){
+                resultat.insereTete(t);
+            }
+        }
+        return resultat;
+    }
+
+
     /*
     Créer une tour selon son contenu et la place sur la grille à la position i,j
     */
@@ -230,53 +249,64 @@ public class PlateauDeJeu extends Historique<Coup>{
     Déplace une tour selon ses coordonnées sur la grille (i,j)
     */
     public void Jouer_pos(int i_1, int j_1, int i_2, int j_2){
-        Jouer(grille[i_1][j_1],grille[i_2][j_2]);
+        jouer(grille[i_1][j_1],grille[i_2][j_2]);
     }
 
     /*
     Déplace la tour src sur la tour dst
     */
-    public void Jouer(Tour src, Tour dst){
+    public void jouer(Tour src, Tour dest){
         Tour tmp_src,tmp_dst;
         tmp_src=new Tour(src.contenu(),src.ligne,src.colonne);
-        tmp_dst=new Tour(dst.contenu(),dst.ligne,dst.colonne);
-        if(dst.ajouteTour(src)){
-            Coup c = new Coup(tmp_src,tmp_dst);
+        tmp_dst=new Tour(dest.contenu(),dest.ligne,dest.colonne);
+        if(dest.ajouteTour(src)){
+            Coup c = new Coup(tourJoueur,tmp_src,tmp_dst);
             nouveau(c);
+            System.out.println("j'ai créé un coup avec : ");
+            src.afficher();
+            dest.afficher();
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
-            update_score();
-            play_sound("Drop");
+            System.out.println("j'ai joué coup  = ");
+            c.afficheCoup() ;
+            //Init_pos();
+            //update_score();
+            //play_sound("Drop");
         }
     }
     /*
     Rejoue le dernier coup annulé ( s'il existe )
     */
-    public void refaireCoup(){
+    public boolean refaireCoup(){
         Coup c = refaire();
         if(c!=null){
-            grille[c.dst.ligne][c.dst.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
-            update_score();
+            grille[c.dest.ligne][c.dest.colonne].ajouteTour(grille[c.src.ligne][c.src.colonne]);
+            //update_score();
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
+            //Init_pos();
+            return true;
         }else{
             System.out.println("Ne peut pas refaire le coup");
+            return false;
         }
     }
     /*
     Annule le dernier coup joué ( si possible )
     */
-    public void annulerCoup(){
-        Coup c=annuler();
+    public boolean annulerCoup(){
+        Coup c = annuler();
         if(c!=null) {
-            placerTour(c.dst.contenu(),c.dst.ligne,c.dst.colonne);
+            placerTour(c.dest.contenu(),c.dest.ligne,c.dest.colonne);
             placerTour(c.src.contenu(),c.src.ligne,c.src.colonne);
-            update_score();
+            //update_score();
             tourJoueur=(tourJoueur+1)%2;
-            Init_pos();
+            //Init_pos();
+            System.out.println("j'ai annulé le coup");
+            c.afficheCoup();
+            return true;
         }
         else{
             System.out.println("Ne peut pas annuler le coup");
+            return false;
         }
     }
     /*
@@ -285,7 +315,7 @@ public class PlateauDeJeu extends Historique<Coup>{
     Si il s'agit du deuxième clic : Si le coup définit par les deux clics est jouable alors le coup est joué
                                     Sinon le premier clic est deselectionné
     */
-    public void position(int l,int c){
+    /*public void position(int l,int c){
         if(l<lignes && c<colonnes&&l>=0 && c>=0) {
             //Premier clic
             if (x1 == -1 && y1 == -1) {
@@ -300,7 +330,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             //Deuxième clic équivalent au premier = on annule le premier clic
             } else if (x1 == l && y1 == c) {
                 System.err.println("Même positions");
-                Init_pos();
+                //Init_pos();
             } else {
                 //deuxième clic différent du premier
                 if (grille[x1][y1].estDeplacable(grille[l][c])) {
@@ -310,7 +340,7 @@ public class PlateauDeJeu extends Historique<Coup>{
                     Jouer_pos(x1, y1, x2, y2);
                 } else {
                     play_sound("Error");
-                    Init_pos();
+                    //Init_pos();
                     System.err.println("La tour ne peut pas être déplacé ici");
                 }
             }
@@ -318,7 +348,7 @@ public class PlateauDeJeu extends Historique<Coup>{
             play_sound("Error");
             System.err.println("Hors de la grille");
         }
-    }
+    }*/
     /*
     Met à jour le score des deux joueurs selon l'état du plateau
     */
@@ -345,7 +375,7 @@ public class PlateauDeJeu extends Historique<Coup>{
     }
     /*
     Joue un son dans res/Audio selon sound_name ( nom du fichier )
-    */
+    *//*
     public void play_sound(String sound_name){
         Audio sound= null;
         try {
@@ -358,19 +388,19 @@ public class PlateauDeJeu extends Historique<Coup>{
             e.printStackTrace();
         }
         sound.play();
-    }
+    }*/
     /*
     Affiche la grille sur le terminal
     */
 
-    public void afficher_grille(){
+    public void afficherGrille(){
         for(int i=0;i<lignes;i++){
             for(int j=0;j<colonnes;j++){
                 if(tour(i,j).contenu() != INNOCCUPABLE && tour(i,j).contenu()!= TROU){
-                    if(tour(i,j).sommetTour()==1) {
+                    if(tour(i,j).sommetTour()==0) {
                         System.out.print("\u001B[31m" + tour(i, j).nbPion());
                     }
-                    else if(tour(i,j).sommetTour()==0){
+                    else if(tour(i,j).sommetTour()==1){
                         System.out.print("\u001B[33m" + tour(i, j).nbPion());
                     }
                 }else if (tour(i,j).contenu()== TROU){
@@ -382,16 +412,49 @@ public class PlateauDeJeu extends Historique<Coup>{
         }
     }
     public boolean pasDeplacable(Tour t){
-        Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
-        Couple<Integer,Integer> couple;
-        while(!v.estVide()){
-            couple=v.extraitTete();
+        /*Sequence<Couple<Integer,Integer>> v=voisins(t.ligne,t.colonne);
+        Couple<Integer,Integer> couple;*/
+        Sequence toursVoisines = voisins(t.ligne(), t.colonne());
+        Iterateur it = toursVoisines.iterateur();
+        while(it.aProchain()){
+            /*couple=v.extraitTete();
             int i= couple.premier();
-            int j=couple.second();
-            if(t.estDeplacable(grille[i][j])){
+            int j=couple.second();*/
+            Tour voisine = (Tour) it.prochain();
+            if(t.estDeplacable(grille[voisine.ligne()][voisine.colonne()])){
                 return false;
             }
         }
         return true;
+    }
+
+    public void deselection_ia() {
+        for(int i=0;i<lignes;i++){
+            for(int j=0;j<colonnes;j++){
+                if(grille[i][j].selection_ia){
+                    grille[i][j].selection_ia=false;
+                }
+            }
+        }
+    }
+
+    public void selection_ia(Tour departTour, Tour destTour) {
+        departTour.selection_ia=true;
+        destTour.selection_ia=true;
+    }
+
+    @Override
+    public PlateauDeJeu clone(){
+        PlateauDeJeu clone = null;
+        try {
+            clone = (PlateauDeJeu) super.clone();
+            clone.grille = grille.clone();
+
+        } catch (CloneNotSupportedException e) {
+            Configuration.instance().logger().severe("Clone échoué");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return clone;
     }
 }

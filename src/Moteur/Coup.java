@@ -4,11 +4,37 @@ Un coup est définit par une tour se rajoutant à une autre tour
 Cette classe est utilisée pour la gestion d'historique
 */
 public class Coup {
+    int num; // numéro du joeur jouant le coup
     Tour src;
-    Tour dst;
+    Tour dest;
 
-    public Coup(Tour source,Tour dest){
+    public Coup(){
+
+    }
+    public Coup(int n, Tour source,Tour dst){
+        num = n;
         src=source;
-        dst=dest;
+        dest =dst;
+    }
+    public Coup(Tour source,Tour dst){
+        src=source;
+        dest =dst;
+    }
+
+    public Tour src(){
+        return src;
+    }
+
+    public Tour dest(){
+        return dest;
+    }
+
+    public int num(){
+        return num;
+    }
+
+    public void afficheCoup(){
+        System.out.println("Coup: (" + src().ligne() + "," + src().colonne() + ") -> ("
+                + dest().ligne() + "," + dest().colonne() + ")");
     }
 }

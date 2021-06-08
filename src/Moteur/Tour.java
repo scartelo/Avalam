@@ -9,25 +9,30 @@ public class Tour {
     int contenu;
     int ligne, colonne;
     boolean selection;
+    public boolean selection_ia;
+    public boolean voisin;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
 
-    public Tour(int cont, int l, int c){
+    public Tour(int cont, int l, int c) {
         contenu = cont;
         ligne = l;
         colonne = c;
-        sequencePion =sequencePion();
+        sequencePion = sequencePion();
         nbPion = nbPion();
         selection=false;
+        selection_ia=false;
+        voisin=false;
     }
-
+    public boolean marqueVoisin(){
+        return voisin;}
     public int contenu(){
         return contenu;
     }
     /*
     Nombre de pion d'une tour
     */
-    public byte nbPion(){
+    public byte nbPion() {
         return (byte) (contenu & 7);
     }
     /*
@@ -46,26 +51,56 @@ public class Tour {
     /*
     Ajoute la tour t au dessus de la tour(self)
     */
-    public boolean ajouteTour(Tour t){
-        if(estDeplacable(t)){
+    public boolean ajouteTour(Tour t) {
+        if (estDeplacable(t)) {
             sequencePion |= t.sequencePion << nbPion;
             nbPion += t.nbPion;
             contenu = (sequencePion << 3) | nbPion;
             t.viderTour();
             return true;
+        } else {
+            return false;
         }
-        else{return false;}
     }
+    public byte niemePion(int i){
+        byte res;
+        switch(i){
+            case 1:
+                res=(byte) (contenu & 8);
+                break;
+
+            case 2:
+                res=(byte) (contenu & 16);
+                break;
+
+            case 3:
+                res=(byte) (contenu & 32);
+                break;
+
+            case 4:
+                res=(byte) (contenu & 64);
+                break;
+
+            case 5:
+                return sommetTour();
+
+            default:
+                return 1;
+        }
+
+        return (byte) (res >> 3+(i-1));
+    }
+
     /*
     Renvoie si la tour T est déplacable sur la tour (self)
     */
-    public boolean estDeplacable(Tour T){
-        return estVoisin(T) && (nbPion+T.nbPion()<=5);
+    public boolean estDeplacable(Tour T) {
+        return estVoisin(T) && (nbPion + T.nbPion() <= 5);
     }
     /*
     Renvoie si la tour T est voisine de la tour self
     */
-    public boolean estVoisin(Tour T){ return (! T.estInnocupable() && !T.estVide()) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (T.ligne != ligne || T.colonne != colonne)); }
+    public boolean estVoisin(Tour T){ return (! T.estInnocupable() && !T.estVide()) && ((T.ligne==ligne || T.ligne+1==ligne || T.ligne-1 == ligne) && (T.colonne==colonne || T.colonne +1==colonne || T.colonne -1==colonne) && (!(T.ligne == ligne && T.colonne == colonne))); }
     public boolean estInnocupable(){ return contenu==-1;}
     public boolean estVide(){ return contenu==0; }
     public boolean estJouable(){
@@ -90,18 +125,29 @@ public class Tour {
     // marquer une tour c-à-d mettre une couleur sur les 3 octects de poids forts de contenu
     // surlignage
 
-    /*public void marquer(int valeur){
+    public void marquer(int valeur) {
         contenu = (contenu & 0xFF) | (valeur << 8);
-    }*/
-    public void marquer(boolean b){
-        selection=b;
     }
 
-    public int marque(){
+    public void marquer(boolean b) {
+        selection = b;
+    }
+
+    public int marque() {
         return contenu >> 8;
     }
-    public boolean setEstSelectionee(){
+    public boolean estSelectionee(){
         return selection;
     }
+
+    public boolean est_select_ia() {
+        return selection_ia;
+    }
+
+    public void afficher() {
+        System.out.println("Tour (" + this.ligne + "," + this.colonne() + ")" );
+    }
+
 }
 
+                                       

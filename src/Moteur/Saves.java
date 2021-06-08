@@ -58,17 +58,23 @@ public class Saves{
             myWriter.write(jeu.IA2+"\n");
             myWriter.write(jeu.niveauIA1+"\n");
             myWriter.write(jeu.niveauIA2+"\n");
+            myWriter.write(jeu.tourDep+"\n");
+            if(jeu.couleur){
+                myWriter.write(1+"\n");
+            }else{
+                myWriter.write(0+"\n");
+            }
             Iterateur<Coup> it_p = passe.iterateur();
             Iterateur<Coup> it_f = futur.iterateur();
 
             while (it_p.aProchain()){
                 Coup c = it_p.prochain();
-                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
+                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dest.ligne+" "+c.dest.colonne+"\n");
             }
             myWriter.write("-1\n");
             while (it_f.aProchain()){
                 Coup c = it_f.prochain();
-                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dst.ligne+" "+c.dst.colonne+"\n");
+                myWriter.write(c.src.ligne+" "+c.src.colonne+" "+c.dest.ligne+" "+c.dest.colonne+"\n");
             }
             myWriter.close();
             update_dir();
@@ -101,6 +107,14 @@ public class Saves{
             jeu.niveauIA1=next;
             next = myReader.nextInt();
             jeu.niveauIA2=next;
+            next = myReader.nextInt();
+            jeu.tourDep=next;
+            next = myReader.nextInt();
+            if(next==1){
+                jeu.couleur=true;
+            }else{
+                jeu.couleur=false;
+            }
             next =0;
             while (myReader.hasNextInt() && next !=-1) {
                 next = myReader.nextInt();
