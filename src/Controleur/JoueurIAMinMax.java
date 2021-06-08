@@ -112,6 +112,7 @@ public class JoueurIAMinMax extends JoueurIA {
                             if (dest.estJouable() && selectionnee.estDeplacable(dest)) {
                                 CoupIA coupMinMax = new CoupIA(selectionnee, dest);
                                 //PlateauDeJeu plateau = simulationCoup(clone.plateau(), coupMinMax);
+
                                 jeu.plateau().jouer(selectionnee,dest);
                                 PlateauDeJeu p = jeu.plateau();
                                 jeu.plateau().annuler();
@@ -290,28 +291,27 @@ public class JoueurIAMinMax extends JoueurIA {
             for (int i = 0; i < p.lignes(); i++) {
                 for (int j = 0; j < p.colonnes(); j++) {
                     Tour depart = p.tour(i, j);
-                    if (depart.estJouable() && !p.pasDeplacable(depart)){
-                        Sequence<Tour> toursVoisines = p.voisins(depart.ligne(), depart.colonne());
-                        Iterateur<Tour> jouables = p.voisinsJouables(toursVoisines).iterateur();
-                        while (jouables.aProchain()) {
-                            Tour dest = jouables.prochain();
-                            if (dest.estJouable() && depart.estDeplacable(dest)) {
-                                //CoupIA coup = (CoupIA) new Coup(depart, dest);
+                    Sequence<Tour> toursVoisines = p.voisins(depart.ligne(), depart.colonne());
+                    Iterateur<Tour> jouables = p.voisinsJouables(toursVoisines).iterateur();
+                    while (jouables.aProchain()) {
+                        Tour dest = jouables.prochain();
+                        if (dest.estJouable() && depart.estDeplacable(dest)) {
+                            //CoupIA coup = (CoupIA) new Coup(depart, dest);
 
-                                p.jouer(depart,dest);
-                                PlateauDeJeu pc = p;
-                                p.annuler();
-                                //PlateauDeJeu plateau = simulationCoup(copy.plateau(), coup);
-                                double scoreMinMAx = miniMax(pc, horizon - 1, !joueurMax);
-                                //annuleCoupIA(plateau, coup);
-                                if (joueurMax) {
-                                    maxEval = (maxEval > scoreMinMAx) ? maxEval : scoreMinMAx;
-                                    //meilleurCoup = coup;
-                                } else {
-                                    maxEval = (maxEval < scoreMinMAx) ? maxEval : scoreMinMAx;
-                                    //meilleurCoup = coup;
-                                }
+                            p.jouer(depart,dest);
+                            PlateauDeJeu pc = p;
+                            p.annuler();
+                            //PlateauDeJeu plateau = simulationCoup(copy.plateau(), coup);
+                            double scoreMinMAx = miniMax(pc, horizon - 1, !joueurMax);
+                            //annuleCoupIA(plateau, coup);
+                            if (joueurMax) {
+                                maxEval = (maxEval > scoreMinMAx) ? maxEval : scoreMinMAx;
+                                //meilleurCoup = coup;
+                            } else {
+                                maxEval = (maxEval < scoreMinMAx) ? maxEval : scoreMinMAx;
+                                //meilleurCoup = coup;
                             }
+
                         }
                     }
                 }
