@@ -69,7 +69,6 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
         controle.fixerInterfaceUtilisateur(this);
-        frame.setMinimumSize(new Dimension(1000,700));
         frame.setLocationRelativeTo(null);
         frame.add(plateauGraphique);
         sauvegarde = createButton("Enregistrer","sauvegarder");
@@ -130,87 +129,11 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Timer time = new Timer(16, new AdaptateurTemps(controle));
         time.start();
         frame.pack();
-        frame.setVisible(true);
-
-    }
-
-    public void run2() {
-        frame = new JFrame("Avalam");
-        frame.setIconImage(logo_fenetre.getImage());
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent we)
-            {
-                quitter();
-            }
-        });
-
-        plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
-        frame.addKeyListener(new AdaptateurClavier(controle));
-
-        Box principal=Box.createHorizontalBox();
-
-        Box boxJeu = Box.createVerticalBox();
-        boxJeu.add(plateauGraphique);
-        boxJeu.setAlignmentY(Component.CENTER_ALIGNMENT);
-        boxJeu.setPreferredSize(new Dimension(500, 400));
-        principal.add(boxJeu);
-
-        frame.add(principal);
-        JMenuBar m_bar= new JMenuBar();
-        sauvegarde = createButton("Enregistrer","sauvegarder");
-        // Annuler / Refaire
-        Box annulRef = Box.createHorizontalBox();
-        annuler = createButton("<", "annuler");
-        annuler.setToolTipText("Annule le dernier coup joué");
-        griser_annuler(false);
-        refaire = createButton(">", "refaire");
-        refaire.setToolTipText("Rejoue le dernier coup annulé");
-        griser_refaire(false);
-        transparency=createButton("Transparence","transparency");
-        transparency.setToolTipText("Affiche toutes les tours en transparent");
-        tourFinie = createToggleButton("Tours finies");
-        tourFinie.setToolTipText("Enlève l'affichage des tours finies");
-        tourFinie.addActionListener(new AdaptateurCommande(controle,"tourFinie"));
-        restart = createButton ("Nouvelle partie", "nouvellePartie");
-        menu = createButton ("Menu", "retour_menu");
-        quitter = createButton ("Quitter", "quitter");
-        annulRef.add(annuler);
-        annulRef.add(refaire);
-        annulRef.add(transparency);
-        annulRef.add(tourFinie);
-        iaJ1 = createToggleButton("IAJ1");
-        iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
-        annulRef.add(iaJ1); // Ne doit pas être là dans l'interface finale
-        iaJ2 = createToggleButton("IAJ2");
-        iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
-        annulRef.add(iaJ2);// Ne doit pas être là dans l'interface finale
-        voisins = createToggleButton("Voisins");
-        voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
-        voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
-        annulRef.add(voisins);
-
-        m_bar.add(l_partie);
-        m_bar.add(annulRef);
-        m_bar.add(Box.createHorizontalGlue());
-        m_bar.add(menu);
-
-        frame.setJMenuBar(m_bar);
-        Timer time = new Timer(16, new AdaptateurTemps(controle));
-        time.start();
-        controle.fixerInterfaceUtilisateur(this);
-        frame.setSize(570, 500);
-        frame.setMinimumSize(new Dimension(800,500));
-        frame.setLocationRelativeTo(null);
-        controle.update_buttons();
         basculePleinEcran();
-
         frame.setVisible(true);
 
-
-        jeu.plateau().afficherGrille();
     }
+
     public JMenu menu_sauvegarde(){
         //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu("Charger");

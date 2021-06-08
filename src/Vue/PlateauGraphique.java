@@ -289,9 +289,9 @@ public class PlateauGraphique extends JComponent implements Observateur {
         }
         for(int i=1;i<=T.nbPion();i++){
             if (T.niemePion(i) == 0) {
-                tracerPion(new Couleur(Col_J1), x + largeurCase/4, (y + 4)-((largeurCase)/12)*(i-1), largeurCase/2, hauteurCase/2);
+                tracerPion(new Couleur(Col_J1), x + largeurCase/4, (y + 4)-((hauteurCase))*(i-1), largeurCase/2, hauteurCase/2);
             } else if (T.niemePion(i) == 1) {
-                tracerPion(new Couleur(Col_J2), x+largeurCase/4, (y + 4)-((largeurCase)/12)*(i-1), largeurCase/2, hauteurCase/2);
+                tracerPion(new Couleur(Col_J2), x+largeurCase/4, (y + 4)-((hauteurCase)/6)*(i-1), largeurCase/2, hauteurCase/2);
             }
         }
         drawable.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)1));
