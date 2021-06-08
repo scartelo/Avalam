@@ -52,6 +52,7 @@ public class Jeu extends Observable implements Cloneable {
     }
     public void nouvellePartie(){
         plateau=new PlateauDeJeu();
+        IA1=0;IA2=0;niveauIA1=0;niveauIA2=0;IA1_ref=0;IA2_ref=0;
         plateau.tourJoueur=tourDep;
         partieTerminee = false;
         miseAJour();

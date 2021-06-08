@@ -70,8 +70,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
         controle.fixerInterfaceUtilisateur(this);
-        frame.setLocationRelativeTo(null);
+
         frame.add(plateauGraphique);
+        frame.setMinimumSize(new Dimension(1400,700));
+        frame.setLocationRelativeTo(null);
         sauvegarde = createButton("Enregistrer","sauvegarder");
         // Annuler / Refaire
         JPanel annulRef = new JPanel();
@@ -94,8 +96,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         quitter = createButton ("Quitter", "quitter");
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
+        if(jeu.IA1==1){
+            iaJ1.setSelected(true);
+        }
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
+        if(jeu.IA2==1){
+            iaJ2.setSelected(true);
+        }
         voisins = createToggleButton("Voisins");
         voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
         voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
@@ -130,7 +138,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Timer time = new Timer(16, new AdaptateurTemps(controle));
         time.start();
         frame.pack();
-        basculePleinEcran();
+        //basculePleinEcran();
         frame.setVisible(true);
 
     }
