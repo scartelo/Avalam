@@ -69,8 +69,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
         frame.addKeyListener(new AdaptateurClavier(controle));
         controle.fixerInterfaceUtilisateur(this);
-        frame.setLocationRelativeTo(null);
+
         frame.add(plateauGraphique);
+        frame.setMinimumSize(new Dimension(1400,700));
+        frame.setLocationRelativeTo(null);
         sauvegarde = createButton("Enregistrer","sauvegarder");
         // Annuler / Refaire
         JPanel annulRef = new JPanel();
@@ -135,7 +137,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         Timer time = new Timer(16, new AdaptateurTemps(controle));
         time.start();
         frame.pack();
-        basculePleinEcran();
+        //basculePleinEcran();
         frame.setVisible(true);
 
     }
