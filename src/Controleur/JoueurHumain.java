@@ -6,6 +6,7 @@ import Moteur.Jeu;
 import Moteur.Tour;
 
 public class JoueurHumain extends Joueur {
+    Tour tourSelectionnee = null;
     JoueurHumain(int n, Jeu j) {
         super(n, j);
     }
@@ -15,7 +16,7 @@ public class JoueurHumain extends Joueur {
     public boolean joue(int l, int c){
         if (!jeu.estTermine()) {
             if (tourSelectionnee == null) {
-                if (!jeu.plateau().tour(l, c).estJouable() || jeu.plateau.pasDeplacable(jeu.plateau().tour(l, c))) {
+                if (!jeu.plateau().tour(l, c).estJouable() || jeu.plateau().pasDeplacable(jeu.plateau().tour(l, c))) {
                     if (jeu.plateau().tour(l, c).estInnocupable())
                         Configuration.instance().logger().warning("Hors grille");
                     else
@@ -50,7 +51,7 @@ public class JoueurHumain extends Joueur {
                     tourSelectionnee.marquer(false);
 
                     tourSelectionnee = null;
-                    jeu.plateau.deselection_ia();
+                    jeu.plateau().deselection_ia();
                     jeu.miseAJour();
 
                     int prochain_joueur=(num()+1)%2;

@@ -12,7 +12,6 @@ import java.util.Random;
 
 public class JoueurIAMinMax extends JoueurIA {
     Random r;
-    Sequence<Coup> coupJouables;
     //PlateauDeJeu plateauDeJeu;
     //Jeu clone;
     int nbCoups = 0; // Coups à l'avance en debut de partie
@@ -20,7 +19,6 @@ public class JoueurIAMinMax extends JoueurIA {
     JoueurIAMinMax(int n, Jeu jj) {
         super(n, jj);
         r = new Random();
-        coupJouables = Configuration.instance().nouvelleSequence();
     }
 
 
@@ -42,7 +40,7 @@ public class JoueurIAMinMax extends JoueurIA {
 
     private Sequence<Integer> listeFi(PlateauDeJeu p) {
         int f1 = 0;// nombre de tour ayant plus de 1 pion
-        int f2 = 0; // // diff entre nobre de tour de joueurIA et joueur ad.
+        int f2 = 0; // // diff entre nombre de tour de joueurIA et joueur ad.
         Sequence<Integer> fi = Configuration.instance().nouvelleSequence();
         for (int i = 0; i < p.lignes(); i++) {
             for (int j = 0; j < p.colonnes(); j++) {
@@ -77,20 +75,26 @@ public class JoueurIAMinMax extends JoueurIA {
         Couple<Integer, Integer> v;
         Couple<Double, Tour> resultat = null;
         Tour tour = null;
-        Couple<Tour, Tour> opt = null;
+        Coup opt = null;
 
         if (nbCoups < 5) {
             opt = isBetter(jeu.plateau());
             if (opt != null) {
-                jeu.jouer(opt.premier(), opt.second());
+                jeu.jouer(opt.src(), opt.dest());
+                jeu.plateau().deselection_ia();
+                jeu.plateau().selection_ia(opt.src(), opt.dest());
                 jeu.miseAJour();
                 nbCoups++;
-                System.out.println("resulata apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("resultat apres jouer :" + evaluationV2(jeu.plateau()));
                 System.out.println("nbCoups :" + nbCoups);
             } else {
-                couvrirAdversaire(jeu);
+                Coup c = couvrirAdversaire(jeu.plateau());
+                jeu.jouer(c.src(), c.dest());
+                jeu.plateau().deselection_ia();
+                jeu.plateau().selection_ia(c.src(), c.dest());
+                jeu.miseAJour();
                 nbCoups++;
-                System.out.println("resulata apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("resultat apres jouer :" + evaluationV2(jeu.plateau()));
                 System.out.println("nbCoups :" + nbCoups);
             }
         } else {

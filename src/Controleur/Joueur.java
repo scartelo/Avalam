@@ -6,7 +6,7 @@ import Moteur.Tour;
 public abstract class Joueur {
         Jeu jeu;
         int num;
-        Tour tourSelectionnee = null;
+
         // Le joueur connait son numéro, cela lui permet d'inspecter le plateau en
         // sachant
         // repérer ses pions et évaluer où il en est

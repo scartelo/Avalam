@@ -1,6 +1,7 @@
 package Controleur;
 
 import Global.Configuration;
+import Moteur.Coup;
 import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
 import Moteur.Tour;
@@ -86,17 +87,17 @@ public class JoueurIA extends Joueur{
         return resultat;
     }
 
-    public void couvrirAdversaire(Jeu copy) {
+    public Coup couvrirAdversaire(PlateauDeJeu plateau) {
         int zone = r.nextInt(4); // on divise le plateau en 4 zones
-        Tour tour = selectionTourDansZone(copy.plateau(), zone);
-        Sequence<Tour> voisins = copy.plateau().voisins(tour.ligne(), tour.colonne());
-        Iterateur<Tour> vJouables = copy.plateau().voisinsJouables(voisins).iterateur();
+        Tour tour = selectionTourDansZone(plateau, zone);
+        Sequence<Tour> voisins = plateau.voisins(tour.ligne(), tour.colonne());
+        Iterateur<Tour> vJouables = plateau.voisinsJouables(voisins).iterateur();
         Sequence<Tour> toursAdverses = Configuration.instance().nouvelleSequence();
         while(!vJouables.aProchain()){
             zone = r.nextInt(4); // on divise le plateau en 4 zones
-            tour = selectionTourDansZone(copy.plateau(), zone);
-            voisins = jeu.plateau().voisins(tour.ligne(), tour.colonne());
-            vJouables = jeu.plateau().voisinsJouables(voisins).iterateur();
+            tour = selectionTourDansZone(plateau, zone);
+            voisins = plateau.voisins(tour.ligne(), tour.colonne());
+            vJouables = plateau.voisinsJouables(voisins).iterateur();
         }
         while (vJouables.aProchain()) {
             Tour tourVoisines = (Tour) vJouables.prochain();
@@ -109,9 +110,11 @@ public class JoueurIA extends Joueur{
         Tour tourAJouer = toursAdverses.extraitTete();
 
         //p.Jouer(tour, tourAJouer);
-        copy.jouer(tour, tourAJouer);
-        copy.plateau().deselection_ia();
-        copy.plateau().selection_ia(tour, tourAJouer);
+        Coup coup = new Coup(tour, tourAJouer);
+        //copy.jouer(tour, tourAJouer);
+        //copy.plateau().deselection_ia();
+        //copy.plateau().selection_ia(tour, tourAJouer);
+        return coup;
     }
     // regarde la liste des voisins et renvoie le tour qui contient nb pions , null sinon
     public Tour nbPionsMatch(PlateauDeJeu p , Sequence voisins, int nb){
@@ -128,8 +131,8 @@ public class JoueurIA extends Joueur{
     }
 
     //verifier s'il y a un deplacement plus optimal
-    public Couple<Tour,Tour> isBetter (PlateauDeJeu p){
-        Couple<Tour,Tour> result;
+    public Coup isBetter (PlateauDeJeu p){
+        Coup result;
         Tour tDep;
         Tour tDest;
         for(int i = 0 ; i < p.lignes();i++){
@@ -141,7 +144,7 @@ public class JoueurIA extends Joueur{
                             tDest = nbPionsMatch(p,voisins,4);
                             if(tDest != null){
                                 tDep = p.tour(i,j);
-                                result = new Couple<>(tDep,tDest);
+                                result = new Coup(tDep,tDest);
                                 return result;
                             }
                             break;
@@ -149,7 +152,7 @@ public class JoueurIA extends Joueur{
                             tDest = nbPionsMatch(p,voisins,3);
                             if(tDest != null){
                                 tDep = p.tour(i,j);
-                                result = new Couple<>(tDep,tDest);
+                                result = new Coup(tDep,tDest);
                                 return result;
                             }
                             break;
@@ -157,7 +160,7 @@ public class JoueurIA extends Joueur{
                             tDest = nbPionsMatch(p,voisins,2);
                             if(tDest != null){
                                 tDep = p.tour(i,j);
-                                result = new Couple<>(tDep,tDest);
+                                result = new Coup(tDep,tDest);
                                 return result;
                             }
                             break;
@@ -165,7 +168,7 @@ public class JoueurIA extends Joueur{
                             tDest = nbPionsMatch(p,voisins,1);
                             if(tDest != null){
                                 tDep = p.tour(i,j);
-                                result = new Couple<>(tDep,tDest);
+                                result = new Coup(tDep,tDest);
                                 return result;
                             }
                             break;
@@ -186,14 +189,14 @@ public class JoueurIA extends Joueur{
         return false;
     }
 
-    Tour selectionAleatoire(){
-        int departL = r.nextInt(jeu.plateau().lignes());
-        int departC = r.nextInt(jeu.plateau().colonnes());
-        Tour departTour = jeu.plateau().tour(departL,departC);
-        while (!departTour.estJouable() || jeu.plateau().estIsole(departL, departC)){
-            departL = r.nextInt(jeu.plateau().lignes());
-            departC = r.nextInt(jeu.plateau().colonnes());
-            departTour = jeu.plateau().tour(departL,departC);
+    Tour selectionAleatoire(PlateauDeJeu plateau){
+        int departL = r.nextInt(plateau.lignes());
+        int departC = r.nextInt(plateau.colonnes());
+        Tour departTour = plateau.tour(departL,departC);
+        while (!departTour.estJouable() || plateau.estIsole(departL, departC)){
+            departL = r.nextInt(plateau.lignes());
+            departC = r.nextInt(plateau.colonnes());
+            departTour = plateau.tour(departL,departC);
         }
         return departTour;
     }
