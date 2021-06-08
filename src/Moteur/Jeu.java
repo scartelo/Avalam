@@ -50,13 +50,11 @@ public class Jeu extends Observable implements Cloneable {
         message += "Merci d'avoir joué à Avalam." + "\n";
         return message;
     }
-    public Jeu nouvellePartie(){
-        /*plateau=new PlateauDeJeu();
+    public void nouvellePartie(){
+        plateau=new PlateauDeJeu();
         plateau.tourJoueur=tourDep;
-        partieTerminee = false;*/
-        Jeu j = new Jeu(new PlateauDeJeu());
+        partieTerminee = false;
         miseAJour();
-        return j;
     }
     /*
     Rejoue un coup qui a été annulé ( si possible )
@@ -120,8 +118,8 @@ public class Jeu extends Observable implements Cloneable {
                 if (seq != null) {
                     while (it.aProchain()) {
                         Coup c = it.prochain();
-                        //plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dest.ligne,c.dest.colonne);
-                        jouer(c.src(), c.dest());
+                        plateau.Jouer_pos(c.src.ligne,c.src.colonne,c.dest.ligne,c.dest.colonne);
+                        //jouer(c.src(), c.dest());
                     }
                     for(int i=0;i<S.taille_futur;i++){
                         //plateau.annulerCoup();
@@ -229,4 +227,10 @@ public class Jeu extends Observable implements Cloneable {
         scoreJ2 = score2;
     }
 
+    public int scoreJ1() {
+        return scoreJ1;
+    }
+    public int scoreJ2() {
+        return scoreJ2;
+    }
 }

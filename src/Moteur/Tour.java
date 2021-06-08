@@ -61,7 +61,6 @@ public class Tour {
         } else {
             return false;
         }
-        else{return false;}
     }
     public byte niemePion(int i){
         byte res;

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import Patterns.Observateur;
 import Moteur.Jeu;
 import Structures.Couple;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 /*
@@ -165,12 +166,12 @@ public class PlateauGraphique extends JComponent implements Observateur {
             }
             if(i_sel!=-1 && j_sel!=-1) {
                 Tour T = plateau.tour(i_sel, j_sel);
-                Sequence<Couple<Integer, Integer>> v = jeu.plateau.voisins(T.ligne(), T.colonne());
-                Couple<Integer, Integer> couple;
-                while (!v.estVide()) {
-                    couple = v.extraitTete();
-                    int i_v = couple.premier();
-                    int j_v = couple.second();
+                Sequence toursVoisines = plateau.voisins(T.ligne(), T.colonne());
+                Iterateur it = toursVoisines.iterateur();
+                while(it.aProchain()){
+                    Tour voisine = (Tour) it.prochain();
+                    int i_v = voisine.ligne();
+                    int j_v = voisine.colonne();
                     if (T.estDeplacable(plateau.tour(i_v, j_v))) {
                         plateau.grille()[i_v][j_v].voisin = true;
                     }
@@ -210,11 +211,11 @@ public class PlateauGraphique extends JComponent implements Observateur {
             margin_score_j1=-1*(hauteur/100);
         }
 
-        for(int i=0;i<jeu.plateau.scoreJ1();i++){
+        for(int i=0;i<jeu.scoreJ1();i++){
 
             tracerCercle(new Couleur(Col_J1), (largeur/3)+i*((hauteurScore/6)+2)+10,((hauteurScore/6)*2)+margin_score_j1 , (hauteurScore/6), (hauteurScore/6));
         }
-        for(int i=0;i<jeu.plateau.scoreJ2();i++){
+        for(int i=0;i<jeu.scoreJ2();i++){
             tracerCercle(new Couleur(Col_J2), (largeur/3)+i*(((hauteurScore/6))+2)+10,(int)(((hauteurScore/6)*4.5)) , hauteurScore/6, hauteurScore/6);
         }
     }

@@ -385,18 +385,16 @@ public void fullscreen(){
         int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
             sauvegarder();
-            jeu = jeu.nouvellePartie();
+            jeu.nouvellePartie();
             plateauGraphique = new PlateauGraphique(jeu);
             controle.init_joueurs();
             frame.dispose();
             Dimension dim = frame.getSize();
             Point location = frame.getLocation();
-
+            run();
             frame.setSize(dim);
             frame.setLocation(location);
             metAJour();
-            //run();
-            InterfaceGraphique.demarrer(jeu, controle);
         }
     }
 

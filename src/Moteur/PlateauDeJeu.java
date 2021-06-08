@@ -71,12 +71,12 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         Sequence voisinesJouables = voisinsJouables(toursVoisines);
         Iterateur it = toursVoisines.iterateur();
         while(it.aProchain()){
-            /*couple=v.extraitTete();
-            int i= couple.premier();
-            int j=couple.second();*/
+            //couple=v.extraitTete();
             Tour voisine = (Tour) it.prochain();
-            if(!grille[voisine.ligne()][voisine.colonne()].estVide() && !grille[voisine.ligne()][voisine.colonne()].estInnocupable()){
-                if(grille[voisine.ligne()][voisine.colonne()].nbPion()>0){
+            int i= voisine.ligne();
+            int j=voisine.colonne();
+            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable() && grille[i][j].estDeplacable(grille[l][c]) ){
+                if(grille[i][j].nbPion()>0){
                     return false;
                 }
             }
