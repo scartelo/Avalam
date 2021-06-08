@@ -5,8 +5,10 @@ import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.TimerTask;
 
 
 import Patterns.Observateur;
@@ -39,7 +41,6 @@ public class PlateauGraphique extends JComponent implements Observateur {
         aff_voisins = false;
         transparency=false;
         aff_tourFinie=true;
-        //border = new ImageCharge(ImageCharge.charge("Images/border.png"));
         if (jeu.couleur) { // true si dans l'ordre "normal" ; false si inversé
             Col_J1 = "CouleurJ1";
             Col_J2 = "CouleurJ2";
@@ -88,6 +89,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
         tracerScore();
         tracerGrille_iso();
         tracer_Turn();
+
         /*tracerString(new Couleur("CouleurNbPion"),0,20,"x :"+t_x+"   y :"+t_y);
         tracerString(new Couleur("CouleurNbPion"),0,40,"OffX :"+offsetX+"   OffY :"+offsetY);
         */
@@ -106,15 +108,32 @@ public class PlateauGraphique extends JComponent implements Observateur {
             text+=j2;
             c= new Couleur(Col_J2);
         }
-        tracerCarre(c, -10, -10, largeur/6, 40+15+30+((hauteur/2)/10),true,true);
-        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,(hauteur/2)/10);
+        int h2 = (hauteur/3);
+        int h=h2/2;
+        if(h*2>h2){
+            System.err.println("TEst");
+        }
+        tracerCarre(c, -10, -10, largeur/5, h2,true,true);
+        Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h);
         drawable.setFont(font);
         int w =drawable.getFontMetrics().stringWidth("Au tour de");
-        tracerString(new Couleur("CouleurNbPion"),((largeur/6)-w-10)/2,(hauteur/2)/10,"Au tour de",(hauteur/2)/10);
-        font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,(hauteur/2)/8);
+        int l=(largeur/5)-10;
+        while(w>l){
+            if(w-l>10){
+                h-=10;
+            }else{
+                h--;
+            }
+            font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h);
+            drawable.setFont(font);
+            w =drawable.getFontMetrics().stringWidth("Au tour de");
+        }
+        tracerString(new Couleur("CouleurNbPion"),((largeur/5)-w-10)/2,h,"Au tour de",h);
+
+        font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h2);
         drawable.setFont(font);
-        w =drawable.getFontMetrics().stringWidth(text);
-        tracerString(new Couleur("CouleurNbPion"),((largeur/6)-w-10)/2,40+15+((hauteur/2)/10),text,(hauteur/2)/8);
+
+        tracerString(new Couleur("CouleurNbPion"),((largeur/5)-w-10)/2,h2-h,text,h);
 
     }
     void affichage(int x, int y){

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
+import java.util.TimerTask;
 
 /*
 Classe permettant d'afficher la grille, le score, et un JMenuBar contenant les fonctionnalités du jeu ( refaire,annuler,sauvegarder...)
@@ -32,7 +33,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JToggleButton iaJ1, iaJ2,voisins;
     JPanel game_panel;
     private boolean maximized;
-    private boolean full_s;
+    private boolean full_s,voisin;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
     Jeu jeu;
@@ -298,8 +299,29 @@ public void fullscreen(){
         }
     }
     public void aff_voisin() {
-        plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
-        metAJour();   }
+        voisin = !voisin;
+        clignotement_voisin();
+    }
+    public void clignotement_voisin(){
+        if(voisin){
+                java.util.Timer time=new java.util.Timer();
+                time.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if(voisin) {
+                            plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
+                            metAJour();
+                        }else{
+                            plateauGraphique.aff_voisins=false;
+                            time.cancel();
+                        }
+                    }
+                }, 0, 1*1000);
+            }else{
+            plateauGraphique.aff_voisins=false;
+            metAJour();
+        }
+        }
     public void aff_tourFinie() {
         plateauGraphique.aff_tourFinie = !plateauGraphique.aff_tourFinie;metAJour();
     }
