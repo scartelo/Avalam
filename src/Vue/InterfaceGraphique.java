@@ -20,13 +20,23 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     private static JFrame frame;
     PlateauGraphique plateauGraphique;
     CollecteurEvenements controle;
-    JButton annuler, refaire,restart,sauvegarde,loadbut,quitter,menu;
+    JButton annuler;
+    JButton refaire;
+    JButton restart;
+    JButton sauvegarde;
+    JButton loadbut;
+    JButton quitter;
+    JButton menu;
+    JButton transparency,full_scr;
+    JToggleButton tourFinie;
     JToggleButton iaJ1, iaJ2,voisins;
+    JPanel game_panel;
     private boolean maximized;
+    private boolean full_s;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
     Jeu jeu;
-    ImageIcon logo_fenetre;
+    ImageIcon logo_fenetre,logo_home,logo_partie;
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
         jeu=j;
         controle = c;
@@ -36,10 +46,93 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         j.ajouteObservateur(this);
         URL url = getClass().getResource("/Images/logo_fenetre.png");
         logo_fenetre = new ImageIcon(url);
+        logo_home= new ImageIcon(getClass().getResource("/Images/home.png"));
+        logo_partie= new ImageIcon(getClass().getResource("/Images/logo_partie.png"));
+        Image tmp_home = logo_home.getImage() ;
+        Image tmp_home2 = tmp_home.getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH ) ;
+        logo_home = new ImageIcon( tmp_home2 );
+        full_s=false;
+    }
+    public void run(){
+        JLabel test= new JLabel();
+
+        frame = new JFrame("Avalam");
+        frame.setIconImage(logo_fenetre.getImage());
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                quitter();
+            }
+        });
+        plateauGraphique.addMouseListener(new AdaptateurSouris(plateauGraphique, controle));
+        frame.addKeyListener(new AdaptateurClavier(controle));
+        controle.fixerInterfaceUtilisateur(this);
+        frame.setMinimumSize(new Dimension(1400,700));
+        frame.setLocationRelativeTo(null);
+        frame.add(plateauGraphique);
+        sauvegarde = createButton("Enregistrer","sauvegarder");
+        // Annuler / Refaire
+        JPanel annulRef = new JPanel();
+        annuler = createButton("<", "annuler");
+        annuler.setToolTipText("Annule le dernier coup joué");
+        griser_annuler(false);
+        refaire = createButton(">", "refaire");
+        refaire.setToolTipText("Rejoue le dernier coup annulé");
+        griser_refaire(false);
+        transparency=createButton("Transparence","transparency");
+        transparency.setToolTipText("Affiche toutes les tours en transparent");
+        tourFinie = createToggleButton("Tours finies");
+        tourFinie.setToolTipText("Enlève l'affichage des tours finies");
+        tourFinie.addActionListener(new AdaptateurCommande(controle,"tourFinie"));
+        restart = createButton ("Nouvelle partie", "nouvellePartie");
+        menu = createButton ("Menu", "retour_menu");
+        menu.setBackground(new Couleur("CouleurScore").couleur());
+        menu.setBorderPainted(false);
+        menu.setToolTipText("Retour au menu");
+        quitter = createButton ("Quitter", "quitter");
+        iaJ1 = createToggleButton("IAJ1");
+        iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
+        iaJ2 = createToggleButton("IAJ2");
+        iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
+        voisins = createToggleButton("Voisins");
+        voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
+        voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
+
+        l_partie=menu_partie();
+        l_partie.setToolTipText("Menu de la partie");
+        l_partie .setBackground(new Couleur("CouleurScore").couleur());
+        Box box_panel= Box.createHorizontalBox();
+        box_panel.add(annulRef,BorderLayout.CENTER);
+        annulRef.setBackground(new Couleur("CouleurScore").couleur());
+        box_panel.setBackground(new Couleur("CouleurScore").couleur());
+        box_panel.setBorder(BorderFactory.createBevelBorder(0));
+        JMenuBar m_bar= new JMenuBar();
+        m_bar.add(l_partie);
+        m_bar.setBackground(new Couleur("CouleurScore").couleur());
+        annulRef.add(transparency);
+        annulRef.add(tourFinie);
+        annulRef.add(voisins);
+        annulRef.add(annuler);
+        annulRef.add(refaire);
+        annulRef.add(iaJ1);
+        annulRef.add(iaJ2);
+        annulRef.add(m_bar);
+        annulRef.add(menu);
+        annulRef.setBorder(BorderFactory.createBevelBorder(0));
+        frame.add(annulRef,BorderLayout.SOUTH);
+
+        menu.setIcon(logo_home);
+        l_partie.setIcon(logo_partie);
+
+        controle.update_buttons();
+        frame.pack();
+        frame.setVisible(true);
+
     }
 
-    @Override
-    public void run() {
+    public void run2() {
         frame = new JFrame("Avalam");
         frame.setIconImage(logo_fenetre.getImage());
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -73,11 +166,18 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         refaire = createButton(">", "refaire");
         refaire.setToolTipText("Rejoue le dernier coup annulé");
         griser_refaire(false);
+        transparency=createButton("Transparence","transparency");
+        transparency.setToolTipText("Affiche toutes les tours en transparent");
+        tourFinie = createToggleButton("Tours finies");
+        tourFinie.setToolTipText("Enlève l'affichage des tours finies");
+        tourFinie.addActionListener(new AdaptateurCommande(controle,"tourFinie"));
         restart = createButton ("Nouvelle partie", "nouvellePartie");
         menu = createButton ("Menu", "retour_menu");
         quitter = createButton ("Quitter", "quitter");
         annulRef.add(annuler);
         annulRef.add(refaire);
+        annulRef.add(transparency);
+        annulRef.add(tourFinie);
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
         annulRef.add(iaJ1); // Ne doit pas être là dans l'interface finale
@@ -88,8 +188,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
         voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
         annulRef.add(voisins);
-        l_partie=menu_partie();
-        l_partie.setToolTipText("Menu de la partie");
+
         m_bar.add(l_partie);
         m_bar.add(annulRef);
         m_bar.add(Box.createHorizontalGlue());
@@ -100,10 +199,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         time.start();
         controle.fixerInterfaceUtilisateur(this);
         frame.setSize(570, 500);
-        frame.setMinimumSize(new Dimension(570,460));
+        frame.setMinimumSize(new Dimension(800,500));
         frame.setLocationRelativeTo(null);
         controle.update_buttons();
+        basculePleinEcran();
+
         frame.setVisible(true);
+
+
         jeu.plateau().afficherGrille();
     }
     public JMenu menu_sauvegarde(){
@@ -130,7 +233,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     }
     public JMenu menu_partie(){
         //liste des sauvegardes sous forme de menu
-        JMenu m = new JMenu("Partie");
+        JMenu m = new JMenu();
 
         JMenuItem newgame = new JMenuItem("Nouvelle Partie");
         newgame.setToolTipText("Partie rapide avec les mêmes options");
@@ -154,6 +257,10 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m.add(l_sauvegardes);
 
         return m;
+    }
+    public void aff_transparence(){
+        plateauGraphique.transparency=!plateauGraphique.transparency;
+        metAJour();
     }
     public static void showFrame(boolean b){
         frame.setVisible(b);
@@ -212,8 +319,16 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             device.setFullScreenWindow(frame);
             maximized = true;
         }
-
+        metAJour();
     }
+public void fullscreen(){
+    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    full_s=!full_s;
+    frame.setUndecorated(full_s);
+    frame.setVisible(false);
+    frame.setVisible(true);
+    metAJour();
+}
 
     @Override
     public void Win_message(){
@@ -259,6 +374,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     }
     public void aff_voisin() {
         plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
+        metAJour();   }
+    public void aff_tourFinie() {
+        plateauGraphique.aff_tourFinie = !plateauGraphique.aff_tourFinie;metAJour();
     }
 
 

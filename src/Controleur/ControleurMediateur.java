@@ -70,7 +70,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     public void changeJoueur() {
         joueurCourant = (joueurCourant + 1) % joueurs.length;
-        //decompte = lenteurAttente;
+        decompte = lenteurAttente;
         iu.reset_waiting();
     }
 
@@ -184,6 +184,15 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "aff_voisins":
                 iu.aff_voisin();
+                break;
+            case "transparency":
+                iu.aff_transparence();
+                break;
+            case "tourFinie":
+                iu.aff_tourFinie();
+                break;
+            case "fullScreen":
+                iu.fullscreen();
                 break;
             default:
                 return false;

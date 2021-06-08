@@ -23,5 +23,11 @@ public interface InterfaceUtilisateur {
 
     void aff_voisin();
 
+    void aff_transparence();
+
+    void aff_tourFinie();
+
+    void fullscreen();
+
     void Win_message();
 }

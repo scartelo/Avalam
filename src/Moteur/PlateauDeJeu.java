@@ -58,9 +58,8 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private boolean estInnoccupable(int l, int c) {
         return tour(l,c).contenu() == INNOCCUPABLE;
     }
-
     public boolean estAccessible(int l, int c){
-        return (l>0 && l<lignes) && (c>0 && c<colonnes);
+        return (l>0 && l<lignes) && (c>0 && c<colonnes) && !estInnoccupable(l,c);
     }
     /*
     Renvoie un booléen désignant si un pion est isolé sur la grille
@@ -207,7 +206,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             alterner(l,c);
     }
     /*
-    Renvoie une séquence des tours voisines à la tour située à la position (l,c)
+    Renvoie une séquence contenant les positions (i,j) des tours voisines qui ne sont pas hors grille
     */
     public Sequence voisins(int l, int c){
         Sequence voisins = Configuration.instance().nouvelleSequence();
@@ -240,7 +239,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
 
 
     /*
-    Place une tour ayant un contenu à une position (l,c) de la grille
+    Créer une tour selon son contenu et la place sur la grille à la position i,j
     */
     public void placerTour(int contenu, int l, int c){
         Tour tour = new Tour(contenu, l, c);
@@ -274,7 +273,6 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             //play_sound("Drop");
         }
     }
-
     /*
     Rejoue le dernier coup annulé ( s'il existe )
     */
@@ -375,8 +373,6 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         score1=score_1;
         score2=score_2;
     }
-
-
     /*
     Joue un son dans res/Audio selon sound_name ( nom du fichier )
     *//*
