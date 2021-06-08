@@ -127,6 +127,8 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         l_partie.setIcon(logo_partie);
 
         controle.update_buttons();
+        Timer time = new Timer(16, new AdaptateurTemps(controle));
+        time.start();
         frame.pack();
         frame.setVisible(true);
 

@@ -3,6 +3,7 @@ package Controleur;
 import Global.Audio;
 import Global.Configuration;
 import Moteur.Jeu;
+import Moteur.PlateauDeJeu;
 import Moteur.Tour;
 import Structures.Couple;
 import Structures.Iterateur;
@@ -11,27 +12,16 @@ import Structures.Sequence;
 import java.util.Random;
 
 public class JoueurIAAleatoire extends JoueurIA{
-    Random r;
+    //Random r;
 
     JoueurIAAleatoire(int n, Jeu jeu){
         super(n,jeu);
-        r = new Random();
+        //r = new Random();
     }
 
-    Tour selectionAleatoire(){
-        int departL = r.nextInt(jeu.plateau().lignes());
-        int departC = r.nextInt(jeu.plateau().colonnes());
-        Tour departTour = jeu.plateau().tour(departL,departC);
-        while (!departTour.estJouable() || jeu.plateau().pasDeplacable(departTour)){
-            departL = r.nextInt(jeu.plateau().lignes());
-            departC = r.nextInt(jeu.plateau().colonnes());
-            departTour = jeu.plateau().tour(departL,departC);
-        }
-        return departTour;
-    }
     @Override
     boolean tempsEcoule() {
-        Tour departTour = selectionAleatoire();
+        Tour departTour = selectionAleatoire(jeu.plateau());
         //Audio.play_sound("Pick");
         Configuration.instance().logger().info(
                 "La tour (" + departTour.ligne() + ", " + departTour.colonne() + ") a été selectionnée");

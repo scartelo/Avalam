@@ -58,6 +58,7 @@ public class JoueurHumain extends Joueur {
                     if(jeu.isIA(prochain_joueur)){
                         jeu.change_ia_state(prochain_joueur,1);
                     }
+                    System.out.println("J'ai fini");
                     return true;
                 } else {
                     Configuration.instance().logger().warning("Déplacement impossible");

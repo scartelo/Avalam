@@ -11,14 +11,14 @@ import java.util.Random;
 
 
 public class JoueurIAMinMax extends JoueurIA {
-    Random r;
+    //Random r;
     //PlateauDeJeu plateauDeJeu;
     //Jeu clone;
     int nbCoups = 0; // Coups à l'avance en debut de partie
 
     JoueurIAMinMax(int n, Jeu jj) {
         super(n, jj);
-        r = new Random();
+        //r = new Random();
     }
 
 

@@ -27,8 +27,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         typeJoueur = new int[2];
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i][0] = new JoueurHumain(i, jeu);
-            //joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
-            joueurs[i][1] = new JoueurIAMinMax(i, jeu);
+            joueurs[i][1] = new JoueurIAAleatoire(i, jeu);
+            //joueurs[i][1] = new JoueurIAMinMax(i, jeu);
             //joueurs[i][1] = new JoueurIAAlphaBeta(i, jeu);
             //typeJoueur[i] = 0;
         }
@@ -64,6 +64,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             }
 
         }
+        System.out.println("Je sors de clic souris");
         //jeu.clic(l,c);
 
     }
@@ -126,7 +127,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         if (!jeu.estTermine()) {
             if (decompte == 0) {
                 int type = typeJoueur[joueurCourant];
-                int courant = joueurs[joueurCourant][type].num() + 1;
+                //int courant = joueurs[joueurCourant][type].num() + 1;
                 // Lorsque le temps est écoulé on le transmet au joueur courant.
                 // Si un coup a été joué (IA) on change de joueur.
                 if (joueurs[joueurCourant][type].tempsEcoule()) {
@@ -145,7 +146,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
                 else {
                     // Sinon on indique au joueur qui ne réagit pas au temps (humain) qu'on l'attend.
-                    System.out.println("On vous attend, joueur " + courant);
+                    System.out.println("On vous attend, joueur " + joueurs[joueurCourant][type].num());
                     decompte = lenteurAttente;
                     iu.update_waiting();
                 }
