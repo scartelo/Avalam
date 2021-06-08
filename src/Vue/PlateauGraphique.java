@@ -268,7 +268,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
                         drawable.setColor(new Couleur("CouleurSurbriVoisin").couleur());
                     }
                     if( plateau.grille()[i][j].marquePropose()&&aff_propose){
-                        drawable.setColor(new Couleur("CouleurSurbriVoisin").couleur());
+                        drawable.setColor(new Couleur("CouleurSubriPropose").couleur());
                     }
                     if(plateau.grille()[i][j].estSelectionee()){
                         drawable.setColor(Color.BLUE);
