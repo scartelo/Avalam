@@ -93,8 +93,14 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         quitter = createButton ("Quitter", "quitter");
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
+        if(jeu.IA1==1){
+            iaJ1.setSelected(true);
+        }
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
+        if(jeu.IA2==1){
+            iaJ2.setSelected(true);
+        }
         voisins = createToggleButton("Voisins");
         voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
         voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
