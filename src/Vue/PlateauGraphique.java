@@ -270,6 +270,9 @@ public class PlateauGraphique extends JComponent implements Observateur {
                     if( plateau.grille()[i][j].marquePropose()&&aff_propose){
                         drawable.setColor(new Couleur("CouleurSubriPropose").couleur());
                     }
+                    if( plateau.grille()[i][j].marqueProposeDest()&&aff_propose){
+                        drawable.setColor(new Couleur("CouleurSubriProposeDest").couleur());
+                    }
                     if(plateau.grille()[i][j].estSelectionee()){
                         drawable.setColor(Color.BLUE);
                     }
@@ -379,6 +382,7 @@ public class PlateauGraphique extends JComponent implements Observateur {
     }
 
     void tracerNbPion(Couleur c, int x, int y, int lc, int hc,int nbPion){
+        new Color(0xB5BDBD);
         Font font = new Font(Configuration.instance().lis("FontPion"),Font.PLAIN,hc/2);
         drawable.setFont(font);
         drawable.setColor(c.couleur());

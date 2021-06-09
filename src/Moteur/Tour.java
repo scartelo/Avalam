@@ -14,6 +14,7 @@ public class Tour {
     public boolean voisin;
     private final byte INNOCCUPABLE = -1;
     private final byte TROU = 0;
+    boolean proposeDest;
 
     public Tour(int cont, int l, int c) {
         contenu = cont;
@@ -152,6 +153,10 @@ public class Tour {
 
     public boolean marquePropose() {
         return propose;
+    }
+
+    public boolean marqueProposeDest() {
+        return proposeDest;
     }
 }
 

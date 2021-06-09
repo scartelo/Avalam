@@ -19,13 +19,11 @@ public class JoueurIA extends Joueur {
 
     JoueurIA(int n, Jeu j) {
         super(n, j);
-        r = new Random(100);
-        System.out.println();
+        r = new Random();
     }
 
     public int renvoieZone() {
         int z = r.nextInt(4); // on divise le plateau en 4 zones
-        System.out.println("Zone : " + z);
         return z;
     }
 
@@ -83,12 +81,9 @@ public class JoueurIA extends Joueur {
                 if (tour.estJouable() && !p.pasDeplacable(tour) && tour.sommetTour() == num) {
                     mesTours.insereQueue(tour);
                     tour.afficher();
-                    System.out.println("taille mes tours " + mesTours.taille());
-
                 }
             }
         }
-        System.out.println("milieu changer zone");
         int compte = 0;
         while (!mesTours.iterateur().aProchain()) {
             fixerBornes();
@@ -107,7 +102,6 @@ public class JoueurIA extends Joueur {
             }
             System.out.println("milieu while changer zone");
         }
-        System.out.println("sorti changer zone");
         return mesTours;
     }
 
@@ -123,7 +117,6 @@ public class JoueurIA extends Joueur {
         if (mesTours == null) {
             resultat = selectionAleatoire(p);
         } else {
-            System.out.println("taille " + mesTours.taille());
             int positionTourAjouer = r.nextInt(mesTours.taille());
             Iterateur<Tour> it = mesTours.iterateur();
             int k = 0;

@@ -29,20 +29,23 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
     JButton loadbut;
     JButton quitter;
     JButton menu;
-    JButton transparency,full_scr;
+    JToggleButton suggestion;
+    JButton transparency, full_scr;
     JToggleButton tourFinie;
-    JToggleButton iaJ1, iaJ2,voisins;
+    JToggleButton iaJ1, iaJ2, voisins;
     JPanel game_panel;
     private boolean maximized;
-    private boolean full_s,voisin;
+    private boolean full_s, voisin;
+    private boolean suggerer;
     JMenu l_partie, l_sauvegardes;
     JTextField jt;
     Jeu jeu;
-    ImageIcon logo_fenetre,logo_home,logo_partie;
+    Timer timer;
+    ImageIcon logo_fenetre, logo_home, logo_partie;
     private boolean timer_propose;
 
     public InterfaceGraphique(Jeu j, CollecteurEvenements c) {
-        jeu=j;
+        jeu = j;
         controle = c;
         plateauGraphique = new PlateauGraphique(j);
         controle = new ControleurMediateur(jeu);
@@ -50,24 +53,24 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         j.ajouteObservateur(this);
         URL url = getClass().getResource("/Images/logo_fenetre.png");
         logo_fenetre = new ImageIcon(url);
-        logo_home= new ImageIcon(getClass().getResource("/Images/home.png"));
-        logo_partie= new ImageIcon(getClass().getResource("/Images/logo_partie.png"));
-        Image tmp_home = logo_home.getImage() ;
-        Image tmp_home2 = tmp_home.getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH ) ;
-        logo_home = new ImageIcon( tmp_home2 );
-        full_s=false;
-        timer_propose=false;
+        logo_home = new ImageIcon(getClass().getResource("/Images/home.png"));
+        logo_partie = new ImageIcon(getClass().getResource("/Images/logo_partie.png"));
+        Image tmp_home = logo_home.getImage();
+        Image tmp_home2 = tmp_home.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+        logo_home = new ImageIcon(tmp_home2);
+        full_s = false;
+        //timer_propose=false;
     }
-    public void run(){
-        JLabel test= new JLabel();
+
+    public void run() {
+        JLabel test = new JLabel();
 
         frame = new JFrame("Avalam");
         frame.setIconImage(logo_fenetre.getImage());
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent we)
-            {
+            public void windowClosing(WindowEvent we) {
                 quitter();
             }
         });
@@ -76,9 +79,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         controle.fixerInterfaceUtilisateur(this);
 
         frame.add(plateauGraphique);
-        frame.setMinimumSize(new Dimension(1400,700));
+        frame.setMinimumSize(new Dimension(1400, 700));
         frame.setLocationRelativeTo(null);
-        sauvegarde = createButton("Enregistrer","sauvegarder");
+        sauvegarde = createButton("Enregistrer", "sauvegarder");
         // Annuler / Refaire
         JPanel annulRef = new JPanel();
         annuler = createButton("<", "annuler");
@@ -87,42 +90,46 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         refaire = createButton(">", "refaire");
         refaire.setToolTipText("Rejoue le dernier coup annulé");
         griser_refaire(false);
-        transparency=createButton("Transparence","transparency");
+        suggestion = createToggleButton("Suggestion");
+        suggestion.setToolTipText("Suggère un coup Gris sur Blanc");
+        suggestion.addActionListener(new AdaptateurCommande(controle, "suggestion"));
+        transparency = createButton("Transparence", "transparency");
         transparency.setToolTipText("Affiche toutes les tours en transparent");
         tourFinie = createToggleButton("Tours finies");
         tourFinie.setToolTipText("Enlève l'affichage des tours finies");
-        tourFinie.addActionListener(new AdaptateurCommande(controle,"tourFinie"));
-        restart = createButton ("Nouvelle partie", "nouvellePartie");
-        menu = createButton ("Menu", "retour_menu");
+        tourFinie.addActionListener(new AdaptateurCommande(controle, "tourFinie"));
+        restart = createButton("Nouvelle partie", "nouvellePartie");
+        menu = createButton("Menu", "retour_menu");
         menu.setBackground(new Couleur("CouleurScore").couleur());
         menu.setBorderPainted(false);
         menu.setToolTipText("Retour au menu");
-        quitter = createButton ("Quitter", "quitter");
+        quitter = createButton("Quitter", "quitter");
         iaJ1 = createToggleButton("IAJ1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
-        if(jeu.IA1==1){
+        if (jeu.IA1 == 1) {
             iaJ1.setSelected(true);
         }
         iaJ2 = createToggleButton("IAJ2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
-        if(jeu.IA2==1){
+        if (jeu.IA2 == 1) {
             iaJ2.setSelected(true);
         }
         voisins = createToggleButton("Voisins");
         voisins.setToolTipText("Affiche les voisins de la tour selectionnée");
-        voisins.addActionListener(new AdaptateurCommande(controle,"aff_voisins"));
+        voisins.addActionListener(new AdaptateurCommande(controle, "aff_voisins"));
 
-        l_partie=menu_partie();
+        l_partie = menu_partie();
         l_partie.setToolTipText("Menu de la partie");
-        l_partie .setBackground(new Couleur("CouleurScore").couleur());
-        Box box_panel= Box.createHorizontalBox();
-        box_panel.add(annulRef,BorderLayout.CENTER);
+        l_partie.setBackground(new Couleur("CouleurScore").couleur());
+        Box box_panel = Box.createHorizontalBox();
+        box_panel.add(annulRef, BorderLayout.CENTER);
         annulRef.setBackground(new Couleur("CouleurScore").couleur());
         box_panel.setBackground(new Couleur("CouleurScore").couleur());
         box_panel.setBorder(BorderFactory.createBevelBorder(0));
-        JMenuBar m_bar= new JMenuBar();
+        JMenuBar m_bar = new JMenuBar();
         m_bar.add(l_partie);
         m_bar.setBackground(new Couleur("CouleurScore").couleur());
+        annulRef.add(suggestion);
         annulRef.add(transparency);
         annulRef.add(tourFinie);
         annulRef.add(voisins);
@@ -133,34 +140,33 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         annulRef.add(m_bar);
         annulRef.add(menu);
         annulRef.setBorder(BorderFactory.createBevelBorder(0));
-        frame.add(annulRef,BorderLayout.SOUTH);
+        frame.add(annulRef, BorderLayout.SOUTH);
 
         menu.setIcon(logo_home);
         l_partie.setIcon(logo_partie);
 
         controle.update_buttons();
-        Timer time = new Timer(16, new AdaptateurTemps(controle));
-        time.start();
+        timer = new Timer(16, new AdaptateurTemps(controle));
+        timer.start();
         frame.pack();
         //basculePleinEcran();
         frame.setVisible(true);
 
     }
 
-    public JMenu menu_sauvegarde(){
+    public JMenu menu_sauvegarde() {
         //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu("Charger");
-        Saves save=new Saves(jeu);
-        if(save.nb_saves==0){
+        Saves save = new Saves(jeu);
+        if (save.nb_saves == 0) {
             m.setEnabled(false);
-        }
-        else{
-            for(int i=0;i<save.nb_saves;i++){
+        } else {
+            for (int i = 0; i < save.nb_saves; i++) {
                 JMenuItem item = new JMenuItem(save.l_saves.get(i).split("\\.")[0]);
-                String s =String.valueOf(i+1);
+                String s = String.valueOf(i + 1);
                 item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e){
-                        controle.commandeInput("load",s);
+                    public void actionPerformed(ActionEvent e) {
+                        controle.commandeInput("load", s);
                         controle.update_buttons();
                     }
                 });
@@ -169,14 +175,15 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         }
         return m;
     }
-    public JMenu menu_partie(){
+
+    public JMenu menu_partie() {
         //liste des sauvegardes sous forme de menu
         JMenu m = new JMenu();
 
         JMenuItem newgame = new JMenuItem("Nouvelle Partie");
         newgame.setToolTipText("Partie rapide avec les mêmes options");
         newgame.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 controle.commande("nouvellePartie");
                 controle.update_buttons();
             }
@@ -184,27 +191,30 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         m.add(newgame);
         JMenuItem save = new JMenuItem("Sauvegarder");
         save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 controle.commande("sauvegarder");
                 controle.update_buttons();
             }
         });
         m.add(save);
 
-        l_sauvegardes=menu_sauvegarde();
+        l_sauvegardes = menu_sauvegarde();
         m.add(l_sauvegardes);
 
         return m;
     }
-    public void aff_transparence(){
-        plateauGraphique.transparency=!plateauGraphique.transparency;
+
+    public void aff_transparence() {
+        plateauGraphique.transparency = !plateauGraphique.transparency;
         metAJour();
     }
-    public static void showFrame(boolean b){
+
+    public static void showFrame(boolean b) {
         frame.setVisible(b);
     }
-    public void partie_finie(){
-        if(jeu.partieTerminee()) {
+
+    public void partie_finie() {
+        if (jeu.partieTerminee()) {
             JDialog d = new JDialog(frame, "Partie finie !");
             // create a label
             String finie = jeu.get_winner();
@@ -216,8 +226,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
             d.setVisible(true);
         }
     }
+
     public static void demarrer(Jeu j, CollecteurEvenements controle) {
-        SwingUtilities.invokeLater(new InterfaceGraphique(j , controle));
+        SwingUtilities.invokeLater(new InterfaceGraphique(j, controle));
     }
 
     private JLabel createLabel(String s) {
@@ -259,61 +270,116 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         }
         metAJour();
     }
-public void fullscreen(){
-    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    full_s=!full_s;
-    frame.setUndecorated(full_s);
-    frame.setVisible(false);
-    frame.setVisible(true);
-    metAJour();
-}
 
-    @Override
-    public void Win_message(){
-        String message = jeu.Win_message();
-        JOptionPane.showMessageDialog(null,message,"Partie terminée",JOptionPane.PLAIN_MESSAGE);
+    public void fullscreen() {
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        full_s = !full_s;
+        frame.setUndecorated(full_s);
+        frame.setVisible(false);
+        frame.setVisible(true);
+        metAJour();
     }
 
-    public void update_waiting(){
+    @Override
+    public void Win_message() {
+        String message = jeu.Win_message();
+        JOptionPane.showMessageDialog(null, message, "Partie terminée", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    @Override
+    public void proposer_coup() {
+
+    }
+
+    public void update_waiting() {
         PlateauGraphique.update_attente();
         metAJour();
     }
-    public void reset_waiting(){
+
+    public void reset_waiting() {
         PlateauGraphique.reset_attente();
         metAJour();
     }
+
     @Override
     public void sauvegarder() {
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous sauvegarder ? ","Sauvegarder",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
+        int res = JOptionPane.showConfirmDialog(null, "Voulez vous sauvegarder ? ", "Sauvegarder", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
             jeu.sauvegarder();
             metAJour();
         }
     }
 
     @Override
-    public void load(String c){
-        int res = JOptionPane.showConfirmDialog(null,"Êtes vous sur de vouloir charger la sauvegarde ? ","Charger",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
+    public void load(String c) {
+        int res = JOptionPane.showConfirmDialog(null, "Êtes vous sur de vouloir charger la sauvegarde ? ", "Charger", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
             sauvegarder();
-            jeu.load(Integer.parseInt(c),0);
+            jeu.load(Integer.parseInt(c), 0);
             controle.update_buttons();
+            timer.restart();
             metAJour();
         }
     }
 
     @Override
     public void quitter() {
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous vraiment quitter ? ","Quitter le jeu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
+        int res = JOptionPane.showConfirmDialog(null, "Voulez vous vraiment quitter ? ", "Quitter le jeu", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
             jeu.quitter();
             metAJour();
         }
+        timer.stop();
     }
+
     public void aff_voisin() {
         voisin = !voisin;
         clignotement_voisin();
     }
+
+    @Override
+    public void suggestion() {
+        suggerer = !suggerer;
+        System.out.println("Je te propose ce coup");
+        clignotement_suggestion();
+    }
+
+    private void clignotement_suggestion() {
+        if (suggerer) {
+            java.util.Timer time = new java.util.Timer();
+            if (!timer_propose) {
+                timer_propose = true;
+                time.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (timer_propose) {
+                            //System.out.println("affiche propose " + plateauGraphique.aff_propose);
+                            //plateauGraphique.aff_propose = suggerer;
+                            controle.deselect_propose();
+                            controle.suggestion();
+                            plateauGraphique.aff_propose = !plateauGraphique.aff_propose;
+                            metAJour();
+                        } else {
+                            plateauGraphique.aff_propose = false;
+                            controle.deselect_propose();
+                            time.cancel();
+                        }
+                    }
+                }, 0, 1 * 5000);
+            } else {
+                controle.deselect_propose();
+                time.cancel();
+            }
+        } else {
+            plateauGraphique.aff_propose = false;
+            timer_propose = false;
+            controle.deselect_propose();
+            controle.end_timer();
+            metAJour();
+        }
+    }
+
+    /*
     public void proposer_coup(){
         if(!timer_propose){
             java.util.Timer time;
@@ -354,36 +420,38 @@ public void fullscreen(){
             timer_propose=false;
             controle.end_timer();
         }
-    }
-    public void clignotement_voisin(){
-        if(voisin){
-                java.util.Timer time=new java.util.Timer();
-                time.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if(voisin) {
-                            plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
-                            metAJour();
-                        }else{
-                            plateauGraphique.aff_voisins=false;
-                            time.cancel();
-                        }
+    }*/
+    public void clignotement_voisin() {
+        if (voisin) {
+            java.util.Timer time = new java.util.Timer();
+            time.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if (voisin) {
+                        plateauGraphique.aff_voisins = !plateauGraphique.aff_voisins;
+                        metAJour();
+                    } else {
+                        plateauGraphique.aff_voisins = false;
+                        time.cancel();
                     }
-                }, 0, 1*1000);
-            }else{
-            plateauGraphique.aff_voisins=false;
+                }
+            }, 0, 1 * 1000);
+        } else {
+            plateauGraphique.aff_voisins = false;
             metAJour();
         }
-        }
+    }
+
     public void aff_tourFinie() {
-        plateauGraphique.aff_tourFinie = !plateauGraphique.aff_tourFinie;metAJour();
+        plateauGraphique.aff_tourFinie = !plateauGraphique.aff_tourFinie;
+        metAJour();
     }
 
 
     @Override
-    public void nouvellePartie(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous recommencer la partie ? ","Nouvelle partie",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res==JOptionPane.YES_OPTION){
+    public void nouvellePartie() {
+        int res = JOptionPane.showConfirmDialog(null, "Voulez vous recommencer la partie ? ", "Nouvelle partie", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
             sauvegarder();
             jeu.nouvellePartie();
             plateauGraphique = new PlateauGraphique(jeu);
@@ -394,14 +462,15 @@ public void fullscreen(){
             run();
             frame.setSize(dim);
             frame.setLocation(location);
+            timer.restart();
             metAJour();
         }
     }
 
 
-    public void retour_menu(){
-        int res = JOptionPane.showConfirmDialog(null,"Voulez vous revenir au menu ? ","Menu",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(res== JOptionPane.YES_OPTION){
+    public void retour_menu() {
+        int res = JOptionPane.showConfirmDialog(null, "Voulez vous revenir au menu ? ", "Menu", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (res == JOptionPane.YES_OPTION) {
             InterfaceMenu m = new InterfaceMenu();
             m.showMenu(true);
             frame.dispose();
@@ -409,10 +478,12 @@ public void fullscreen(){
             controle.change_play_state();
         }
     }
-    public void griser_annuler(boolean b){
+
+    public void griser_annuler(boolean b) {
         annuler.setEnabled(b);
     }
-    public void griser_refaire(boolean b){
+
+    public void griser_refaire(boolean b) {
         refaire.setEnabled(b);
     }
 }

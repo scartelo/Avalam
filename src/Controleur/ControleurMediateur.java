@@ -117,6 +117,14 @@ public class ControleurMediateur implements CollecteurEvenements {
         update_buttons();
     }
 
+    public void suggestion(){
+        jeu.suggestion(joueurCourant);
+    }
+
+    public void deselect_propose(){
+        jeu.deselect_propose();
+    }
+
     public void refaire(){
         boolean b=jeu.refaire();
         if(b){
@@ -226,6 +234,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "tourFinie":
                 iu.aff_tourFinie();
+                break;
+            case "suggestion":
+                iu.suggestion();
                 break;
             case "fullScreen":
                 iu.fullscreen();

@@ -32,4 +32,6 @@ public interface InterfaceUtilisateur {
     void Win_message();
 
     void proposer_coup();
+
+    void suggestion();
 }

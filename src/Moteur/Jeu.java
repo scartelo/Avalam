@@ -269,4 +269,18 @@ public class Jeu extends Observable implements Cloneable {
         }
         return resultat;
     }
+
+    public void suggestion(int num){
+        if (estIA(num) != 1){
+            if (plateau.suggestion(num)) {
+                miseAJour();
+            }
+        }
+    }
+
+    public void deselect_propose(){
+        plateau.deselect_propose();
+        miseAJour();
+    }
+
 }

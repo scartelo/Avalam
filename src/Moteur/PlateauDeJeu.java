@@ -4,6 +4,8 @@ import Global.Configuration;
 import Structures.Iterateur;
 import Structures.Sequence;
 
+import java.util.Random;
+
 public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private Tour[][] grille;
     public int tourJoueur;
@@ -462,8 +464,135 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
             for(int j=0;j<colonnes;j++){
                 if(grille[i][j].propose){
                     grille[i][j].propose=false;
+                }else if (grille[i][j].proposeDest){
+                    grille[i][j].proposeDest = false;
                 }
             }
         }
     }
+
+    // regarde la liste des voisins et renvoie le tour qui contient nb pions , null sinon
+    public Tour nbPionsMatch(Sequence voisins, int nb) {
+        Tour tRes = null;
+        Iterateur voisinsJouables = voisinsJouables(voisins).iterateur();
+        while (voisinsJouables.aProchain()) {
+            Tour t = (Tour) voisinsJouables.prochain();
+            if (t.nbPion() == nb) {
+                tRes = t;
+                return tRes;
+            }
+        }
+        return tRes;
+    }
+
+    //verifier s'il y a un deplacement plus optimal
+    public Coup meilleurCoup(int num) {
+        Coup result;
+        Tour tDep;
+        Tour tDest;
+        for (int i = 0; i < lignes(); i++) {
+            for (int j = 0; j < colonnes(); j++) {
+                if (tour(i, j).estJouable() && tour(i, j).sommetTour() == num) {
+                    Sequence voisins = voisins(i, j);
+                    switch (tour(i, j).nbPion()) {
+                        case 1:
+                            tDest = nbPionsMatch(voisins, 4);
+                            if (tDest != null) {
+                                tDep = tour(i, j);
+                                result = new Coup(tDep, tDest);
+                                return result;
+                            }
+                            break;
+                        case 2:
+                            tDest = nbPionsMatch(voisins, 3);
+                            if (tDest != null) {
+                                tDep = tour(i, j);
+                                result = new Coup(tDep, tDest);
+                                return result;
+                            }
+                            break;
+                        case 3:
+                            tDest = nbPionsMatch(voisins, 2);
+                            if (tDest != null) {
+                                tDep = tour(i, j);
+                                result = new Coup(tDep, tDest);
+                                return result;
+                            }
+                            break;
+                        case 4:
+                            tDest = nbPionsMatch(voisins, 1);
+                            if (tDest != null) {
+                                tDep = tour(i, j);
+                                result = new Coup(tDep, tDest);
+                                return result;
+                            }
+                            break;
+                        default:
+                            Configuration.instance().logger().severe("Pas de tour ");
+                            return null;
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    Tour selectionAleatoire() {
+        Random r = new Random();
+        int departL = r.nextInt(lignes());
+        int departC = r.nextInt(colonnes());
+        Tour departTour = tour(departL, departC);
+        while (!departTour.estJouable()) {
+            departL = r.nextInt(lignes());
+            departC = r.nextInt(colonnes());
+            departTour = tour(departL, departC);
+        }
+        return departTour;
+    }
+    private Coup coupAleatoire() {
+        Tour departTour = selectionAleatoire();
+        Random r = new Random();
+        Coup c = null;
+        //Audio.play_sound("Pick");
+        /*Configuration.instance().logger().info(
+                "La tour (" + departTour.ligne() + ", " + departTour.colonne() + ") a été selectionnée");*/
+        Sequence<Tour> voisinsDepart = voisins(departTour.ligne(), departTour.colonne());
+        int position = r.nextInt(voisinsDepart.taille()); // choix aléatoire parmi les 8 voisins maximum
+        int i = 0;
+        Iterateur<Tour> it = voisinsDepart.iterateur();
+        while (it.aProchain()){
+            Tour destTour = it.prochain();
+            if (i == position){
+                if (destTour.estDeplacable(departTour) && destTour.estJouable()){
+
+                    c = new  Coup(departTour, destTour);
+                    return c;
+                }
+            }else {
+                i++;
+            }
+
+        }
+        return c;
+    }
+    public boolean suggestion(int num){
+        System.out.println("dans suggestion");
+        boolean resultat = false;
+        Coup meilleur = meilleurCoup(num);
+        Coup aleatoire = coupAleatoire();
+        Coup coup = (meilleurCoup(num) != null) ? (meilleur) : (aleatoire != null) ? aleatoire : null ;
+        if (coup != null) {
+            coup.src().propose = true;
+            System.out.println("J'ai marqué " + coup.src().propose);
+            coup.dest().proposeDest = true;
+            System.out.println("J'ai marqué " + coup.dest().propose);
+            System.out.println("Je vous suggère le coup : ");
+            coup.afficheCoup();
+            resultat = true;
+        }
+        return resultat;
+    }
+
+
 }

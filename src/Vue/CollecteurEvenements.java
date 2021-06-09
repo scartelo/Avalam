@@ -19,6 +19,9 @@ public interface CollecteurEvenements {
     boolean playing();
 
     void change_play_state();
+    void suggestion();
+    void deselect_propose();
+
 
     void end_timer();
 }
