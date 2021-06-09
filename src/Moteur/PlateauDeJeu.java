@@ -581,7 +581,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         boolean resultat = false;
         Coup meilleur = meilleurCoup(num);
         Coup aleatoire = coupAleatoire();
-        Coup coup = (meilleurCoup(num) != null) ? (meilleur) : (aleatoire != null) ? aleatoire : null ;
+        Coup coup = (meilleur != null) ? (meilleur) : (aleatoire != null) ? aleatoire : null ;
         if (coup != null) {
             coup.src().propose = true;
             System.out.println("J'ai marqué " + coup.src().propose);
