@@ -80,7 +80,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         controle.fixerInterfaceUtilisateur(this);
 
         frame.add(plateauGraphique);
-        frame.setMinimumSize(new Dimension(1250, 500));
+        frame.setMinimumSize(new Dimension(1250, 650));
 
 
         sauvegarde = createButton("Enregistrer", "sauvegarder");
