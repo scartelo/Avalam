@@ -203,6 +203,9 @@ public class Jeu extends Observable implements Cloneable {
             return scoreJ1;
         }else if (num == 1){
             return scoreJ2;
+        }else {
+            Configuration.instance().logger().severe("Numéro joueur inconnu");
+            System.exit(1);
         }
         return 0;
     }
