@@ -22,26 +22,32 @@ public class JoueurIAMinMax extends JoueurIA {
     }
 
 
+    
     //Nouvelle version d'evaluation
-    //estilation de la chance de p
-    public int evaluationV2(PlateauDeJeu p) {
-
-        Sequence<Integer> liste = listeFi(p);
-        Iterateur it = liste.iterateur();
-        int f;
-        int somme = 0;
-        while (it.aProchain()) {
-            f = (int) it.prochain();
-            somme += f;
+    //estimation de la chance de p
+    public double evaluationV2(PlateauDeJeu p) {
+        int[] liste = listeFi(p);
+        int[] W = {1,2,4};
+        double somme =0;
+        int f ,w;
+        for (int i = 0;i< liste.length;i++){
+            //System.out.println("score fi :"+liste[i]+W[i]);
+            somme = somme +(liste[i]*W[i]);
         }
-
         return somme;
     }
 
-    private Sequence<Integer> listeFi(PlateauDeJeu p) {
-        int f1 = 0;// nombre de tour ayant plus de 1 pion
-        int f2 = 0; // // diff entre nombre de tour de joueurIA et joueur ad.
-        Sequence<Integer> fi = Configuration.instance().nouvelleSequence();
+    // fi(plateauDeJeu) avec W l'importace de score
+    // nombre de tour ayant plus de 1 pion sur le plateau
+    // diff entre nombre de tour de joueur1 et joueur2
+    // compter des tour à 5 pion ou isolé
+    private int[] listeFi(PlateauDeJeu p) {
+        int f1 = 0;// nombre de tour ayant plus de 1 pion . w1 = 1
+        int f2 = 0; // diff entre nombre de tour de joueurIA et joueur ad. w2 = 2
+        int f3 = 0;// compter des tours à 5 pion ou isolé . w3 = 4
+        int f4 = 0;
+        int[] fi ;
+
         for (int i = 0; i < p.lignes(); i++) {
             for (int j = 0; j < p.colonnes(); j++) {
                 Tour t = p.tour(i, j);
@@ -50,16 +56,23 @@ public class JoueurIAMinMax extends JoueurIA {
                     if (num == t.sommetTour()) {
                         //System.out.println("avant resultat = " + resultat);
                         f1++;
+                        if(t.nbPion() == 5 || p.estIsole(i,j)){
+                            f3++;
+                        }
                         //System.out.println("apres resultat = " + resultat);
                     } else if (num != t.sommetTour()) {
                         f2++;
                     }
+                    /*else if(t.nbPion() == 5 && num == t.sommetTour()){
+                        f3++;
+                    }
+                    else if( p.estIsole(i,j) && num == t.sommetTour()){
+                        f4++;
+                    }*/
                 }
             }
         }
-        fi.insereTete(f1);
-        fi.insereTete(f1 - f2);
-
+        fi = new int[]{f1, (f1 - f2), (f3 + f4)};
         return fi;
     }
 
@@ -79,7 +92,7 @@ public class JoueurIAMinMax extends JoueurIA {
         Tour mTourdest = null;
         Coup opt = null;
 
-        if (nbCoups < 5) {
+        if (nbCoups < 7) {
             opt = isBetter(jeu.plateau());
             if (opt != null) {
                 jeu.jouer(opt.src(), opt.dest());
@@ -142,7 +155,7 @@ public class JoueurIAMinMax extends JoueurIA {
             jeu.plateau().selection_ia(mTourdep, mTourdest);
             Tour tour1 = jeu.plateau().tour(3, 4);
             Tour tour2 = jeu.plateau().tour(2, 4);
-            jeu.jouer(tour1, tour2);
+            //jeu.jouer(tour1, tour2);
             //double valeur = miniMax(jeu,2, true);
 
             //afficheCoup(coup);
