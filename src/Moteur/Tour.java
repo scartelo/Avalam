@@ -148,7 +148,7 @@ public class Tour {
     }
 
     public void afficher() {
-        System.out.println("Tour (" + this.ligne + "," + this.colonne() + ")" );
+        System.out.println("Tour (" + this.ligne() + "," + this.colonne() + "), contenu = " + this.contenu()  );
     }
 
     public boolean marquePropose() {

@@ -199,19 +199,14 @@ public class Jeu extends Observable implements Cloneable {
 
     // Renvoie le score du joueur de numéro num
     public int score(int num){
-        if (num == 0){
-            return scoreJ1;
-        }else if (num == 1){
-            return scoreJ2;
-        }else {
-            Configuration.instance().logger().severe("Numéro joueur inconnu");
-            System.exit(1);
-        }
-        return 0;
+        return plateau.score(num);
     }
 
     // Met à jour le score de la partie
     public void MAJScore(){
+        plateau.MAJScore();
+    }
+    /*public void MAJScore(){
         int score1 = 0;
         int score2 = 0;
         for (int i=0; i<plateau.lignes(); i++){
@@ -229,12 +224,14 @@ public class Jeu extends Observable implements Cloneable {
         }
         scoreJ1 = score1;
         scoreJ2 = score2;
-    }
+    }*/
 
     public int scoreJ1() {
+        scoreJ1 = plateau().scoreJ1();
         return scoreJ1;
     }
     public int scoreJ2() {
+        scoreJ2 = plateau().scoreJ2();
         return scoreJ2;
     }
 
@@ -281,6 +278,12 @@ public class Jeu extends Observable implements Cloneable {
     public void deselect_propose(){
         plateau.deselect_propose();
         miseAJour();
+    }
+
+    public PlateauDeJeu clonerPlateau(){
+        PlateauDeJeu p = new PlateauDeJeu();
+        p = plateau.clonerPlateau();
+        return p;
     }
 
 }

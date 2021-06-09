@@ -15,6 +15,8 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     private final int TROU = 0;
     private int x1,y1,x2,y2;
     public int score1,score2;
+    private int scoreJ1;
+    private int scoreJ2;
 
 
     public PlateauDeJeu() {
@@ -51,12 +53,13 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
     public Tour tour(int l, int c){
         return grille[l][c];
     }
+    /*
     public int scoreJ1(){
         return score1;
     }
     public int scoreJ2(){
         return score2;
-    }
+    }*/
     private boolean estInnoccupable(int l, int c) {
         return tour(l,c).contenu() == INNOCCUPABLE;
     }
@@ -71,18 +74,16 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         Couple<Integer,Integer> couple;*/
         Sequence toursVoisines = voisins(l,c);
         Sequence voisinesJouables = voisinsJouables(toursVoisines);
-        Iterateur it = toursVoisines.iterateur();
+        Iterateur it = voisinesJouables.iterateur();
         while(it.aProchain()){
             //couple=v.extraitTete();
             Tour voisine = (Tour) it.prochain();
             int i= voisine.ligne();
             int j=voisine.colonne();
-            if(!grille[i][j].estVide() && !grille[i][j].estInnocupable() && grille[i][j].estDeplacable(grille[l][c]) ){
-                if(grille[i][j].nbPion()>0){
+            if(grille[i][j].estDeplacable(grille[l][c]) ){
                     return false;
                 }
             }
-        }
         return true;
     }
     /*
@@ -447,7 +448,7 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
 
     @Override
     public PlateauDeJeu clone(){
-        PlateauDeJeu clone = null;
+        PlateauDeJeu clone = new PlateauDeJeu();
         try {
             clone = (PlateauDeJeu) super.clone();
             clone.grille = grille.clone();
@@ -594,5 +595,77 @@ public class PlateauDeJeu extends Historique<Coup> implements Cloneable{
         return resultat;
     }
 
+    // Renvoie le score du joueur de numéro num
+    public int score(int num){
+        if (num == 0){
+            return scoreJ1;
+        }else if (num == 1){
+            return scoreJ2;
+        }else {
+            Configuration.instance().logger().severe("Numéro joueur inconnu");
+            System.exit(1);
+        }
+        return 0;
+    }
 
+    public int scoreJ1() {
+        return scoreJ1;
+    }
+    public int scoreJ2() {
+        return scoreJ2;
+    }
+
+    public void MAJScore(){
+        int score1 = 0;
+        int score2 = 0;
+        for (int i=0; i<lignes(); i++){
+            for (int j=0; j<colonnes(); j++){
+                Tour tour = tour(i,j);
+                if (!tour.estInnocupable() && !tour.estVide()){
+                    if(pasDeplacable(tour)){
+                        if (tour.sommetTour() == 0)
+                            score1 += 1;
+                        else
+                            score2 += 1;
+                    }
+                }
+            }
+        }
+        scoreJ1 = score1;
+        scoreJ2 = score2;
+    }
+
+
+
+    public PlateauDeJeu clonerPlateau(){
+        PlateauDeJeu p = new PlateauDeJeu();
+        for (int i = 0; i < lignes(); i++){
+            for (int j = 0; j< colonnes(); j++){
+                Tour tour = tour(i,j);
+                Tour clone = new Tour(tour.contenu(), tour.ligne(), tour.colonne());
+                p.placerTour(clone.contenu(), clone.ligne(), clone.colonne());
+            }
+        }
+        return p;
+    }
+
+    public boolean estFini(){
+        for (int i=0; i<lignes; i++){
+            for (int j=0; j<colonnes; j++){
+                Tour depart = tour(i,j);
+                if (depart.estJouable()){
+                    Sequence<Tour> voisins = voisins(i,j);
+                    Iterateur<Tour> jouables = voisinsJouables(voisins).iterateur();
+                    while (jouables.aProchain()){
+                        Tour dest = jouables.prochain();
+                        if (dest.estDeplacable(depart)){
+                            return false;
+                        }
+                    }
+
+                }
+            }
+        }
+        return true;
+    }
 }

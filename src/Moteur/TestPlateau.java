@@ -111,8 +111,93 @@ public class TestPlateau {
             t.afficher();
 
         }
+        p.afficherGrille();
+
+        System.out.println("Test ajout");
+        p.afficherGrille();
+        Tour t = p.tour(8,2);
+        Tour t2 = p.tour(7,2);
+        Tour t8 = new Tour(t.contenu(), t.ligne(), t.colonne());
+        Tour t9 = new Tour(t2.contenu(), t2.ligne(), t2.colonne());
+        System.out.println("avant");
+        System.out.println("T1");
+        t.afficher();
+        System.out.println("T2");
+        t2.afficher();
+
+        t.ajouteTour(t2);
+
+        System.out.println("apres");
+        System.out.println("T1");
+        t.afficher();
+        System.out.println("T2");
+        t2.afficher();
+        p.afficherGrille();
+
+
+        System.out.println("encore apres");
+        System.out.println("T8");
+        t8.afficher();
+        System.out.println("T9");
+        t9.afficher();
+
+        System.out.println("vider");
+        p.tour(t2.ligne(), t2.colonne()).viderTour();
+        p.tour(t.ligne(), t.colonne()).viderTour();
+        p.afficherGrille();
+
+        System.out.println("simulation");
+        p.placerTour(t8.contenu(), t8.ligne(), t8.colonne());
+        p.placerTour(t9.contenu(), t9.ligne(), t9.colonne());
 
         p.afficherGrille();
+        /*Tour t = p.tour(8,2);
+        Tour t2 = p.tour(7,2);
+        Tour t8 = new Tour(t.contenu(), t.ligne(), t.colonne());
+        Tour t9 = new Tour(t2.contenu(), t2.ligne(), t2.colonne());
+        System.out.println("avant");
+        System.out.println("T1");
+        t.afficher();
+        System.out.println("T2");
+        t2.afficher();
+
+        t.ajouteTour(t2);
+
+        System.out.println("apres");
+        System.out.println("T1");
+        t.afficher();
+        System.out.println("T2");
+        t2.afficher();
+
+
+        System.out.println("encore apres");
+        System.out.println("T8");
+        t8.afficher();
+        System.out.println("T9");
+        t9.afficher();*/
+
+        Tour t3 = p.tour(7,2);
+        Tour t4 = t;
+        Coup coup = new Coup(t, t2);
+
+        System.out.println("Test simulation et annulation");
+        //p.simulationCoup(coup);
+        //p.afficherGrille();
+        /*System.out.println("vider");
+        p.tour(t2.ligne(), t2.colonne()).viderTour();
+        p.tour(t.ligne(), t.colonne()).viderTour();
+        p.afficherGrille();
+
+        System.out.println("simulation");
+        p.placerTour(t8.contenu(), t8.ligne(), t8.colonne());
+        p.placerTour(t9.contenu(), t9.ligne(), t9.colonne());*/
+        //p.tour(t2.ligne(), t2.colonne()).placerTour(t3.contenu(), t2.ligne(), t2.colonne());
+        //p.afficherGrille();
+
+        System.out.println("annulation");
+        //p.annuleCoupIA2(coup);
+        p.afficherGrille();
+
 
 
 

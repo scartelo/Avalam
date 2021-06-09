@@ -177,10 +177,11 @@ public class ControleurMediateur implements CollecteurEvenements {
                     }
                     update_buttons();
                     iu.reset_waiting();
+                    Audio.play_sound("Drop");
                     if(jeu.estTermine()){
-                        Audio.play_sound("GameOver");
                         iu.Win_message();
                         Configuration.instance().logger().info("Partie terminée");
+                        Audio.play_sound("GameOver");
                     }
                 }
                 else {
