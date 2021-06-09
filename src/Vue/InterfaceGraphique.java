@@ -79,8 +79,9 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         controle.fixerInterfaceUtilisateur(this);
 
         frame.add(plateauGraphique);
-        frame.setMinimumSize(new Dimension(1400, 700));
-        frame.setLocationRelativeTo(null);
+        frame.setMinimumSize(new Dimension(1250, 500));
+
+
         sauvegarde = createButton("Enregistrer", "sauvegarder");
         // Annuler / Refaire
         JPanel annulRef = new JPanel();
@@ -105,11 +106,13 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         menu.setToolTipText("Retour au menu");
         quitter = createButton("Quitter", "quitter");
         iaJ1 = createToggleButton("IAJ1");
+        iaJ1.setToolTipText("Active l'ia pour le joueur 1");
         iaJ1.addActionListener(new AdaptateurJoueur(controle, iaJ1, 0));
         if (jeu.IA1 == 1) {
             iaJ1.setSelected(true);
         }
         iaJ2 = createToggleButton("IAJ2");
+        iaJ2.setToolTipText("Active l'ia pour le joueur 2");
         iaJ2.addActionListener(new AdaptateurJoueur(controle, iaJ2, 1));
         if (jeu.IA2 == 1) {
             iaJ2.setSelected(true);
@@ -139,7 +142,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         annulRef.add(iaJ2);
         annulRef.add(m_bar);
         annulRef.add(menu);
-        annulRef.setBorder(BorderFactory.createBevelBorder(0));
+        annulRef.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
         frame.add(annulRef, BorderLayout.SOUTH);
 
         menu.setIcon(logo_home);
@@ -150,6 +153,7 @@ public class InterfaceGraphique implements Runnable, InterfaceUtilisateur, Obser
         timer.start();
         frame.pack();
         //basculePleinEcran();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
