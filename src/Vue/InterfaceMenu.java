@@ -106,6 +106,7 @@ public class InterfaceMenu {
         tutoriel.setLocationRelativeTo(null);
         URL url = getClass().getResource("/Images/tutoriel.png");
         ImageIcon image = new ImageIcon(url);
+        image=new ImageIcon(image.getImage().getScaledInstance(760, 460, java.awt.Image.SCALE_SMOOTH));
         JLabel label_tuto = new JLabel( image);
         tutoriel.add(label_tuto);
         tutoriel.setVisible(true);
