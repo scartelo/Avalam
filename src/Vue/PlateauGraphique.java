@@ -110,15 +110,12 @@ public class PlateauGraphique extends JComponent implements Observateur {
             text+=j2;
             c= new Couleur(Col_J2);
         }
-        int h2 = (hauteur/3);
+        int h2 = (hauteur/4);
         int h=h2/2;
-        if(h*2>h2){
-            System.err.println("TEst");
-        }
         tracerCarre(c, -10, -10, largeur/5, h2,true,true);
         Font font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h);
         drawable.setFont(font);
-        int w =drawable.getFontMetrics().stringWidth("Au tour de");
+        int w =drawable.getFontMetrics().stringWidth(text);
         int l=(largeur/5)-10;
         while(w>l){
             if(w-l>10){
@@ -128,14 +125,9 @@ public class PlateauGraphique extends JComponent implements Observateur {
             }
             font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h);
             drawable.setFont(font);
-            w =drawable.getFontMetrics().stringWidth("Au tour de");
+            w =drawable.getFontMetrics().stringWidth(text);
         }
-        tracerString(new Couleur("CouleurNbPion"),((largeur/5)-w-10)/2,h,"Au tour de",h);
-
-        font = new Font(Configuration.instance().lis("FontScore"),Font.BOLD,h2);
-        drawable.setFont(font);
-
-        tracerString(new Couleur("CouleurNbPion"),((largeur/5)-w-10)/2,h2-h,text,h);
+        tracerString(new Couleur("CouleurNbPion"),((largeur/5)-w-10)/2,h2/2,text,h);
 
     }
     void affichage(int x, int y){
