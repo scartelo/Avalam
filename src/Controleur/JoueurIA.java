@@ -8,37 +8,47 @@ import Moteur.Tour;
 import Structures.Couple;
 import Structures.Iterateur;
 import Structures.Sequence;
+import Structures.SequenceTableau;
 
 import java.util.Random;
 
 
-public class JoueurIA extends Joueur{
+public class JoueurIA extends Joueur {
     Random r;
+    int infBorneL = 0, supBorneL = 0, infBorneC = 0, supBorneC = 0;
 
     JoueurIA(int n, Jeu j) {
         super(n, j);
-        r = new Random();
+        r = new Random(100);
+        System.out.println();
     }
-    public Tour selectionTourDansZone(PlateauDeJeu p, int zone) {
-        int infBorneL = 0, supBorneL = 0, infBorneC = 0, supBorneC = 0;
+
+    public int renvoieZone() {
+        int z = r.nextInt(4); // on divise le plateau en 4 zones
+        System.out.println("Zone : " + z);
+        return z;
+    }
+
+    public void fixerBornes() {
+        int zone = renvoieZone();
         switch (zone) {
             case 0 -> {
                 infBorneL = 0;
-                supBorneL = 5;
+                supBorneL = 6;
                 infBorneC = 0;
-                supBorneC = 5;
+                supBorneC = 6;
             }
             case 1 -> {
                 infBorneL = 0;
                 supBorneL = 5;
-                infBorneC = 5;
+                infBorneC = 6;
                 supBorneC = 9;
             }
             case 2 -> {
                 infBorneL = 5;
                 supBorneL = 9;
                 infBorneC = 0;
-                supBorneC = 5;
+                supBorneC = 6;
             }
             case 3 -> {
                 infBorneL = 5;
@@ -51,36 +61,79 @@ public class JoueurIA extends Joueur{
                 System.exit(1);
             }
         }
-        Tour tour = selectionAleatoireAvecBorne(p, infBorneL, infBorneC, supBorneL, supBorneC);
-        return tour;
 
     }
 
-    public Tour selectionAleatoireAvecBorne(PlateauDeJeu p, int biL, int biC, int bsL, int bsC) {
-        /*int departL = biL + r.nextInt(bsL - biL);
-        int departC = biC + r.nextInt(bsC - biC);
-        Tour tour = p.tour(departL, departC);*/
-        Sequence mesTours = Configuration.instance().nouvelleSequence();
-        int nbMesTours = 0;
-        Tour resultat = null;
-        for (int i = biL; i < bsL; i++) {
-            for (int j = biC; j < bsC; j++) {
+    /*Tour tour = selectionAleatoireAvecBorne(p,zone, infBorneL, infBorneC, supBorneL, supBorneC);
+    while(tour == null){
+        //return null;
+        zone = renvoieZone();
+        tour = selectionAleatoireAvecBorne(p,zone,infBorneL, infBorneC, supBorneL, supBorneC);
+    }
+
+    return tour;
+
+}*/
+    public Sequence<Tour> changerZone(PlateauDeJeu p) {
+        fixerBornes();
+        Sequence<Tour> mesTours = Configuration.instance().nouvelleSequence();
+        for (int i = infBorneL; i < supBorneL; i++) {
+            for (int j = infBorneC; j < supBorneC; j++) {
                 Tour tour = p.tour(i, j);
                 if (tour.estJouable() && !p.pasDeplacable(tour) && tour.sommetTour() == num) {
                     mesTours.insereQueue(tour);
-                    nbMesTours++;
+                    tour.afficher();
+                    System.out.println("taille mes tours " + mesTours.taille());
+
                 }
             }
         }
-        Iterateur it = mesTours.iterateur();
-        int positionTourAjouer = r.nextInt(nbMesTours);
-        int k = 0;
-        while (it.aProchain()) {
-            Tour tourAJouer = (Tour) it.prochain();
-            if (k == positionTourAjouer) {
-                resultat = tourAJouer;
-            } else {
-                k++;
+        System.out.println("milieu changer zone");
+        int compte = 0;
+        while (!mesTours.iterateur().aProchain()) {
+            fixerBornes();
+            for (int i = infBorneL; i < supBorneL; i++) {
+                for (int j = infBorneC; j < supBorneC; j++) {
+                    Tour tour = p.tour(i, j);
+                    if (tour.estJouable() && !p.pasDeplacable(tour) && tour.sommetTour() == num) {
+                        mesTours.insereQueue(tour);
+                    }
+                }
+            }
+            compte++;
+            if (compte >= 5) {
+                System.out.println("dernier coup");
+                return null;
+            }
+            System.out.println("milieu while changer zone");
+        }
+        System.out.println("sorti changer zone");
+        return mesTours;
+    }
+
+    public Tour selectionAleatoireAvecBorne(PlateauDeJeu p) {
+        /*int departL = biL + r.nextInt(bsL - biL);
+        int departC = biC + r.nextInt(bsC - biC);
+        Tour tour = p.tour(departL, departC);*/
+        Sequence<Tour> mesTours = changerZone(p);
+        //SequenceTableau<Tour> mesTours = (SequenceTableau<Tour>) copy;
+        assert (mesTours == null);
+        Tour resultat = null;
+
+        if (mesTours == null) {
+            resultat = selectionAleatoire(p);
+        } else {
+            System.out.println("taille " + mesTours.taille());
+            int positionTourAjouer = r.nextInt(mesTours.taille());
+            Iterateur<Tour> it = mesTours.iterateur();
+            int k = 0;
+            while (it.aProchain()) {
+                Tour tourAJouer = it.prochain();
+                if (k == positionTourAjouer) {
+                    resultat = tourAJouer;
+                } else {
+                    k++;
+                }
             }
         }
 
@@ -88,87 +141,102 @@ public class JoueurIA extends Joueur{
     }
 
     public Coup couvrirAdversaire(PlateauDeJeu plateau) {
-        int zone = r.nextInt(4); // on divise le plateau en 4 zones
-        Tour tour = selectionTourDansZone(plateau, zone);
+        //int zone = r.nextInt(4); // on divise le plateau en 4 zones
+        System.out.println("debut couvrireAD");
+        Tour tour = selectionAleatoireAvecBorne(plateau); // tour pris
         Sequence<Tour> voisins = plateau.voisins(tour.ligne(), tour.colonne());
-        Iterateur<Tour> vJouables = plateau.voisinsJouables(voisins).iterateur();
-        Sequence<Tour> toursAdverses = Configuration.instance().nouvelleSequence();
-        while(!vJouables.aProchain()){
-            zone = r.nextInt(4); // on divise le plateau en 4 zones
-            tour = selectionTourDansZone(plateau, zone);
+        Sequence<Tour> vJouables = plateau.voisinsJouables(voisins);
+        while (vJouables.estVide()) {
+            tour = selectionAleatoireAvecBorne(plateau); // tour pris
             voisins = plateau.voisins(tour.ligne(), tour.colonne());
-            vJouables = plateau.voisinsJouables(voisins).iterateur();
+            vJouables = plateau.voisinsJouables(voisins);
         }
-        while (vJouables.aProchain()) {
-            Tour tourVoisines = (Tour) vJouables.prochain();
+        Iterateur<Tour> itvJouables = vJouables.iterateur();
+        Sequence<Tour> toursAdverses = Configuration.instance().nouvelleSequence();
+        Sequence<Tour> toursJ = Configuration.instance().nouvelleSequence();
+        Coup coup = null;
+        while (itvJouables.aProchain()) {
+            Tour tourVoisines = itvJouables.prochain();
             if (tourVoisines.sommetTour() != num) {
                 if (tour.estDeplacable(tourVoisines)) {
                     toursAdverses.insereQueue(tourVoisines);
                 }
+            } else {  // si les voisins sont de meme couleur
+                toursJ.insereQueue(tourVoisines);
             }
         }
-        Tour tourAJouer = toursAdverses.extraitTete();
+        if (toursAdverses.estVide()) {
+            if (toursJ.estVide()) {
+                Configuration.instance().logger().severe("Coup non trouver couvrir adversaire");
+            } else {
+                coup = new Coup(tour, toursJ.extraitTete());
+            }
+        } else {
+            coup = new Coup(tour, toursAdverses.extraitTete());
+        }
 
-        //p.Jouer(tour, tourAJouer);
-        Coup coup = new Coup(tour, tourAJouer);
         //copy.jouer(tour, tourAJouer);
         //copy.plateau().deselection_ia();
         //copy.plateau().selection_ia(tour, tourAJouer);
+        System.out.println("Sorti couvrir adversaire");
+        if (coup == null)
+            Configuration.instance().logger().severe("Coup non trouver couvrir adversaire");
         return coup;
     }
+
     // regarde la liste des voisins et renvoie le tour qui contient nb pions , null sinon
-    public Tour nbPionsMatch(PlateauDeJeu p , Sequence voisins, int nb){
+    public Tour nbPionsMatch(PlateauDeJeu p, Sequence voisins, int nb) {
         Tour tRes = null;
         Iterateur voisinsJouables = p.voisinsJouables(voisins).iterateur();
-        while (voisinsJouables.aProchain()){
+        while (voisinsJouables.aProchain()) {
             Tour t = (Tour) voisinsJouables.prochain();
-            if(t.nbPion() == nb){
+            if (t.nbPion() == nb) {
                 tRes = t;
-                return  tRes;
+                return tRes;
             }
         }
         return tRes;
     }
 
     //verifier s'il y a un deplacement plus optimal
-    public Coup isBetter (PlateauDeJeu p){
+    public Coup isBetter(PlateauDeJeu p) {
         Coup result;
         Tour tDep;
         Tour tDest;
-        for(int i = 0 ; i < p.lignes();i++){
-            for(int j = 0 ; j < p.colonnes();j++){
-                if(p.tour(i,j).estJouable() &&  p.tour(i,j).sommetTour() == num){
+        for (int i = 0; i < p.lignes(); i++) {
+            for (int j = 0; j < p.colonnes(); j++) {
+                if (p.tour(i, j).estJouable() && p.tour(i, j).sommetTour() == num) {
                     Sequence voisins = p.voisins(i, j);
-                    switch (p.tour(i,j).nbPion()){
+                    switch (p.tour(i, j).nbPion()) {
                         case 1:
-                            tDest = nbPionsMatch(p,voisins,4);
-                            if(tDest != null){
-                                tDep = p.tour(i,j);
-                                result = new Coup(tDep,tDest);
+                            tDest = nbPionsMatch(p, voisins, 4);
+                            if (tDest != null) {
+                                tDep = p.tour(i, j);
+                                result = new Coup(tDep, tDest);
                                 return result;
                             }
                             break;
                         case 2:
-                            tDest = nbPionsMatch(p,voisins,3);
-                            if(tDest != null){
-                                tDep = p.tour(i,j);
-                                result = new Coup(tDep,tDest);
+                            tDest = nbPionsMatch(p, voisins, 3);
+                            if (tDest != null) {
+                                tDep = p.tour(i, j);
+                                result = new Coup(tDep, tDest);
                                 return result;
                             }
                             break;
                         case 3:
-                            tDest = nbPionsMatch(p,voisins,2);
-                            if(tDest != null){
-                                tDep = p.tour(i,j);
-                                result = new Coup(tDep,tDest);
+                            tDest = nbPionsMatch(p, voisins, 2);
+                            if (tDest != null) {
+                                tDep = p.tour(i, j);
+                                result = new Coup(tDep, tDest);
                                 return result;
                             }
                             break;
                         case 4:
-                            tDest = nbPionsMatch(p,voisins,1);
-                            if(tDest != null){
-                                tDep = p.tour(i,j);
-                                result = new Coup(tDep,tDest);
+                            tDest = nbPionsMatch(p, voisins, 1);
+                            if (tDest != null) {
+                                tDep = p.tour(i, j);
+                                result = new Coup(tDep, tDest);
                                 return result;
                             }
                             break;
@@ -185,18 +253,18 @@ public class JoueurIA extends Joueur{
 
 
     @Override
-    boolean tempsEcoule(){
+    boolean tempsEcoule() {
         return false;
     }
 
-    Tour selectionAleatoire(PlateauDeJeu plateau){
+    Tour selectionAleatoire(PlateauDeJeu plateau) {
         int departL = r.nextInt(plateau.lignes());
         int departC = r.nextInt(plateau.colonnes());
-        Tour departTour = plateau.tour(departL,departC);
-        while (!departTour.estJouable() || plateau.estIsole(departL, departC)){
+        Tour departTour = plateau.tour(departL, departC);
+        while (!departTour.estJouable() || !plateau.pasDeplacable(departTour)) {
             departL = r.nextInt(plateau.lignes());
             departC = r.nextInt(plateau.colonnes());
-            departTour = plateau.tour(departL,departC);
+            departTour = plateau.tour(departL, departC);
         }
         return departTour;
     }

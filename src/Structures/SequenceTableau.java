@@ -68,7 +68,7 @@ public class SequenceTableau<Loulou> implements Sequence<Loulou> {
 		resultat += "]";
 		return resultat;
 	}
-
+	@Override
 	public int taille(){
 		return taille;
 	}

@@ -2,6 +2,7 @@ package Controleur;
 
 import Global.Audio;
 import Global.Configuration;
+import Moteur.Coup;
 import Moteur.Jeu;
 import Moteur.PlateauDeJeu;
 import Moteur.Tour;
@@ -13,47 +14,93 @@ import java.util.Random;
 
 public class JoueurIAAleatoire extends JoueurIA{
     //Random r;
-
+    int nbCoups = 0;
     JoueurIAAleatoire(int n, Jeu jeu){
         super(n,jeu);
         //r = new Random();
     }
+    //TODO ajouter les stra
+    Tour selectionAleatoire(PlateauDeJeu plateau){
+        int departL = r.nextInt(plateau.lignes());
+        int departC = r.nextInt(plateau.colonnes());
+        Tour departTour = plateau.tour(departL,departC);
+        while (!departTour.estJouable() || plateau.pasDeplacable(departTour)){
+            departL = r.nextInt(plateau.lignes());
+            departC = r.nextInt(plateau.colonnes());
+            departTour = plateau.tour(departL,departC);
+        }
+        return departTour;
+    }
+
+    public boolean optimal(PlateauDeJeu p ){
+        Coup opt = null;
+        opt = isBetter(p);
+        if (opt != null) {
+            return true;
+        }
+        else return false;
+
+    }
 
     @Override
     boolean tempsEcoule() {
-        Tour departTour = selectionAleatoire(jeu.plateau());
+        Coup opt = null;
+        System.out.println("debut IA");
+        boolean t = optimal(jeu.plateau());
+        //while(!jeu.estTermine()) {
+            opt = isBetter(jeu.plateau());
+            if (opt != null) {
+                jeu.jouer(opt.src(), opt.dest());
+                jeu.plateau().deselection_ia();
+                jeu.plateau().selection_ia(opt.src(), opt.dest());
+                jeu.miseAJour();
+                nbCoups++;
+                //System.out.println("resultat apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :" + nbCoups);
+                return true;
+            } else {
+                Coup c = couvrirAdversaire(jeu.plateau());
+                if (c == null){
+                    c = coupAleatoire(jeu.plateau());
+                }
+                jeu.jouer(c.src(), c.dest());
+                jeu.plateau().deselection_ia();
+                jeu.plateau().selection_ia(c.src(), c.dest());
+                jeu.miseAJour();
+                nbCoups++;
+                //System.out.println("resultat apres jouer :" + evaluationV2(jeu.plateau()));
+                System.out.println("nbCoups :" + nbCoups);
+                return true;
+            }
+
+
+
+
+    }
+
+    private Coup coupAleatoire(PlateauDeJeu p) {
+        Tour departTour = selectionAleatoire(p);
+        Coup c = null;
         //Audio.play_sound("Pick");
         Configuration.instance().logger().info(
                 "La tour (" + departTour.ligne() + ", " + departTour.colonne() + ") a été selectionnée");
-        Sequence voisinsDepart = jeu.plateau().voisins(departTour.ligne(), departTour.colonne());
-        int position = r.nextInt(8); // choix aléatoire parmi les 8 voisins maximum
+        Sequence<Tour> voisinsDepart = p.voisins(departTour.ligne(), departTour.colonne());
+        int position = r.nextInt(voisinsDepart.taille()); // choix aléatoire parmi les 8 voisins maximum
         int i = 0;
-        Iterateur it = voisinsDepart.iterateur();
+        Iterateur<Tour> it = voisinsDepart.iterateur();
         while (it.aProchain()){
-                if (i == position){
-                    /*Couple c = (Couple) it.prochain();
-                    int destL = (int) c.premier();
-                    int destC = (int) c.second();
-                    Tour destTour = jeu.plateau().tour(destL, destC);*/
-                    Tour destTour = (Tour) it.prochain();
-                    if (destTour.estDeplacable(departTour) && destTour.estJouable()){
-                        //jeu.plateau().Jouer(departTour, destTour);
-                        jeu.jouer(departTour, destTour);
-                        Configuration.instance().logger().info(
-                                "La tour (" + departTour.ligne() + "," + departTour.colonne() + ") a été déplacée vers (" + destTour.ligne() + "," + destTour.colonne() + ")"
-                        );
-                        jeu.plateau().deselection_ia();
-                        jeu.plateau().selection_ia(departTour,destTour);
-                        jeu.miseAJour();
-                        Audio.play_sound("Drop");
+            Tour destTour = it.prochain();
+            if (i == position){
+                if (destTour.estDeplacable(departTour) && destTour.estJouable()){
 
-                        return true;
-                    }
-                }else {
-                    i++;
+                    c = new  Coup(departTour, destTour);
+                    return c;
                 }
+            }else {
+                i++;
+            }
 
         }
-        return false;
+        return c;
     }
 }

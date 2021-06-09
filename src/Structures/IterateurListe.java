@@ -36,5 +36,6 @@ public class IterateurListe<Riri> extends Iterateur<Riri> {
 		if (s.queue == precedent)
 			s.queue = arrierePrecedent;
 		precedent = arrierePrecedent;
+		s.taille--;
 	}
 }

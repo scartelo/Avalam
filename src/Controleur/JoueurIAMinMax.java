@@ -11,14 +11,14 @@ import java.util.Random;
 
 
 public class JoueurIAMinMax extends JoueurIA {
-    //Random r;
+    Random r;
     //PlateauDeJeu plateauDeJeu;
     //Jeu clone;
     int nbCoups = 0; // Coups à l'avance en debut de partie
 
     JoueurIAMinMax(int n, Jeu jj) {
         super(n, jj);
-        //r = new Random();
+        r = new Random();
     }
 
 
@@ -45,6 +45,7 @@ public class JoueurIAMinMax extends JoueurIA {
         for (int i = 0; i < p.lignes(); i++) {
             for (int j = 0; j < p.colonnes(); j++) {
                 Tour t = p.tour(i, j);
+                //tour isolés à verifier
                 if (!t.estVide() && !t.estInnocupable() && t.nbPion() > 1) {
                     if (num == t.sommetTour()) {
                         //System.out.println("avant resultat = " + resultat);
@@ -70,11 +71,12 @@ public class JoueurIAMinMax extends JoueurIA {
         //int ldep = 0, cdep = 0;
         CoupIA meilleurCoup = new CoupIA(null, null);
         double meilleurScore = Double.NEGATIVE_INFINITY;
-        int horizon = 0;
+        int horizon = 3;
 
         Couple<Integer, Integer> v;
-        Couple<Double, Tour> resultat = null;
-        Tour tour = null;
+        //Couple<Double, Tour> resultat = null;
+        Tour mTourdep = null;
+        Tour mTourdest = null;
         Coup opt = null;
 
         if (nbCoups < 5) {
@@ -98,7 +100,6 @@ public class JoueurIAMinMax extends JoueurIA {
                 System.out.println("nbCoups :" + nbCoups);
             }
         } else {
-           // Jeu clone = jeu.clone();
 
             for (int i = 0; i < jeu.plateau().lignes(); i++) {
                 for (int j = 0; j < jeu.plateau().colonnes(); j++) {
@@ -111,14 +112,16 @@ public class JoueurIAMinMax extends JoueurIA {
                             if (dest.estJouable() && selectionnee.estDeplacable(dest)) {
                                 CoupIA coupMinMax = new CoupIA(selectionnee, dest);
                                 //PlateauDeJeu plateau = simulationCoup(clone.plateau(), coupMinMax);
+
+                                jeu.plateau().jouer(selectionnee,dest);
                                 PlateauDeJeu p = jeu.plateau();
-                                Jeu jj = jeu.clone();
-                                p.jouer(selectionnee,dest);
-                                CoupIA coupAJouer = miniMax(jj, coupMinMax, horizon, true);
-                                annuleCoupIA(p, coupMinMax);
-                                if (coupAJouer.valeur() > meilleurCoup.valeur()) {
-                                    meilleurScore = coupAJouer.valeur();
-                                    meilleurCoup = coupAJouer;
+                                jeu.plateau().annuler();
+                                double score = miniMax(p, horizon, true);
+                                //annuleCoupIA(p, coupMinMax);
+                                if (score > meilleurScore) {
+                                    meilleurScore = score;
+                                    mTourdep = selectionnee;
+                                    mTourdest = dest;
                                 }
                             }
 
@@ -132,11 +135,11 @@ public class JoueurIAMinMax extends JoueurIA {
 
 
             System.out.println("apres min max");
-            meilleurCoup.afficheCoup();
+            //meilleurCoup.afficheCoup();
             System.out.println("meilleur score = " + meilleurScore);
-            jeu.jouer(meilleurCoup.src(), meilleurCoup.dest());
+            jeu.plateau().jouer(mTourdep, mTourdest);
             jeu.plateau().deselection_ia();
-            jeu.plateau().selection_ia(meilleurCoup.src(), meilleurCoup.dest());
+            jeu.plateau().selection_ia(mTourdep, mTourdest);
             Tour tour1 = jeu.plateau().tour(3, 4);
             Tour tour2 = jeu.plateau().tour(2, 4);
             jeu.jouer(tour1, tour2);
@@ -254,40 +257,66 @@ public class JoueurIAMinMax extends JoueurIA {
         }
     }*/
 
-    CoupIA miniMax(Jeu copy, CoupIA source, int horizon, boolean joueurMax) {
-        if (horizon == 0 || copy.estTermine()) {
-            //copy.jouer(source.src(), source.dest());
-            source.fixerValeur((int) evaluation(copy));
-            //copy.annuler();
-            return source;
+    public boolean estfini(PlateauDeJeu plateau){
+        boolean res=true;
+        for(int i=0;i<plateau.lignes();i++){
+            for(int j=0;j<plateau.colonnes();j++){
+                if(plateau.grille()[i][j].estJouable()){
+                    for(int x=-1;x<2;x++){
+                        for(int y=-1;y<2;y++){
+                            if((i+x>=0 && x+i<plateau.lignes())&&(j+y>=0 && j+y<plateau.colonnes()))  {
+                                if(plateau.grille()[i][j].estDeplacable(plateau.grille()[i+x][y+j])){
+                                    res = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //plateau.update_score();
+        //MAJScore();
+        return res;
+    }
+
+    double miniMax(PlateauDeJeu p, int horizon, boolean joueurMax) {
+        if (horizon == 0 || estfini(p)) {
+
+            return evaluationV2(p);
+
         } else {
             double maxEval = joueurMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
             CoupIA meilleurCoup =null;
-            for (int i = 0; i < copy.plateau().lignes(); i++) {
-                for (int j = 0; j < copy.plateau().colonnes(); j++) {
-                    Tour depart = copy.plateau().tour(i, j);
-                    Sequence<Tour> toursVoisines = copy.plateau().voisins(depart.ligne(), depart.colonne());
-                    Iterateur<Tour> jouables = copy.plateau().voisinsJouables(toursVoisines).iterateur();
+            for (int i = 0; i < p.lignes(); i++) {
+                for (int j = 0; j < p.colonnes(); j++) {
+                    Tour depart = p.tour(i, j);
+                    Sequence<Tour> toursVoisines = p.voisins(depart.ligne(), depart.colonne());
+                    Iterateur<Tour> jouables = p.voisinsJouables(toursVoisines).iterateur();
                     while (jouables.aProchain()) {
                         Tour dest = jouables.prochain();
                         if (dest.estJouable() && depart.estDeplacable(dest)) {
-                            CoupIA coup = (CoupIA) new Coup(depart, dest);
-                            PlateauDeJeu plateau = simulationCoup(copy.plateau(), coup);
-                            CoupIA coupMinMAx = miniMax(copy, coup, horizon - 1, !joueurMax);
-                            annuleCoupIA(plateau, coup);
+                            //CoupIA coup = (CoupIA) new Coup(depart, dest);
+
+                            p.jouer(depart,dest);
+                            PlateauDeJeu pc = p;
+                            p.annuler();
+                            //PlateauDeJeu plateau = simulationCoup(copy.plateau(), coup);
+                            double scoreMinMAx = miniMax(pc, horizon - 1, !joueurMax);
+                            //annuleCoupIA(plateau, coup);
                             if (joueurMax) {
-                                maxEval = (maxEval > coupMinMAx.valeur()) ? maxEval : coupMinMAx.valeur();
-                                meilleurCoup = coup;
+                                maxEval = (maxEval > scoreMinMAx) ? maxEval : scoreMinMAx;
+                                //meilleurCoup = coup;
                             } else {
-                                maxEval = (maxEval < coupMinMAx.valeur()) ? maxEval : coupMinMAx.valeur();
-                                meilleurCoup = coup;
+                                maxEval = (maxEval < scoreMinMAx) ? maxEval : scoreMinMAx;
+                                //meilleurCoup = coup;
                             }
 
                         }
                     }
                 }
             }
-            return meilleurCoup;
+            return maxEval;
         }
     }
 
